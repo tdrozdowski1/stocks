@@ -1,0 +1,26 @@
+<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+  <h2>Add Transaction</h2>
+
+  <label for="symbol">Stock Symbol</label>
+  <input id="symbol" formControlName="symbol" type="text" placeholder="e.g., AAPL">
+
+  <label for="date">Date</label>
+  <input id="date" formControlName="date" type="date">
+
+  <label for="type">Type</label>
+  <select id="type" formControlName="type">
+    <option value="buy">Buy</option>
+    <option value="sell">Sell</option>
+  </select>
+
+  <label for="amount">Amount</label>
+  <input id="amount" formControlName="amount" type="number" placeholder="e.g., 10">
+
+  <label for="price">Price</label>
+  <input id="price" formControlName="price" type="number" placeholder="e.g., 150.00">
+
+  <label for="commission">Commission</label>
+  <input id="commission" formControlName="commission" type="number" placeholder="e.g., 5.00">
+
+  <button type="submit">Add Transaction</button>
+</form>

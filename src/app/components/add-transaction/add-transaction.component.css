@@ -1,0 +1,72 @@
+form {
+  background-color: #ffffff; /* White background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto; /* Center form horizontally */
+}
+
+h2 {
+  text-align: center;
+  color: #0056b3; /* Blue heading */
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #0056b3; /* Blue border */
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  color: #333;
+  font-size: 14px;
+}
+
+input:hover, select:hover {
+  cursor: pointer; /* Hand cursor on hover */
+  border-color: #007bff; /* Slightly brighter blue on hover */
+}
+
+input:focus, select:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow on focus */
+  outline: none; /* Remove default outline */
+}
+
+input::placeholder {
+  color: #999; /* Lighter gray for placeholder text */
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #0056b3; /* Blue button */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Make form responsive */
+@media (max-width: 500px) {
+  form {
+    padding: 15px;
+    max-width: 100%; /* Full width on smaller screens */
+  }
+}
