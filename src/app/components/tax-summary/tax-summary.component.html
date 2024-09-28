@@ -1,5 +1,9 @@
-<div class="tax-summary-container">
-  <h2>Tax Summary</h2>
-  <p>Total Dividend Income: <span>{{ calculateDividendIncome() | currency:'PLN' }}</span></p>
-  <p>Total Tax Due: <span>{{ taxDue | currency:'PLN' }}</span></p>
+<div class="stock-summary-container">
+  <h2 class="stock-summary-title">Stock Summary</h2>
+  <ul class="stock-list">
+    <li *ngFor="let stock of stocks" class="stock-item">
+      <span class="stock-symbol">{{ stock.symbol }}</span>:
+      <span class="money-invested">{{ stock.moneyInvested | currency: 'USD ' }}</span>
+    </li>
+  </ul>
 </div>
