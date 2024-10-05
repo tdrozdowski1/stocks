@@ -6,17 +6,25 @@ import { AddTransactionComponent } from './components/add-transaction/add-transa
 import { TaxSummaryComponent } from './components/tax-summary/tax-summary.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
+import { StockSummaryComponent } from './components/stock-summary/stock-summary.component';
+import { AppRoutingModule } from './app-routing.module';
+import {RouterModule} from "@angular/router";
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddTransactionComponent,
-    TaxSummaryComponent
+    TaxSummaryComponent,
+    StockSummaryComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule,
+    RouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]

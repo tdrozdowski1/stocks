@@ -1,0 +1,79 @@
+.stock-summary-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.top-section {
+  background-color: #f8f9fa;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.middle-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chart-section,
+.dividend-section {
+  width: 48%;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+.details-section {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.transactions {
+  margin-top: 20px;
+}
+
+.transaction-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.transaction-list li {
+  padding: 5px;
+}
+
+.company-info-table-wrapper {
+  overflow-x: auto;
+}
+
+.company-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+}
+
+.company-info-table th, .company-info-table td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.company-info-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.company-info-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.company-info-table td {
+  white-space: nowrap;
+}

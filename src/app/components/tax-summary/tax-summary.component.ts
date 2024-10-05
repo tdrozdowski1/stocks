@@ -6,6 +6,7 @@ import {Dividend} from "../../models/dividend.model";
 import {concatMap} from "rxjs";
 import {DbService} from "../../services/db.service";
 import {Stock} from "../../models/stock.model";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tax-summary',
@@ -18,7 +19,7 @@ export class TaxSummaryComponent implements OnInit {
   taxDue: number = 0;
   dividends: Dividend[] = [];
 
-  constructor(private dbService: DbService, private financialDataService: FinancialDataService) {}
+  constructor(private dbService: DbService, private financialDataService: FinancialDataService, private router: Router) {}
 
   ngOnInit() {
     // this.financialDataService.getExchangeRate().subscribe(data => {
@@ -54,5 +55,10 @@ export class TaxSummaryComponent implements OnInit {
     // const taxRate = 0.19; // 19% tax in Poland
     // this.taxDue = income * taxRate;
     this.taxDue = 0
+  }
+
+  onStockClick(stock: Stock): void {
+    // Navigate to the stock summary page with the selected stock's symbol
+    this.router.navigate(['/stock-summary', stock.symbol]);
   }
 }

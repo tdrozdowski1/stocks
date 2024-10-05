@@ -1,0 +1,80 @@
+<div class="stock-summary-container">
+  <!-- Top Section: Stock Information -->
+  <div class="top-section">
+    <h1>{{ stock?.symbol }} Stock Summary</h1>
+    <p>Money Invested: {{ stock?.moneyInvested | currency:'USD' }}</p>
+    <p>Total Dividend Value: {{ stock?.totalDividendValue | currency:'USD' }}</p>
+    <!-- Add any additional stock details as needed -->
+  </div>
+
+  <!-- Middle Section: Placeholder for Chart and Dividend Information -->
+  <div class="middle-section">
+    <!-- Middle Left: Chart Section -->
+    <div class="chart-section">
+      <h2>Stock Performance Chart</h2>
+      <!-- Placeholder for chart -->
+    </div>
+
+    <!-- Middle Right: Dividend Section -->
+    <div class="dividend-section">
+      <h2>Dividend Information</h2>
+      <ul>
+        <li *ngFor="let dividend of stock?.dividends">
+          Date: {{ dividend.paymentDate | date:'shortDate' }} - Total Dividend: {{ dividend.totalDividend | currency:'PLN' }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Lower Section: Placeholder for Additional Details and Transactions -->
+  <div class="details-section">
+    <h2>Additional Details</h2>
+    <!-- Placeholder for additional details -->
+
+    <!-- Collapsible Transaction List -->
+    <div class="transactions">
+      <button (click)="toggleTransactions()">
+        {{ showTransactions ? 'Hide Transactions' : 'Show Transactions' }}
+      </button>
+      <div *ngIf="showTransactions" class="transaction-list">
+        <ul>
+          <li *ngFor="let transaction of stock?.transactions">
+            {{ transaction.date | date:'shortDate' }} - {{ transaction.type }} {{ transaction.amount }} shares at
+            {{ transaction.price | currency:'USD' }} (Commission: {{ transaction.commission | currency:'USD' }})
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="company-info">
+    <h3>Company Info (Last 25 Years)</h3>
+    <div class="company-info-table-wrapper">
+      <table class="company-info-table">
+        <thead>
+        <tr>
+          <th>Year</th>
+          <th>Price/Earnings</th>
+          <th>Revenue Per Share</th>
+          <th>ROIC</th>
+          <th>Current Ratio</th>
+          <th>Dividend Yield</th>
+          <th>Payout Ratio</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let info of companyInfo">
+          <td>{{ info.date }}</td>
+          <td>{{ info.peRatio}}</td>
+          <td>{{ info.revenuePerShare}}</td>
+          <td>{{ info.roic}}</td>
+          <td>{{ info.currentRatio}}</td>
+          <td>{{ info.dividendYield}}</td>
+          <td>{{ info.payoutRatio}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

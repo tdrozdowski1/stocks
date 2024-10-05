@@ -33,6 +33,7 @@
 
 .stock-item:hover {
   background-color: #f1f1f1; /* Highlight on hover */
+  cursor: pointer;
 }
 
 .stock-symbol {
