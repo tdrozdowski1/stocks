@@ -12,6 +12,12 @@ interface ForexData {
   forexList: ForexRate[];
 }
 
+interface ForexRate {
+  ticker: string;
+  bid: number;
+  ask: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +35,7 @@ export class FinancialDataService {
     return this.http.get(`${this.BASE_URL}/historical-price-full/stock_dividend/${symbol}?apikey=${this.API_KEY}`);
   }
 
-  getExchangeRate(): Observable<ForexData> {
-    return this.http.get<ForexData>(`${this.BASE_URL}/forex?apikey=${this.API_KEY}`);
+  getExchangeRate(date: string): Observable<ForexData> {
+    return this.http.get<ForexData>(`${this.BASE_URL}/forex?date=${date}&apikey=${this.API_KEY}`);
   }
 }

@@ -3,4 +3,7 @@ export interface DividendDetail {
   dividend: number;
   quantity: number;
   totalDividend: number;
+  totalDividendInPln: number;
+  withholdingTaxPaid: number;
+  taxDueInPoland: number;
 }

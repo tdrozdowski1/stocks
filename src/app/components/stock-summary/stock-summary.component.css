@@ -19,8 +19,7 @@
   margin-bottom: 20px;
 }
 
-.chart-section,
-.dividend-section {
+.chart-section{
   width: 48%;
   padding: 20px;
   background-color: #ffffff;
@@ -45,6 +44,40 @@
 
 .transaction-list li {
   padding: 5px;
+}
+
+/* Dividend Section Styles */
+.dividend-section {
+  padding: 20px;
+  background-color: #f7f9fc;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+}
+
+.dividend-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.dividend-table th, .dividend-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.dividend-table th {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.tax-summary {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.tax-summary p {
+  margin: 5px 0;
 }
 
 .company-info-table-wrapper {
