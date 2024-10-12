@@ -10,6 +10,7 @@ import { StockSummaryComponent } from './components/stock-summary/stock-summary.
 import { AppRoutingModule } from './app-routing.module';
 import {RouterModule} from "@angular/router";
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import {StockChartComponent} from "./components/stock-chart/stock-chart.component";
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     AddTransactionComponent,
     TaxSummaryComponent,
     StockSummaryComponent,
-    DashboardComponent
+    DashboardComponent,
+    StockChartComponent
   ],
   imports: [
     BrowserModule,

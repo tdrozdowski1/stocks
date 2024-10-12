@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, Observable, tap, throwError} from 'rxjs';
 
 interface ForexRate {
   ticker: string;
@@ -38,4 +38,16 @@ export class FinancialDataService {
   getExchangeRate(date: string): Observable<ForexData> {
     return this.http.get<ForexData>(`${this.BASE_URL}/forex?date=${date}&apikey=${this.API_KEY}`);
   }
+
+  getStockPerformance(symbol: string): Observable<any> {
+    // Adjust the endpoint according to the API documentation for historical stock prices.
+    return this.http.get(`${this.BASE_URL}/historical-price-full/${symbol}?timeseries=90&apikey=${this.API_KEY}`)
+      .pipe(
+        tap(response => console.log('API Response:', response)), // Log the response
+        catchError(err => {
+          console.error('Error fetching stock performance:', err);
+          return throwError(err);
+        })
+      );
+  };
 }

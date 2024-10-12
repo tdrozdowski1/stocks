@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 import {Transaction} from "../../models/transaction.model";
 import {FinancialDataService} from "../../services/financial-data.service";
 import {TransactionService} from "../../services/transaction.service";
@@ -10,9 +10,9 @@ import {TransactionService} from "../../services/transaction.service";
   styleUrls: ['./add-transaction.component.css']
 })
 export class AddTransactionComponent {
-  transactionForm: FormGroup;
+  transactionForm: UntypedFormGroup;
 
-  constructor(private fb: FormBuilder, private financialDataService: FinancialDataService, private transactionService: TransactionService) {
+  constructor(private fb: UntypedFormBuilder, private financialDataService: FinancialDataService, private transactionService: TransactionService) {
     this.transactionForm = this.fb.group({
       symbol: ['', Validators.required],
       date: ['', Validators.required],
