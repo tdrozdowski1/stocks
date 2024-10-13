@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Stock} from "../../models/stock.model";
-import {DbService} from "../../services/db.service";
+import {Stock} from "../../services/http/models/stock.model";
+import {DbService} from "../../services/http/db.service";
 import {ActivatedRoute} from "@angular/router";
-import {CompanyInfo, CompanyInfoService} from "../../services/company-info.service";
-import {FinancialDataService} from "../../services/financial-data.service";
+import {CompanyInfo, CompanyInfoService} from "../../services/http/company-info.service";
+import {FinancialDataService} from "../../services/http/financial-data.service";
 import {catchError, forkJoin, map, of} from "rxjs";
 
 @Component({
@@ -13,7 +13,6 @@ import {catchError, forkJoin, map, of} from "rxjs";
 })
 export class StockSummaryComponent implements OnInit {
   stock: Stock | undefined; // Store the selected stock data
-  showTransactions: boolean = false; // Controls the visibility of the transactions list
   companyInfo: CompanyInfo[] = [];
   usdPlnRate: number = 1; // Default rate
   totalDividendIncome: number = 0; // Total dividend income in PLN
@@ -46,10 +45,6 @@ export class StockSummaryComponent implements OnInit {
         (error) => console.error('Error fetching company info:', error)
       );
     }
-  }
-
-  toggleTransactions(): void {
-    this.showTransactions = !this.showTransactions;
   }
 
   calculateDividendsSummary(): void {
@@ -98,11 +93,6 @@ export class StockSummaryComponent implements OnInit {
         this.calculateTotalTaxToBePaid(); // Call tax calculation after setting total dividend income
       });
     }
-  }
-
-  // Method to calculate total dividend income in PLN
-  calculateTotalDividendIncome(): void {
-    this.totalDividendIncome = this.stock!.dividends!.reduce((total, dividend) => total + dividend.totalDividendInPln, 0) ?? 0;
   }
 
   // Method to calculate total Polish tax due in PLN

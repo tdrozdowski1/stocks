@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {Chart, registerables} from "chart.js";
-import {FinancialDataService} from "../../services/financial-data.service";
+import {FinancialDataService} from "../../../services/http/financial-data.service";
 
 @Component({
   selector: 'app-stock-chart',

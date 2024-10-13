@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
-import {Transaction} from "../../models/transaction.model";
-import {FinancialDataService} from "../../services/financial-data.service";
-import {TransactionService} from "../../services/transaction.service";
+import {Transaction} from "../../../services/domain/models/transaction.model";
+import {FinancialDataService} from "../../../services/http/financial-data.service";
+import {TransactionService} from "../../../services/domain/transaction.service";
 
 @Component({
   selector: 'app-add-transaction',

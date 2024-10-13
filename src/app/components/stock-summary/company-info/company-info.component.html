@@ -1,0 +1,27 @@
+<h3>Company Info (Last 25 Years)</h3>
+<div class="company-info-table-wrapper">
+  <table class="company-info-table">
+    <thead>
+    <tr>
+      <th>Year</th>
+      <th>Price/Earnings</th>
+      <th>Revenue Per Share</th>
+      <th>ROIC</th>
+      <th>Current Ratio</th>
+      <th>Dividend Yield</th>
+      <th>Payout Ratio</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let info of companyInfo">
+      <td>{{ info.date }}</td>
+      <td>{{ info.peRatio}}</td>
+      <td>{{ info.revenuePerShare}}</td>
+      <td>{{ info.roic}}</td>
+      <td>{{ info.currentRatio}}</td>
+      <td>{{ info.dividendYield}}</td>
+      <td>{{ info.payoutRatio}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

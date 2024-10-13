@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Transaction} from "../models/transaction.model";
-import {DbService} from "./db.service";
-import {FinancialDataService} from "./financial-data.service";
-import {OwnershipPeriod} from "../models/ownershipPeriod.model";
+import {Transaction} from "./models/transaction.model";
+import {DbService} from "../http/db.service";
+import {FinancialDataService} from "../http/financial-data.service";
+import {OwnershipPeriod} from "../http/models/ownershipPeriod.model";
 
 @Injectable({
   providedIn: 'root'
@@ -84,19 +84,29 @@ export class TransactionService {
 
     transactions.forEach(transaction => {
       if (transaction.type === 'buy') {
-        totalAmount += transaction.amount;
-
-        // Start a new ownership period if this is the first buy or the previous period ended
-        if (!startDate) {
-          startDate = new Date(transaction.date);
+        // If we have an open ownership period, close it
+        if (totalAmount > 0 && startDate) {
+          ownershipPeriods.push({ startDate, endDate: transaction.date, quantity: totalAmount });
         }
-      } else if (transaction.type === 'sell') {
-        totalAmount -= transaction.amount;
 
-        // Close the ownership period when the position is fully sold
-        if (totalAmount <= 0 && startDate) {
-          ownershipPeriods.push({ startDate, endDate: transaction.date, quantity: totalAmount + transaction.amount });
-          startDate = null; // Reset start date for the next ownership period
+        // Start a new ownership period
+        totalAmount += transaction.amount;
+        startDate = new Date(transaction.date);
+      } else if (transaction.type === 'sell') {
+        // If we have an open ownership period, close it
+        if (totalAmount > 0 && startDate) {
+          ownershipPeriods.push({ startDate, endDate: transaction.date, quantity: totalAmount });
+
+          // Adjust the amount based on sell transaction
+          totalAmount -= transaction.amount;
+
+          // If the total amount goes to zero or less, we reset startDate
+          if (totalAmount <= 0) {
+            startDate = null; // All shares sold
+          } else {
+            // If shares remain, create a new ownership period for remaining shares
+            startDate = new Date(transaction.date);
+          }
         }
       }
     });
@@ -116,7 +126,7 @@ export class TransactionService {
       // Check if the dividend date falls within any of the ownership periods and attach the quantity information
       const relevantPeriod = ownershipPeriods.find(period => {
         const startDate = new Date(period.startDate);
-        const endDate = new Date(period.endDate);
+        const endDate = new Date(period.endDate ? period.endDate : new Date());
 
         return dividendDate >= startDate && dividendDate <= endDate;
       });

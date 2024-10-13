@@ -1,105 +1,25 @@
 <div class="stock-summary-container">
-  <!-- Top Section: Stock Information -->
   <div class="top-section">
-    <h1>{{ stock?.symbol }} Stock Summary</h1>
-    <p>Money Invested: {{ stock?.moneyInvested | currency:'USD' }}</p>
-    <p>Total Dividend Value: {{ stock?.totalDividendValue | currency:'USD' }}</p>
-    <!-- Add any additional stock details as needed -->
+    <app-summary-section [stock]="stock"></app-summary-section>
   </div>
 
-  <!-- Middle Section: Placeholder for Chart and Dividend Information -->
   <div class="middle-section">
-    <!-- Middle Left: Chart Section -->
     <div class="chart-section">
       <h2>Stock Performance Chart</h2>
       <app-stock-chart [stockSymbol]="stock!.symbol"></app-stock-chart>
     </div>
 
-    <!-- Middle Right: Dividend Section -->
-    <!-- Dividend Section -->
     <div class="dividend-section">
-      <h3>Dividends Summary</h3>
-      <table class="dividend-table">
-        <thead>
-        <tr>
-          <th>Date</th>
-          <th>Dividend (USD)</th>
-          <th>Withholding Tax (USD)</th>
-          <th>Dividend in PLN (after conversion)</th>
-          <th>Tax to be Paid in Poland (PLN)</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let dividend of stock?.dividends">
-          <td>{{ dividend.paymentDate | date: 'yyyy-MM-dd' }}</td>
-          <td>{{ dividend.dividend | currency: 'USD' }}</td>
-          <td>{{ dividend.withholdingTaxPaid | currency: 'USD' }}</td>
-          <td>{{ dividend.totalDividendInPln | currency: 'PLN' }}</td>
-          <td>{{ dividend.taxDueInPoland | currency: 'PLN' }}</td>
-        </tr>
-        </tbody>
-      </table>
-
-      <!-- Tax Summary Section -->
-      <div class="tax-summary">
-        <p>Total Dividend Income in PLN: <span>{{ totalDividendIncome | currency: 'PLN' }}</span></p>
-        <p>Total Polish Tax Due: <span>{{ totalTaxToBePaid | currency: 'PLN' }}</span></p>
-        <p>Withholding Tax Paid (USD): <span>{{ totalWithholdingTaxPaid | currency: 'USD' }}</span></p>
-        <p>Additional Tax to be Paid in Poland (PLN): <span>{{ taxToBePaidInPoland | currency: 'PLN' }}</span></p>
-      </div>
+  <app-dividend-summary [stock]="stock" [totalDividendIncome]="totalDividendIncome" [totalTaxToBePaid]="totalTaxToBePaid" [totalWithholdingTaxPaid]="totalWithholdingTaxPaid" [taxToBePaidInPoland]="taxToBePaidInPoland"></app-dividend-summary>
     </div>
-
   </div>
 
-  <!-- Lower Section: Placeholder for Additional Details and Transactions -->
   <div class="details-section">
-    <h2>Additional Details</h2>
-    <!-- Placeholder for additional details -->
-
-    <!-- Collapsible Transaction List -->
-    <div class="transactions">
-      <button (click)="toggleTransactions()">
-        {{ showTransactions ? 'Hide Transactions' : 'Show Transactions' }}
-      </button>
-      <div *ngIf="showTransactions" class="transaction-list">
-        <ul>
-          <li *ngFor="let transaction of stock?.transactions">
-            {{ transaction.date | date:'shortDate' }} - {{ transaction.type }} {{ transaction.amount }} shares at
-            {{ transaction.price | currency:'USD' }} (Commission: {{ transaction.commission | currency:'USD' }})
-          </li>
-        </ul>
-      </div>
-    </div>
+<app-additional-details [stock]="stock"></app-additional-details>
   </div>
 
   <div class="company-info">
-    <h3>Company Info (Last 25 Years)</h3>
-    <div class="company-info-table-wrapper">
-      <table class="company-info-table">
-        <thead>
-        <tr>
-          <th>Year</th>
-          <th>Price/Earnings</th>
-          <th>Revenue Per Share</th>
-          <th>ROIC</th>
-          <th>Current Ratio</th>
-          <th>Dividend Yield</th>
-          <th>Payout Ratio</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let info of companyInfo">
-          <td>{{ info.date }}</td>
-          <td>{{ info.peRatio}}</td>
-          <td>{{ info.revenuePerShare}}</td>
-          <td>{{ info.roic}}</td>
-          <td>{{ info.currentRatio}}</td>
-          <td>{{ info.dividendYield}}</td>
-          <td>{{ info.payoutRatio}}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+<app-company-info [companyInfo]="companyInfo"></app-company-info>
   </div>
 
 </div>

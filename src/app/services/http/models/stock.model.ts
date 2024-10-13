@@ -1,4 +1,4 @@
-import {Transaction} from "./transaction.model";
+import {Transaction} from "../../domain/models/transaction.model";
 import {OwnershipPeriod} from "./ownershipPeriod.model";
 import {DividendDetail} from "./dividend.details.model";
 

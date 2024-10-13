@@ -1,20 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaxSummaryComponent } from './tax-summary.component';
+import { TopMenuComponent } from './top-menu.component';
 
-describe('TaxSummaryComponent', () => {
-  let component: TaxSummaryComponent;
-  let fixture: ComponentFixture<TaxSummaryComponent>;
+describe('TopMenuComponent', () => {
+  let component: TopMenuComponent;
+  let fixture: ComponentFixture<TopMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TaxSummaryComponent ]
+      declarations: [ TopMenuComponent ]
     })
     .compileComponents();
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TaxSummaryComponent);
+    fixture = TestBed.createComponent(TopMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

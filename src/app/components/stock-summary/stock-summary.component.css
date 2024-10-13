@@ -33,42 +33,11 @@
   border-radius: 5px;
 }
 
-.transactions {
-  margin-top: 20px;
-}
-
-.transaction-list ul {
-  list-style: none;
-  padding: 0;
-}
-
-.transaction-list li {
-  padding: 5px;
-}
-
-/* Dividend Section Styles */
 .dividend-section {
   padding: 20px;
   background-color: #f7f9fc;
   margin-top: 20px;
   border: 1px solid #ddd;
-}
-
-.dividend-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.dividend-table th, .dividend-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.dividend-table th {
-  background-color: #007bff;
-  color: #fff;
 }
 
 .tax-summary {
@@ -78,35 +47,4 @@
 
 .tax-summary p {
   margin: 5px 0;
-}
-
-.company-info-table-wrapper {
-  overflow-x: auto;
-}
-
-.company-info-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-}
-
-.company-info-table th, .company-info-table td {
-  text-align: left;
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-}
-
-.company-info-table th {
-  background-color: #007bff;
-  color: white;
-}
-
-.company-info-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-.company-info-table td {
-  white-space: nowrap;
 }
