@@ -3,7 +3,7 @@
   <ul class="stock-list">
     <li *ngFor="let stock of stocks" class="stock-item" (click)="onStockClick(stock)">
       <span class="stock-symbol">{{ stock.symbol }}</span>:
-      <span class="money-invested">{{ stock.moneyInvested | currency: 'USD ' }}</span>
+      <span class="money-invested">{{ this.getLatestOwnershipPeriodQuantity(stock.ownershipPeriods) }}</span>
     </li>
   </ul>
 </div>

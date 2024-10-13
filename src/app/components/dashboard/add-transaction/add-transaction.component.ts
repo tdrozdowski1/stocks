@@ -1,8 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 import {Transaction} from "../../../services/domain/models/transaction.model";
-import {FinancialDataService} from "../../../services/http/financial-data.service";
-import {TransactionService} from "../../../services/domain/transaction.service";
 
 @Component({
   selector: 'app-add-transaction',
@@ -11,8 +9,9 @@ import {TransactionService} from "../../../services/domain/transaction.service";
 })
 export class AddTransactionComponent {
   transactionForm: UntypedFormGroup;
+  @Output() transactionChange = new EventEmitter<Transaction>();
 
-  constructor(private fb: UntypedFormBuilder, private financialDataService: FinancialDataService, private transactionService: TransactionService) {
+  constructor(private fb: UntypedFormBuilder) {
     this.transactionForm = this.fb.group({
       symbol: ['', Validators.required],
       date: ['', Validators.required],
@@ -25,9 +24,8 @@ export class AddTransactionComponent {
 
   onSubmit() {
     if (this.transactionForm.valid) {
-      const transaction: Transaction = this.transactionForm.value;
+      this.transactionChange.emit(this.transactionForm.value);
       this.transactionForm.reset();
-      this.transactionService.addTransaction(transaction);
     }
   }
 }

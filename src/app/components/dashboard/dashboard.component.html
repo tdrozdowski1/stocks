@@ -1,4 +1,4 @@
 <div class="app-container">
-  <app-add-transaction></app-add-transaction>
+  <app-add-transaction (transactionChange)="onTransactionChange($event)"></app-add-transaction>
   <app-stock-panel></app-stock-panel>
 </div>

@@ -21,7 +21,7 @@ export class TransactionService {
         transactions: updatedTransactions,
         moneyInvested: this.calculateMoneyInvested(updatedTransactions),
         currentPrice: 0,
-        ownershipPeriods: [],
+        ownershipPeriods: this.calculateOwnershipPeriods(updatedTransactions),
         totalDividendValue: 0
       };
       currentStocks = currentStocks.filter(stock => stock.symbol !== stock.symbol);
@@ -32,7 +32,7 @@ export class TransactionService {
         transactions: [transaction],
         moneyInvested: this.calculateMoneyInvested([transaction]),
         currentPrice: 0,
-        ownershipPeriods: [],
+        ownershipPeriods: this.calculateOwnershipPeriods([transaction]),
         totalDividendValue: 0
       };
     }
@@ -60,7 +60,7 @@ export class TransactionService {
     console.log(currentStocks);
   }
 
-  private calculateMoneyInvested(transactions: Transaction[]): number {
+  calculateMoneyInvested(transactions: Transaction[]): number {
     let totalBuy = 0;
     let totalSell = 0;
     let commission = 0;
