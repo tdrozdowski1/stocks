@@ -1,5 +1,5 @@
 # Use a base image that runs as a non-root user
-FROM node:16
+FROM node:20
 
 # Create app directory
 WORKDIR /app
@@ -19,6 +19,9 @@ COPY . .
 # Build the Angular app for production
 RUN npm run build
 
+# Install http-server globally to serve the static files
+RUN npm install -g http-server
+
 # Set permision of .angular file in container
 VOLUME ["/project/.angular"]
 
@@ -26,4 +29,4 @@ VOLUME ["/project/.angular"]
 EXPOSE 8080
 
 # Serve the Angular app using http-server
-CMD ["npm", "start"]
+CMD ["http-server", "dist/your-app-name", "-p", "8080"]
