@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install all Angular dependacies
-RUN npm install
+RUN npm build
 
 # Bundle app source
 COPY . .
