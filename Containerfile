@@ -3,6 +3,12 @@ FROM registry.access.redhat.com/ubi8/nodejs-12:latest
 # Create app directory
 WORKDIR /project
 
+# Create a non-root user
+RUN useradd -u 1001 -m appuser
+
+# Switch to the non-root user
+USER appuser
+
 # Install app dependencies
 COPY package*.json ./
 
