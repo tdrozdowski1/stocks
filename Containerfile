@@ -1,7 +1,8 @@
-FROM registry.access.redhat.com/ubi8/nodejs-12:latest
+# Use a base image that runs as a non-root user
+FROM node:16
 
 # Create app directory
-WORKDIR /project
+WORKDIR /app
 
 # Install app dependencies
 COPY package*.json ./
