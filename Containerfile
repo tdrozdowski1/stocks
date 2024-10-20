@@ -16,6 +16,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# Build the Angular app for production
+RUN npm run build
+
 # Set permision of .angular file in container
 VOLUME ["/project/.angular"]
 
