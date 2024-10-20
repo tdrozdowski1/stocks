@@ -9,7 +9,7 @@ COPY --chown=1001:1001 package.json ./
 
 
 # Install all Angular dependacies
-RUN npm install
+RUN npm ci
 
 # Add application files in container 
 COPY . .
