@@ -28,7 +28,7 @@ jobs:
         run: npm test -- --watch=false --browsers=ChromeHeadless  # Run Angular tests
 
       - name: Build Angular Project
-        run: npm run build -- --prod  # Build the project for production
+        run: npm run build  # Build the project for production
 
       # Optional: Deploy step if needed
       # - name: Deploy to Firebase, S3, or another host
