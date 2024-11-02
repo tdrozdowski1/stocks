@@ -1,0 +1,35 @@
+name: Angular CI/CD
+
+on:
+  push:
+    branches:
+      - main  # Run workflow on every push to main branch
+  pull_request:
+    branches:
+      - main  # Run workflow on pull requests to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest version of Ubuntu
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Check out the code from GitHub repository
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Specify the Node.js version
+
+      - name: Install Dependencies
+        run: npm install  # Install project dependencies
+
+      - name: Run Tests
+        run: npm test -- --watch=false --browsers=ChromeHeadless  # Run Angular tests
+
+      - name: Build Angular Project
+        run: npm run build -- --prod  # Build the project for production
+
+      # Optional: Deploy step if needed
+      # - name: Deploy to Firebase, S3, or another host
+      #   run: <your deployment command>
