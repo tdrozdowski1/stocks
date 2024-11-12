@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AddTransactionComponent } from './components/dashboard/add-transaction/add-transaction.component';
@@ -16,6 +17,7 @@ import { SummarySectionComponent } from './components/stock-summary/summary-sect
 import { DividendSummaryComponent } from './components/stock-summary/dividend-summary/dividend-summary.component';
 import { AdditionalDetailsComponent } from './components/stock-summary/additional-details/additional-details.component';
 import { CompanyInfoComponent } from './components/stock-summary/company-info/company-info.component';
+import { ValuationComponent } from './components/stock-summary/valuation/valuation.component';
 
 @NgModule({
   declarations: [
@@ -29,14 +31,16 @@ import { CompanyInfoComponent } from './components/stock-summary/company-info/co
     SummarySectionComponent,
     DividendSummaryComponent,
     AdditionalDetailsComponent,
-    CompanyInfoComponent
+    CompanyInfoComponent,
+    ValuationComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
