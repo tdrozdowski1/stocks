@@ -1,0 +1,50 @@
+<div class="valuation-item bottom-left">
+  <h3>Dividend Discount Model (DDM) Valuation</h3>
+  <form (ngSubmit)="calculateDDMValuation()">
+    <div>
+      <label for="dividend">Annual Dividend (D):</label>
+      <input
+        type="number"
+        id="dividend"
+        [(ngModel)]="dividend"
+        name="dividend"
+        required
+        placeholder="Enter annual dividend"
+      />
+    </div>
+
+    <div>
+      <label for="requiredRate">Required Rate of Return (r %):</label>
+      <input
+        type="number"
+        id="requiredRate"
+        [(ngModel)]="requiredRate"
+        name="requiredRate"
+        required
+        placeholder="Enter required rate of return"
+      />
+    </div>
+
+    <div>
+      <label for="growthRate">Dividend Growth Rate (g %):</label>
+      <input
+        type="number"
+        id="growthRate"
+        [(ngModel)]="growthRate"
+        name="growthRate"
+        required
+        placeholder="Enter growth rate"
+      />
+    </div>
+
+    <button type="submit">Calculate DDM Value</button>
+  </form>
+
+  <div *ngIf="ddmValue !== null">
+    <h4>Intrinsic Value (DDM): ${{ ddmValue | number: '1.2-2' }}</h4>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</div>

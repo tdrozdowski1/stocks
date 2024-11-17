@@ -20,6 +20,7 @@ import { CompanyInfoComponent } from './components/stock-summary/company-info/co
 import { ValuationComponent } from './components/stock-summary/valuation/valuation.component';
 import { DiscountedComponent } from './components/stock-summary/valuation/discounted/discounted.component';
 import { GrahamComponent } from './components/stock-summary/valuation/graham/graham.component';
+import { DividendComponent } from './components/stock-summary/valuation/dividend/dividend.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { GrahamComponent } from './components/stock-summary/valuation/graham/gra
     CompanyInfoComponent,
     ValuationComponent,
     DiscountedComponent,
-    GrahamComponent
+    GrahamComponent,
+    DividendComponent
   ],
   imports: [
     BrowserModule,
