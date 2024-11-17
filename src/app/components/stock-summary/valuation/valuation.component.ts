@@ -14,6 +14,12 @@ discountRate: number = 0; // Discount rate
 dcfValue: number | null = null; // To store the calculated DCF value
 errorMessage: string | null = null; // To handle error messages
 
+//valuation top right
+eps: number = 0; // Earnings Per Share (EPS)
+growthRateGraham: number = 0; // Expected annual growth rate
+grahamValue: number | null = null; // Calculated intrinsic value
+errorMessageGraham: string | null = null; // Error message for validation
+
   // Function to calculate DCF value
   calculateDCF() {
     this.errorMessage = null; // Clear previous error messages
@@ -37,5 +43,22 @@ errorMessage: string | null = null; // To handle error messages
 
     this.dcfValue = this.fcf * (1 + growthRateDecimal) / (discountRateDecimal - growthRateDecimal);
   }
+
+
+  //Graham
+    // Function to calculate Graham Valuation
+    calculateGrahamValuation() {
+      this.errorMessage = null; // Clear previous error messages
+
+      // Validate inputs
+      if (this.eps <= 0 || this.growthRate < 0) {
+        this.errorMessage = 'EPS must be greater than 0, and Growth Rate must be non-negative.';
+        this.grahamValue = null;
+        return;
+      }
+
+      // Graham Valuation Formula: Intrinsic Value = EPS * (8.5 + 2 * Growth Rate)
+      this.grahamValue = this.eps * (8.5 + 2 * this.growthRate);
+    }
 
 }

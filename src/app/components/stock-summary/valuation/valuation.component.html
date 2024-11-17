@@ -32,7 +32,41 @@
 
     <div class="valuation-item top-right">
       <h3>Graham Valuation</h3>
-      <p>Placeholder for Graham Valuation</p>
+      <form (ngSubmit)="calculateGrahamValuation()">
+        <div>
+          <label for="eps">Earnings Per Share (EPS):</label>
+          <input
+            type="number"
+            id="eps"
+            [(ngModel)]="eps"
+            name="eps"
+            required
+            placeholder="Enter EPS"
+          />
+        </div>
+
+        <div>
+          <label for="growthRate">Growth Rate (%):</label>
+          <input
+            type="number"
+            id="growthRate"
+            [(ngModel)]="growthRateGraham"
+            name="growthRate"
+            required
+            placeholder="Enter Growth Rate"
+          />
+        </div>
+
+        <button type="submit">Calculate Graham Value</button>
+      </form>
+
+      <div *ngIf="grahamValue !== null">
+        <h4>Intrinsic Value (Graham): ${{ grahamValue | number: '1.2-2' }}</h4>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessageGraham }}
+      </div>
     </div>
 
     <div class="valuation-item bottom-left">
