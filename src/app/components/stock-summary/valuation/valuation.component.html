@@ -1,35 +1,6 @@
 <div class="valuation-section">
   <div class="valuation-grid">
-    <div class="valuation-item top-left">
-      <h3>Discounted Cash Flow Valuation</h3>
-      <form (ngSubmit)="calculateDCF()">
-        <div>
-          <label for="fcf">Free Cash Flow (FCF):</label>
-          <input type="number" id="fcf" [(ngModel)]="fcf" name="fcf" required placeholder="Enter FCF in dollars">
-        </div>
-
-        <div>
-          <label for="growthRate">Growth Rate (%):</label>
-          <input type="number" id="growthRate" [(ngModel)]="growthRate" name="growthRate" required placeholder="Enter Growth Rate">
-        </div>
-
-        <div>
-          <label for="discountRate">Discount Rate (%):</label>
-          <input type="number" id="discountRate" [(ngModel)]="discountRate" name="discountRate" required placeholder="Enter Discount Rate">
-        </div>
-
-        <button type="submit">Calculate DCF</button>
-      </form>
-
-      <div *ngIf="dcfValue !== null">
-        <h4>Discounted Cash Flow Value: ${{ dcfValue | number: '1.2-2' }}</h4>
-      </div>
-
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
-    </div>
-
+    <app-discounted></app-discounted>
     <div class="valuation-item top-right">
       <h3>Graham Valuation</h3>
       <form (ngSubmit)="calculateGrahamValuation()">
@@ -50,7 +21,7 @@
           <input
             type="number"
             id="growthRate"
-            [(ngModel)]="growthRateGraham"
+            [(ngModel)]="growthRate"
             name="growthRate"
             required
             placeholder="Enter Growth Rate"
@@ -65,7 +36,7 @@
       </div>
 
       <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessageGraham }}
+        {{ errorMessage }}
       </div>
     </div>
 

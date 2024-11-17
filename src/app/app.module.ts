@@ -18,6 +18,7 @@ import { DividendSummaryComponent } from './components/stock-summary/dividend-su
 import { AdditionalDetailsComponent } from './components/stock-summary/additional-details/additional-details.component';
 import { CompanyInfoComponent } from './components/stock-summary/company-info/company-info.component';
 import { ValuationComponent } from './components/stock-summary/valuation/valuation.component';
+import { DiscountedComponent } from './components/stock-summary/valuation/discounted/discounted.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ValuationComponent } from './components/stock-summary/valuation/valuati
     DividendSummaryComponent,
     AdditionalDetailsComponent,
     CompanyInfoComponent,
-    ValuationComponent
+    ValuationComponent,
+    DiscountedComponent
   ],
   imports: [
     BrowserModule,
