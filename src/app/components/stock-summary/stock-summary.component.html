@@ -22,10 +22,7 @@
 <app-company-info [companyInfo]="companyInfo"></app-company-info>
   </div>
 
-  <div class="dividends-vs-fcf-chart">
-    <h2>Dividends vs Free Cash Flow</h2>
-    <canvas id="dividendsVsFcfChart"></canvas>
-  </div>
+  <app-free-cash-chart *ngIf="freeCashData" [stock]="stock"></app-free-cash-chart>
 
   <app-valuation></app-valuation>
 
