@@ -50,4 +50,15 @@ export class FinancialDataService {
         })
       );
   };
+
+  getCashFlowStatement(symbol: string): Observable<any> {
+    return this.http.get(`${this.BASE_URL}/cash-flow-statement/${symbol}?apikey=${this.API_KEY}`)
+      .pipe(
+        tap(response => console.log('Cash Flow API Response:', response)), // Log the response
+        catchError(err => {
+          console.error('Error fetching cash flow data:', err);
+          return throwError(err);
+        })
+      );
+  }
 }

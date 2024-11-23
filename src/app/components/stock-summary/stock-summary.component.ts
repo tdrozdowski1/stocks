@@ -5,6 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 import {CompanyInfo, CompanyInfoService} from "../../services/http/company-info.service";
 import {FinancialDataService} from "../../services/http/financial-data.service";
 import {catchError, forkJoin, map, of} from "rxjs";
+import {Chart} from "chart.js";
 
 @Component({
   selector: 'app-stock-summary',
@@ -19,6 +20,8 @@ export class StockSummaryComponent implements OnInit {
   totalTaxToBePaid: number = 0; // Total Polish tax due (in PLN)
   totalWithholdingTaxPaid: number = 0; // Total withholding tax paid (in USD)
   taxToBePaidInPoland: number = 0; // Final tax to be paid in PLN
+
+  dividendsVsFcfChart: Chart | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +47,16 @@ export class StockSummaryComponent implements OnInit {
         },
         (error) => console.error('Error fetching company info:', error)
       );
+
+      // Fetch free cash flow data
+      this.financialDataService.getCashFlowStatement(symbol).subscribe((cashFlowData) => {
+        // Map the free cash flow to match dividend years
+        const freeCashFlows = cashFlowData;
+
+        // Attach free cash flow data to the stock object
+        this.stock!.cashFlowData = freeCashFlows;
+        this.initializeDividendsVsFcfChart(); // Initialize chart after fetching FCF data
+      });
     }
   }
 
@@ -102,4 +115,53 @@ export class StockSummaryComponent implements OnInit {
 
     this.taxToBePaidInPoland = this.totalTaxToBePaid - this.totalWithholdingTaxPaid * this.usdPlnRate;
   }
+
+  initializeDividendsVsFcfChart(): void {
+    if (this.stock?.cashFlowData) {
+
+      this.dividendsVsFcfChart = new Chart('dividendsVsFcfChart', {
+        type: 'bar',
+        data: {
+          labels: this.stock.cashFlowData?.map(item => item.date).reverse(),
+          datasets: [
+            {
+              label: 'Dividends Paid (USD)',
+              data: this.stock.cashFlowData?.map(item => -item.dividendsPaid).reverse(),
+              backgroundColor: 'rgba(75, 192, 192, 0.6)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'Free Cash Flow (USD)',
+              data: this.stock.cashFlowData?.map(item => item.freeCashFlow).reverse(),
+              backgroundColor: 'rgba(153, 102, 255, 0.6)',
+              borderColor: 'rgba(153, 102, 255, 1)',
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: 'Comparison of Dividends Paid and Free Cash Flow'
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true
+            },
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  }
+
 }
