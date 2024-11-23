@@ -1,11 +1,12 @@
 <div class="valuation-section">
-  <div class="valuation-grid">
+  <button (click)="toggleVisibility()">
+    {{ isVisible ? 'Hide Valuations' : 'Show Valuations' }}
+  </button>
+
+  <div class="valuation-grid" *ngIf="isVisible">
     <app-discounted></app-discounted>
     <app-graham></app-graham>
     <app-dividend></app-dividend>
-
-    <div class="valuation-item bottom-right">
-      <h3>Multiples Valuation</h3>
-      <p>Placeholder for Multiples Valuation</p>
-    </div>
+    <app-multiples></app-multiples>
   </div>
+</div>

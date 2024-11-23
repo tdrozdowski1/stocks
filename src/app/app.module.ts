@@ -21,6 +21,7 @@ import { ValuationComponent } from './components/stock-summary/valuation/valuati
 import { DiscountedComponent } from './components/stock-summary/valuation/discounted/discounted.component';
 import { GrahamComponent } from './components/stock-summary/valuation/graham/graham.component';
 import { DividendComponent } from './components/stock-summary/valuation/dividend/dividend.component';
+import { MultiplesComponent } from './components/stock-summary/valuation/multiples/multiples.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { DividendComponent } from './components/stock-summary/valuation/dividend
     ValuationComponent,
     DiscountedComponent,
     GrahamComponent,
-    DividendComponent
+    DividendComponent,
+    MultiplesComponent
   ],
   imports: [
     BrowserModule,

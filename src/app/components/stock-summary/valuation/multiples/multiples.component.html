@@ -1,0 +1,38 @@
+<div class="valuation-item bottom-right">
+  <h3>Multiples Valuation</h3>
+  <form (ngSubmit)="calculateMultiplesValuation()">
+    <div>
+      <label for="eps">Earnings Per Share (EPS):</label>
+      <input
+        type="number"
+        id="eps"
+        [(ngModel)]="eps"
+        name="eps"
+        required
+        placeholder="Enter EPS"
+      />
+    </div>
+
+    <div>
+      <label for="peerPE">Peer P/E Ratio:</label>
+      <input
+        type="number"
+        id="peerPE"
+        [(ngModel)]="peerPE"
+        name="peerPE"
+        required
+        placeholder="Enter Peer P/E Ratio"
+      />
+    </div>
+
+    <button type="submit">Calculate Valuation</button>
+  </form>
+
+  <div *ngIf="multiplesValue !== null">
+    <h4>Intrinsic Value: ${{ multiplesValue | number: '1.2-2' }}</h4>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</div>

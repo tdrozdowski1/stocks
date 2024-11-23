@@ -6,6 +6,20 @@
   border-radius: 5px;
 }
 
+.valuation-section button {
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.valuation-section button:hover {
+  background-color: #0056b3;
+}
+
 .valuation-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
