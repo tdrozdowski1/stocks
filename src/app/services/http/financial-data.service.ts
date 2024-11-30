@@ -61,4 +61,15 @@ export class FinancialDataService {
         })
       );
   }
+
+  getBalanceSheet(symbol: string): Observable<any> {
+    return this.http.get(`${this.BASE_URL}/balance-sheet-statement/${symbol}?apikey=${this.API_KEY}`)
+      .pipe(
+        tap(response => console.log('Balance Sheet API Response:', response)), // Log the response
+        catchError(err => {
+          console.error('Error fetching balance sheet data:', err);
+          return throwError(err);
+        })
+      );
+  }
 }

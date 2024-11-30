@@ -22,7 +22,9 @@
 <app-company-info [companyInfo]="companyInfo"></app-company-info>
   </div>
 
-  <app-free-cash-chart *ngIf="freeCashData" [stock]="stock"></app-free-cash-chart>
+  <app-free-cash-chart *ngIf="cashFlowData" [stock]="stock"></app-free-cash-chart>
+
+  <app-liabilities-chart *ngIf="liabilitiesData" [stock]="stock"></app-liabilities-chart>
 
   <app-valuation></app-valuation>
 

@@ -23,6 +23,7 @@ import { GrahamComponent } from './components/stock-summary/valuation/graham/gra
 import { DividendComponent } from './components/stock-summary/valuation/dividend/dividend.component';
 import { MultiplesComponent } from './components/stock-summary/valuation/multiples/multiples.component';
 import { FreeCashChartComponent } from './components/stock-summary/free-cash-chart/free-cash-chart.component';
+import { LiabilitiesChartComponent } from './components/stock-summary/liabilities-chart/liabilities-chart.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { FreeCashChartComponent } from './components/stock-summary/free-cash-cha
     GrahamComponent,
     DividendComponent,
     MultiplesComponent,
-    FreeCashChartComponent
+    FreeCashChartComponent,
+    LiabilitiesChartComponent
   ],
   imports: [
     BrowserModule,

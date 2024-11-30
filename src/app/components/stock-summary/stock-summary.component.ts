@@ -20,7 +20,8 @@ export class StockSummaryComponent implements OnInit {
   totalWithholdingTaxPaid: number = 0; // Total withholding tax paid (in USD)
   taxToBePaidInPoland: number = 0; // Final tax to be paid in PLN
 
-  freeCashData: boolean = false;
+  cashFlowData: boolean = false;
+  liabilitiesData: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,8 +55,16 @@ export class StockSummaryComponent implements OnInit {
 
         // Attach free cash flow data to the stock object
         this.stock!.cashFlowData = freeCashFlows;
-        this.freeCashData = true;
+        this.cashFlowData = true;
       });
+
+      // Fetch balance sheet data
+      this.financialDataService.getBalanceSheet(symbol).subscribe((liabilitiesData) => {
+        const liabilities = liabilitiesData;
+
+          this.stock!.liabilitiesData = liabilities;
+          this.liabilitiesData = true;
+            });
     }
   }
 

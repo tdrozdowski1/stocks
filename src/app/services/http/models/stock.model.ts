@@ -1,7 +1,8 @@
 import {Transaction} from "../../domain/models/transaction.model";
 import {OwnershipPeriod} from "./ownershipPeriod.model";
 import {DividendDetail} from "./dividend.details.model";
-import {CashFlowData} from "./cashFlowData.model";
+import {CashFlowData} from "./CashFlowData.model";
+import {LiabilitiesData} from "./LiabilitiesData.model";
 
 export interface Stock {
   symbol: string;
@@ -11,5 +12,6 @@ export interface Stock {
   transactions: Transaction[];
   dividends?: DividendDetail[];
   totalDividendValue: number;
-  cashFlowData?: CashFlowData[]; // Array of FCF values, ideally matching the years of dividends
+  cashFlowData?: CashFlowData[];
+  liabilitiesData?: LiabilitiesData[];
 }
