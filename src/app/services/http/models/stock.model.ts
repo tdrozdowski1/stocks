@@ -1,8 +1,8 @@
 import { Transaction } from '../../domain/models/transaction.model';
 import { OwnershipPeriod } from './ownershipPeriod.model';
 import { DividendDetail } from './dividend.details.model';
-import { CashFlowData } from './CashFlowData.model';
-import { LiabilitiesData } from './LiabilitiesData.model';
+import { CashFlowData } from './cashFlowData.model';
+import { LiabilitiesData } from './liabilitiesData.model';
 
 export interface Stock {
   symbol: string;
