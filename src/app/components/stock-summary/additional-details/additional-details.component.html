@@ -6,8 +6,9 @@
   <div *ngIf="showTransactions" class="transaction-list">
     <ul>
       <li *ngFor="let transaction of stock?.transactions">
-        {{ transaction.date | date:'shortDate' }} - {{ transaction.type }} {{ transaction.amount }} shares at
-        {{ transaction.price | currency:'USD' }} (Commission: {{ transaction.commission | currency:'USD' }})
+        {{ transaction.date | date: 'shortDate' }} - {{ transaction.type }}
+        {{ transaction.amount }} shares at {{ transaction.price | currency: 'USD' }} (Commission:
+        {{ transaction.commission | currency: 'USD' }})
       </li>
     </ul>
   </div>

@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AddTransactionComponent } from './components/dashboard/add-transaction/add-transaction.component';
 import { StockPanel } from './components/dashboard/stock-panel/stock-panel.component';
-import {ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { StockSummaryComponent } from './components/stock-summary/stock-summary.component';
 import { AppRoutingModule } from './app-routing.module';
-import {RouterModule} from "@angular/router";
+import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import {StockChartComponent} from "./components/stock-summary/stock-chart/stock-chart.component";
+import { StockChartComponent } from './components/stock-summary/stock-chart/stock-chart.component';
 import { TopMenuComponent } from './components/top-menu/top-menu.component';
 import { SummarySectionComponent } from './components/stock-summary/summary-section/summary-section.component';
 import { DividendSummaryComponent } from './components/stock-summary/dividend-summary/dividend-summary.component';
@@ -44,7 +44,7 @@ import { LiabilitiesChartComponent } from './components/stock-summary/liabilitie
     DividendComponent,
     MultiplesComponent,
     FreeCashChartComponent,
-    LiabilitiesChartComponent
+    LiabilitiesChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,9 +52,9 @@ import { LiabilitiesChartComponent } from './components/stock-summary/liabilitie
     HttpClientModule,
     AppRoutingModule,
     RouterModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-multiples',
   templateUrl: './multiples.component.html',
-  styleUrls: ['./multiples.component.css']
+  styleUrls: ['./multiples.component.css'],
 })
 export class MultiplesComponent {
   eps: number = 0; // Earnings Per Share

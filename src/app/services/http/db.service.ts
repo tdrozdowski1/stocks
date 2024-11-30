@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, map, Observable} from "rxjs";
-import {Stock} from "./models/stock.model";
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { Stock } from './models/stock.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +40,7 @@ export class DbService {
   getStockBySymbol(symbol: string): Observable<Stock | undefined> {
     return this.stocks$.pipe(
       // Use map to transform the list of stocks to the stock with the given symbol
-      map((stocks) => stocks.find(stock => stock.symbol === symbol))
+      map((stocks) => stocks.find((stock) => stock.symbol === symbol)),
     );
   }
 }

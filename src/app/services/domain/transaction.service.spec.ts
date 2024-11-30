@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { TransactionService } from './transaction.service';
-import {Transaction} from "./models/transaction.model";
-import {HttpClientModule} from "@angular/common/http";
-import {FinancialDataService} from "../http/financial-data.service";
-import {DbService} from "../http/db.service";
+import { Transaction } from './models/transaction.model';
+import { HttpClientModule } from '@angular/common/http';
+import { FinancialDataService } from '../http/financial-data.service';
+import { DbService } from '../http/db.service';
 import any = jasmine.any;
-import {OwnershipPeriod} from "../http/models/ownershipPeriod.model";
+import { OwnershipPeriod } from '../http/models/ownershipPeriod.model';
 
 class MockDbService {
   getStocksValue() {
@@ -33,8 +33,8 @@ describe('TransactionService', () => {
       providers: [
         TransactionService,
         { provide: DbService, useClass: MockDbService },
-        { provide: FinancialDataService, useClass: MockFinancialDataService }
-      ]
+        { provide: FinancialDataService, useClass: MockFinancialDataService },
+      ],
     });
 
     service = TestBed.inject(TransactionService);
@@ -43,9 +43,30 @@ describe('TransactionService', () => {
   describe('calculateMoneyInvested', () => {
     it('should calculate the correct money invested for mixed transactions', () => {
       const transactions: Transaction[] = [
-        { symbol: 'AAPL', date: new Date('2024-01-01'), type: 'buy', amount: 10, price: 150, commission: 1 },
-        { symbol: 'AAPL', date: new Date('2024-01-15'), type: 'sell', amount: 5, price: 160, commission: 1 },
-        { symbol: 'AAPL', date: new Date('2024-01-20'), type: 'buy', amount: 20, price: 155, commission: 1 }
+        {
+          symbol: 'AAPL',
+          date: new Date('2024-01-01'),
+          type: 'buy',
+          amount: 10,
+          price: 150,
+          commission: 1,
+        },
+        {
+          symbol: 'AAPL',
+          date: new Date('2024-01-15'),
+          type: 'sell',
+          amount: 5,
+          price: 160,
+          commission: 1,
+        },
+        {
+          symbol: 'AAPL',
+          date: new Date('2024-01-20'),
+          type: 'buy',
+          amount: 20,
+          price: 155,
+          commission: 1,
+        },
       ];
 
       const result = service.calculateMoneyInvested(transactions);
@@ -61,10 +82,38 @@ describe('TransactionService', () => {
   describe('calculateOwnershipPeriods', () => {
     it('should calculate ownership periods correctly for buys and sells', () => {
       const transactions: Transaction[] = [
-        { symbol: 'AAPL', date: new Date('2024-01-01'), type: 'buy', amount: 10, price: 100, commission: 5 },
-        { symbol: 'AAPL', date: new Date('2024-01-15'), type: 'buy', amount: 5, price: 120, commission: 3 },
-        { symbol: 'AAPL', date: new Date('2024-02-01'), type: 'sell', amount: 8, price: 130, commission: 2 },
-        { symbol: 'AAPL', date: new Date('2024-03-01'), type: 'sell', amount: 3, price: 140, commission: 1 }
+        {
+          symbol: 'AAPL',
+          date: new Date('2024-01-01'),
+          type: 'buy',
+          amount: 10,
+          price: 100,
+          commission: 5,
+        },
+        {
+          symbol: 'AAPL',
+          date: new Date('2024-01-15'),
+          type: 'buy',
+          amount: 5,
+          price: 120,
+          commission: 3,
+        },
+        {
+          symbol: 'AAPL',
+          date: new Date('2024-02-01'),
+          type: 'sell',
+          amount: 8,
+          price: 130,
+          commission: 2,
+        },
+        {
+          symbol: 'AAPL',
+          date: new Date('2024-03-01'),
+          type: 'sell',
+          amount: 3,
+          price: 140,
+          commission: 1,
+        },
       ];
 
       const ownershipPeriods = service.calculateOwnershipPeriods(transactions);
@@ -72,31 +121,39 @@ describe('TransactionService', () => {
       expect(ownershipPeriods.length).toBe(4); // 4 periods should be recorded
 
       // Check first period
-      expect(ownershipPeriods[0]).toEqual(jasmine.objectContaining({
-        startDate: new Date('2024-01-01'),
-        endDate: new Date('2024-01-15'),
-        quantity: 10
-      }));
+      expect(ownershipPeriods[0]).toEqual(
+        jasmine.objectContaining({
+          startDate: new Date('2024-01-01'),
+          endDate: new Date('2024-01-15'),
+          quantity: 10,
+        }),
+      );
 
       // Check second period after first buy
-      expect(ownershipPeriods[1]).toEqual(jasmine.objectContaining({
-        startDate: new Date('2024-01-15'),
-        endDate: new Date('2024-02-01'),
-        quantity: 15 // 10 + 5
-      }));
+      expect(ownershipPeriods[1]).toEqual(
+        jasmine.objectContaining({
+          startDate: new Date('2024-01-15'),
+          endDate: new Date('2024-02-01'),
+          quantity: 15, // 10 + 5
+        }),
+      );
 
       // Check next period after first sell
-      expect(ownershipPeriods[2]).toEqual(jasmine.objectContaining({
-        startDate: new Date('2024-02-01'),
-        endDate: new Date('2024-03-01'),
-        quantity: 7 // 15 - 8
-      }));
+      expect(ownershipPeriods[2]).toEqual(
+        jasmine.objectContaining({
+          startDate: new Date('2024-02-01'),
+          endDate: new Date('2024-03-01'),
+          quantity: 7, // 15 - 8
+        }),
+      );
 
-      expect(ownershipPeriods[3]).toEqual(jasmine.objectContaining({
-        startDate: new Date('2024-03-01'),
-        endDate: any(Date), // Current date
-        quantity: 4 // 7 - 3
-      }));
+      expect(ownershipPeriods[3]).toEqual(
+        jasmine.objectContaining({
+          startDate: new Date('2024-03-01'),
+          endDate: any(Date), // Current date
+          quantity: 4, // 7 - 3
+        }),
+      );
     });
   });
 
@@ -105,27 +162,27 @@ describe('TransactionService', () => {
       const dividends = [
         { paymentDate: '2024-01-10', dividend: 1.5 },
         { paymentDate: '2024-02-10', dividend: 1.0 },
-        { paymentDate: '2024-03-10', dividend: 2.0 }
+        { paymentDate: '2024-03-10', dividend: 2.0 },
       ];
 
       const ownershipPeriods: OwnershipPeriod[] = [
         { startDate: new Date('2024-01-01'), endDate: new Date('2024-01-15'), quantity: 10 },
-        { startDate: new Date('2024-01-15'), endDate: new Date('2024-02-01'), quantity: 5 }
+        { startDate: new Date('2024-01-15'), endDate: new Date('2024-02-01'), quantity: 5 },
       ];
 
       const filteredDividends = service.filterDividendsByOwnership(dividends, ownershipPeriods);
 
       expect(filteredDividends.length).toBe(1); // Only 2024-01-10 and 2024-02-10 dividends should be included
-      expect(filteredDividends[0]).toEqual(jasmine.objectContaining({ paymentDate: '2024-01-10', quantity: 10 }));
+      expect(filteredDividends[0]).toEqual(
+        jasmine.objectContaining({ paymentDate: '2024-01-10', quantity: 10 }),
+      );
     });
 
     it('should return an empty array if there are no relevant dividends', () => {
-      const dividends = [
-        { paymentDate: '2024-04-10', dividend: 1.5 }
-      ];
+      const dividends = [{ paymentDate: '2024-04-10', dividend: 1.5 }];
 
       const ownershipPeriods: OwnershipPeriod[] = [
-        { startDate: new Date('2024-01-01'), endDate: new Date('2024-01-15'), quantity: 10 }
+        { startDate: new Date('2024-01-01'), endDate: new Date('2024-01-15'), quantity: 10 },
       ];
 
       const filteredDividends = service.filterDividendsByOwnership(dividends, ownershipPeriods);
@@ -133,5 +190,4 @@ describe('TransactionService', () => {
       expect(filteredDividends.length).toBe(0); // No dividends should be returned
     });
   });
-
 });

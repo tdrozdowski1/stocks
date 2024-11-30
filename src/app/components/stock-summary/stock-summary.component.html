@@ -10,16 +10,22 @@
     </div>
 
     <div class="dividend-section">
-  <app-dividend-summary [stock]="stock" [totalDividendIncome]="totalDividendIncome" [totalTaxToBePaid]="totalTaxToBePaid" [totalWithholdingTaxPaid]="totalWithholdingTaxPaid" [taxToBePaidInPoland]="taxToBePaidInPoland"></app-dividend-summary>
+      <app-dividend-summary
+        [stock]="stock"
+        [totalDividendIncome]="totalDividendIncome"
+        [totalTaxToBePaid]="totalTaxToBePaid"
+        [totalWithholdingTaxPaid]="totalWithholdingTaxPaid"
+        [taxToBePaidInPoland]="taxToBePaidInPoland"
+      ></app-dividend-summary>
     </div>
   </div>
 
   <div class="details-section">
-<app-additional-details [stock]="stock"></app-additional-details>
+    <app-additional-details [stock]="stock"></app-additional-details>
   </div>
 
   <div class="company-info">
-<app-company-info [companyInfo]="companyInfo"></app-company-info>
+    <app-company-info [companyInfo]="companyInfo"></app-company-info>
   </div>
 
   <app-free-cash-chart *ngIf="cashFlowData" [stock]="stock"></app-free-cash-chart>
@@ -27,5 +33,4 @@
   <app-liabilities-chart *ngIf="liabilitiesData" [stock]="stock"></app-liabilities-chart>
 
   <app-valuation></app-valuation>
-
 </div>

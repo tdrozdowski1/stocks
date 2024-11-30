@@ -1,28 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {FinancialDataService} from "../../../services/http/financial-data.service";
-import {Dividend} from "../../../services/http/models/dividend.model";
-import {concatMap} from "rxjs";
-import {DbService} from "../../../services/http/db.service";
-import {Stock} from "../../../services/http/models/stock.model";
-import {Router} from "@angular/router";
-import {OwnershipPeriod} from "../../../services/http/models/ownershipPeriod.model";
+import { Component, OnInit } from '@angular/core';
+import { FinancialDataService } from '../../../services/http/financial-data.service';
+import { Dividend } from '../../../services/http/models/dividend.model';
+import { concatMap } from 'rxjs';
+import { DbService } from '../../../services/http/db.service';
+import { Stock } from '../../../services/http/models/stock.model';
+import { Router } from '@angular/router';
+import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
 
 @Component({
   selector: 'app-stock-panel',
   templateUrl: './stock-panel.component.html',
-  styleUrls: ['./stock-panel.component.css']
+  styleUrls: ['./stock-panel.component.css'],
 })
 export class StockPanel implements OnInit {
   stocks: Stock[] = [];
 
-  constructor(private dbService: DbService, private router: Router) {}
+  constructor(
+    private dbService: DbService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
-    this.dbService.stocks$.pipe(
-      concatMap(stocks => this.stocks = stocks)
-    ).subscribe(
+    this.dbService.stocks$.pipe(concatMap((stocks) => (this.stocks = stocks))).subscribe(
       () => console.log(this.stocks),
-      (error) => console.error('Error:', error)
+      (error) => console.error('Error:', error),
     );
   }
 

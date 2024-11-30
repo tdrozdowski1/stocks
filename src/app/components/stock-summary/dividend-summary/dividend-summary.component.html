@@ -1,29 +1,38 @@
 <h3>Dividends Summary</h3>
 <table class="dividend-table">
   <thead>
-  <tr>
-    <th>Date</th>
-    <th>Dividend (USD)</th>
-    <th>Withholding Tax (USD)</th>
-    <th>Dividend in PLN (after conversion)</th>
-    <th>Tax to be Paid in Poland (PLN)</th>
-  </tr>
+    <tr>
+      <th>Date</th>
+      <th>Dividend (USD)</th>
+      <th>Withholding Tax (USD)</th>
+      <th>Dividend in PLN (after conversion)</th>
+      <th>Tax to be Paid in Poland (PLN)</th>
+    </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let dividend of stock?.dividends">
-    <td>{{ dividend.paymentDate | date: 'yyyy-MM-dd' }}</td>
-    <td>{{ dividend.dividend | currency: 'USD' }}</td>
-    <td>{{ dividend.withholdingTaxPaid | currency: 'USD' }}</td>
-    <td>{{ dividend.totalDividendInPln | currency: 'PLN' }}</td>
-    <td>{{ dividend.taxDueInPoland | currency: 'PLN' }}</td>
-  </tr>
+    <tr *ngFor="let dividend of stock?.dividends">
+      <td>{{ dividend.paymentDate | date: 'yyyy-MM-dd' }}</td>
+      <td>{{ dividend.dividend | currency: 'USD' }}</td>
+      <td>{{ dividend.withholdingTaxPaid | currency: 'USD' }}</td>
+      <td>{{ dividend.totalDividendInPln | currency: 'PLN' }}</td>
+      <td>{{ dividend.taxDueInPoland | currency: 'PLN' }}</td>
+    </tr>
   </tbody>
 </table>
 
 <!-- Tax Summary Section -->
 <div class="tax-summary">
-  <p>Total Dividend Income in PLN: <span>{{ totalDividendIncome | currency: 'PLN' }}</span></p>
-  <p>Total Polish Tax Due: <span>{{ totalTaxToBePaid | currency: 'PLN' }}</span></p>
-  <p>Withholding Tax Paid (USD): <span>{{ totalWithholdingTaxPaid | currency: 'USD' }}</span></p>
-  <p>Additional Tax to be Paid in Poland (PLN): <span>{{ taxToBePaidInPoland | currency: 'PLN' }}</span></p>
+  <p>
+    Total Dividend Income in PLN: <span>{{ totalDividendIncome | currency: 'PLN' }}</span>
+  </p>
+  <p>
+    Total Polish Tax Due: <span>{{ totalTaxToBePaid | currency: 'PLN' }}</span>
+  </p>
+  <p>
+    Withholding Tax Paid (USD): <span>{{ totalWithholdingTaxPaid | currency: 'USD' }}</span>
+  </p>
+  <p>
+    Additional Tax to be Paid in Poland (PLN):
+    <span>{{ taxToBePaidInPoland | currency: 'PLN' }}</span>
+  </p>
 </div>

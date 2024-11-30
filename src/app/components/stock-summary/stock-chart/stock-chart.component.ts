@@ -1,11 +1,11 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
-import {Chart, registerables} from "chart.js";
-import {FinancialDataService} from "../../../services/http/financial-data.service";
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Chart, registerables } from 'chart.js';
+import { FinancialDataService } from '../../../services/http/financial-data.service';
 
 @Component({
   selector: 'app-stock-chart',
   templateUrl: './stock-chart.component.html',
-  styleUrls: ['./stock-chart.component.css']
+  styleUrls: ['./stock-chart.component.css'],
 })
 export class StockChartComponent implements OnChanges {
   @Input() stockSymbol!: string; // Pass the stock symbol as input
@@ -41,13 +41,15 @@ export class StockChartComponent implements OnChanges {
       type: 'line',
       data: {
         labels: this.chartLabels,
-        datasets: [{
-          label: this.stockSymbol,
-          data: this.chartData,
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          fill: true,
-        }]
+        datasets: [
+          {
+            label: this.stockSymbol,
+            data: this.chartData,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -55,18 +57,17 @@ export class StockChartComponent implements OnChanges {
           x: {
             title: {
               display: true,
-              text: 'Date'
-            }
+              text: 'Date',
+            },
           },
           y: {
             title: {
               display: true,
-              text: 'Price'
-            }
-          }
-        }
-      }
+              text: 'Price',
+            },
+          },
+        },
+      },
     });
   }
-
 }

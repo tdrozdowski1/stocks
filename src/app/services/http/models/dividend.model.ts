@@ -1,4 +1,4 @@
 export interface Dividend {
   dividend: number;
-  label: Date
+  label: Date;
 }

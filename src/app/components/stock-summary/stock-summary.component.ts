@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {Stock} from "../../services/http/models/stock.model";
-import {DbService} from "../../services/http/db.service";
-import {ActivatedRoute} from "@angular/router";
-import {CompanyInfo, CompanyInfoService} from "../../services/http/company-info.service";
-import {FinancialDataService} from "../../services/http/financial-data.service";
-import {catchError, forkJoin, map, of} from "rxjs";
+import { Stock } from '../../services/http/models/stock.model';
+import { DbService } from '../../services/http/db.service';
+import { ActivatedRoute } from '@angular/router';
+import { CompanyInfo, CompanyInfoService } from '../../services/http/company-info.service';
+import { FinancialDataService } from '../../services/http/financial-data.service';
+import { catchError, forkJoin, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-stock-summary',
   templateUrl: './stock-summary.component.html',
-  styleUrls: ['./stock-summary.component.css']
+  styleUrls: ['./stock-summary.component.css'],
 })
 export class StockSummaryComponent implements OnInit {
   stock: Stock | undefined; // Store the selected stock data
@@ -27,9 +27,8 @@ export class StockSummaryComponent implements OnInit {
     private route: ActivatedRoute,
     private dbService: DbService,
     private financialDataService: FinancialDataService,
-    private companyInfoService: CompanyInfoService
-  ) {
-  }
+    private companyInfoService: CompanyInfoService,
+  ) {}
 
   ngOnInit(): void {
     const symbol = this.route.snapshot.paramMap.get('symbol');
@@ -45,7 +44,7 @@ export class StockSummaryComponent implements OnInit {
           this.companyInfo = data;
           console.log('Company Info:', this.companyInfo); // Debugging
         },
-        (error) => console.error('Error fetching company info:', error)
+        (error) => console.error('Error fetching company info:', error),
       );
 
       // Fetch free cash flow data
@@ -62,9 +61,9 @@ export class StockSummaryComponent implements OnInit {
       this.financialDataService.getBalanceSheet(symbol).subscribe((liabilitiesData) => {
         const liabilities = liabilitiesData;
 
-          this.stock!.liabilitiesData = liabilities;
-          this.liabilitiesData = true;
-            });
+        this.stock!.liabilitiesData = liabilities;
+        this.liabilitiesData = true;
+      });
     }
   }
 
@@ -76,40 +75,48 @@ export class StockSummaryComponent implements OnInit {
         dayBeforePayment.setDate(paymentDate.getDate() - 1);
 
         // Fetch USD/PLN rate for the day before the payment date
-        return this.financialDataService.getExchangeRate(dayBeforePayment.toISOString().split('T')[0]).pipe(
-          map((exchangeData) => {
-            const usdPlnRate = exchangeData.forexList.find(rate => rate.ticker === 'USD/PLN')?.bid ?? 1;
+        return this.financialDataService
+          .getExchangeRate(dayBeforePayment.toISOString().split('T')[0])
+          .pipe(
+            map((exchangeData) => {
+              const usdPlnRate =
+                exchangeData.forexList.find((rate) => rate.ticker === 'USD/PLN')?.bid ?? 1;
 
-            // Calculate withholding tax (15% of the dividend in USD)
-            const withholdingTaxPaid = dividend.dividend * 0.15;
+              // Calculate withholding tax (15% of the dividend in USD)
+              const withholdingTaxPaid = dividend.dividend * 0.15;
 
-            // Convert dividend to PLN using USD/PLN rate
-            const totalDividendInPln = dividend.dividend * usdPlnRate;
+              // Convert dividend to PLN using USD/PLN rate
+              const totalDividendInPln = dividend.dividend * usdPlnRate;
 
-            // Calculate Polish tax due: 19% of dividend in PLN - converted withholding tax
-            const taxDueInPoland = (totalDividendInPln * 0.19) - (withholdingTaxPaid * usdPlnRate);
+              // Calculate Polish tax due: 19% of dividend in PLN - converted withholding tax
+              const taxDueInPoland = totalDividendInPln * 0.19 - withholdingTaxPaid * usdPlnRate;
 
-            return {
-              ...dividend,
-              totalDividendInPln,
-              withholdingTaxPaid,
-              taxDueInPoland: taxDueInPoland < 0 ? 0 : taxDueInPoland // Ensure non-negative value
-            };
-          }),
-          catchError(() => of({
-            ...dividend,
-            withholdingTaxPaid: dividend.dividend * 0.15, // Default withholding tax calculation if error occurs
-            convertedDividend: 0,
-            taxDueInPoland: 0
-          })) // Handle error and continue with zero values
-        );
+              return {
+                ...dividend,
+                totalDividendInPln,
+                withholdingTaxPaid,
+                taxDueInPoland: taxDueInPoland < 0 ? 0 : taxDueInPoland, // Ensure non-negative value
+              };
+            }),
+            catchError(() =>
+              of({
+                ...dividend,
+                withholdingTaxPaid: dividend.dividend * 0.15, // Default withholding tax calculation if error occurs
+                convertedDividend: 0,
+                taxDueInPoland: 0,
+              }),
+            ), // Handle error and continue with zero values
+          );
       });
 
       forkJoin(dividendCalculations$).subscribe((calculatedDividends) => {
         this.stock!.dividends = calculatedDividends;
 
         // Calculate total dividend income in PLN after updating all dividend values
-        this.totalDividendIncome = this.stock!.dividends.reduce((total, dividend) => total + dividend.totalDividendInPln, 0);
+        this.totalDividendIncome = this.stock!.dividends.reduce(
+          (total, dividend) => total + dividend.totalDividendInPln,
+          0,
+        );
 
         this.calculateTotalTaxToBePaid(); // Call tax calculation after setting total dividend income
       });
@@ -118,10 +125,18 @@ export class StockSummaryComponent implements OnInit {
 
   // Method to calculate total Polish tax due in PLN
   calculateTotalTaxToBePaid(): void {
-    this.totalTaxToBePaid = this.stock!.dividends!.reduce((total, dividend) => total + dividend.totalDividendInPln * 0.19, 0) ?? 0;
-    this.totalWithholdingTaxPaid = this.stock!.dividends!.reduce((total, dividend) => total + (dividend.withholdingTaxPaid ?? 0), 0) ?? 0;
+    this.totalTaxToBePaid =
+      this.stock!.dividends!.reduce(
+        (total, dividend) => total + dividend.totalDividendInPln * 0.19,
+        0,
+      ) ?? 0;
+    this.totalWithholdingTaxPaid =
+      this.stock!.dividends!.reduce(
+        (total, dividend) => total + (dividend.withholdingTaxPaid ?? 0),
+        0,
+      ) ?? 0;
 
-    this.taxToBePaidInPoland = this.totalTaxToBePaid - this.totalWithholdingTaxPaid * this.usdPlnRate;
+    this.taxToBePaidInPoland =
+      this.totalTaxToBePaid - this.totalWithholdingTaxPaid * this.usdPlnRate;
   }
-
 }
