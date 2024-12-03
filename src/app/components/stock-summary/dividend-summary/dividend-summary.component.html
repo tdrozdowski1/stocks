@@ -12,10 +12,10 @@
   <tbody>
     <tr *ngFor="let dividend of stock?.dividends">
       <td>{{ dividend.paymentDate | date: 'yyyy-MM-dd' }}</td>
-      <td>{{ dividend.dividend | currency: 'USD' }}</td>
-      <td>{{ dividend.withholdingTaxPaid | currency: 'USD' }}</td>
-      <td>{{ dividend.totalDividendInPln | currency: 'PLN' }}</td>
-      <td>{{ dividend.taxDueInPoland | currency: 'PLN' }}</td>
+      <td>{{ dividend.dividend * dividend.quantity | currency: 'USD' }}</td>
+      <td>{{ dividend.withholdingTaxPaid * dividend.quantity | currency: 'USD' }}</td>
+      <td>{{ dividend.totalDividendInPln * dividend.quantity | currency: 'PLN' }}</td>
+      <td>{{ dividend.taxDueInPoland * dividend.quantity | currency: 'PLN' }}</td>
     </tr>
   </tbody>
 </table>

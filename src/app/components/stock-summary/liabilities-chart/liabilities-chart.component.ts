@@ -32,7 +32,7 @@ export class LiabilitiesChartComponent implements OnInit {
             },
             {
               label: 'Total Assets (USD)',
-              data: this.stock.liabilitiesData?.map((item) => item.totalCurrentAssets).reverse(),
+              data: this.stock.liabilitiesData?.map((item) => item.totalAssets).reverse(),
               backgroundColor: 'rgba(54, 162, 235, 0.6)',
               borderColor: 'rgba(54, 162, 235, 1)',
               borderWidth: 1,

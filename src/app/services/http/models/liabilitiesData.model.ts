@@ -1,7 +1,7 @@
 export interface LiabilitiesData {
   date: Date;
   totalLiabilities: number;
-  totalCurrentAssets: number;
+  totalAssets: number;
   totalEquity: number;
   totalDebt: number;
 }
