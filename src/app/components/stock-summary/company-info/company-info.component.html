@@ -1,5 +1,5 @@
 <h3>Company Info (Last 5 Years)</h3>
-<div class="company-info-table-wrapper">
+<div class="company-info-table-wrapper" *ngIf="processedCompanyInfo.length">
   <table class="company-info-table">
     <thead>
       <tr>
@@ -13,15 +13,43 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let info of companyInfo">
+      <tr *ngFor="let info of processedCompanyInfo">
         <td>{{ info.date }}</td>
-        <td>{{ info.peRatio }}</td>
-        <td>{{ info.revenuePerShare }}</td>
-        <td>{{ info.roic }}</td>
-        <td>{{ info.currentRatio }}</td>
-        <td>{{ info.dividendYield }}</td>
-        <td>{{ info.payoutRatio }}</td>
+        <td
+          [ngStyle]="{ color: info.peRatio < 20 ? 'green' : info.peRatio > 25 ? 'red' : 'inherit' }"
+        >
+          {{ info.peRatio }}
+        </td>
+        <td [ngStyle]="{ color: info.revenueChange }">
+          {{ info.revenuePerShare }}
+        </td>
+        <td [ngStyle]="{ color: info.roic > 0.1 ? 'green' : info.roic < 0.05 ? 'red' : 'inherit' }">
+          {{ info.roic }}
+        </td>
+        <td
+          [ngStyle]="{
+            color: info.currentRatio > 1.5 ? 'green' : info.currentRatio < 1 ? 'red' : 'inherit',
+          }"
+        >
+          {{ info.currentRatio }}
+        </td>
+        <td
+          [ngStyle]="{
+            color:
+              info.dividendYield > 0.02 ? 'green' : info.dividendYield < 0.15 ? 'red' : 'inherit',
+          }"
+        >
+          {{ info.dividendYield }}
+        </td>
+        <td
+          [ngStyle]="{
+            color: info.payoutRatio < 50 ? 'green' : info.payoutRatio > 50 ? 'red' : 'inherit',
+          }"
+        >
+          {{ info.payoutRatio }}
+        </td>
       </tr>
     </tbody>
   </table>
 </div>
+<div *ngIf="!processedCompanyInfo.length">No data available.</div>
