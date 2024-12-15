@@ -2,8 +2,8 @@ export interface DividendDetail {
   paymentDate: Date;
   dividend: number;
   quantity: number;
-  totalDividend: number;
-  totalDividendInPln: number;
+  dividendInPln: number;
   withholdingTaxPaid: number;
   taxDueInPoland: number;
+  usdPlnRate?: number;
 }

@@ -3,6 +3,9 @@ import { Transaction } from './models/transaction.model';
 import { DbService } from '../http/db.service';
 import { FinancialDataService } from '../http/financial-data.service';
 import { OwnershipPeriod } from '../http/models/ownershipPeriod.model';
+import { DividendService } from './dividend.service';
+import { Stock } from '../http/models/stock.model';
+import { Observable, forkJoin, map, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +14,7 @@ export class TransactionService {
   constructor(
     private dbService: DbService,
     private financialDataService: FinancialDataService,
+    private dividendService: DividendService,
   ) {}
 
   addTransaction(transaction: Transaction) {
@@ -46,22 +50,71 @@ export class TransactionService {
     // Get dividends data for the stock
     this.financialDataService.getDividends(stock!.symbol).subscribe((data) => {
       const ownershipPeriods = this.calculateOwnershipPeriods(stock!.transactions); // Get ownership periods with quantities
-      const relevantDividends = this.filterDividendsByOwnership(data.historical, ownershipPeriods); // Filter dividends
-
-      // Calculate total dividend value based on quantity held during each period
-      const totalDividendValue = relevantDividends.reduce((total, dividend) => {
-        return total + dividend.dividend * dividend.quantity; // Multiply dividend per share by quantity held
-      }, 0);
 
       // Update the stock with relevant dividends and total dividend value
-      stock!.dividends = relevantDividends;
-      stock!.totalDividendValue = totalDividendValue;
+      stock!.dividends = this.dividendService.filterDividendsByOwnership(
+        data.historical,
+        ownershipPeriods,
+      );
+      stock!.totalDividendValue = this.dividendService.calculateTotalDividens(stock!.dividends);
 
-      // Save or update the stock object in your database or state
-      currentStocks.push(stock!);
-      this.dbService.updateStocks(currentStocks);
+      this.updateUsdPlnRateForDividends(stock!).subscribe((stock) => {
+        stock.taxToBePaidInPoland =
+          stock.dividends!.reduce(
+            (total, dividend) => total + dividend.taxDueInPoland * dividend.quantity,
+            0,
+          ) ?? 0;
+
+        stock.totalWithholdingTaxPaid =
+          stock.dividends!.reduce(
+            (total, dividend) => total + dividend.withholdingTaxPaid * dividend.quantity,
+            0,
+          ) ?? 0;
+
+        // Save or update the stock object in your database or state
+        currentStocks.push(stock!);
+        this.dbService.updateStocks(currentStocks);
+        console.log(currentStocks);
+      });
     });
-    console.log(currentStocks);
+  }
+
+  updateUsdPlnRateForDividends(stock: Stock): Observable<Stock> {
+    if (!stock.dividends || stock.dividends.length === 0) {
+      // If there are no dividends, return the stock as is
+      return of(stock);
+    }
+
+    // Create an array of observables for fetching exchange rates for each dividend
+    const exchangeRateRequests = stock.dividends.map((dividend) => {
+      const dayBeforePayment = new Date(dividend.paymentDate);
+      dayBeforePayment.setDate(dayBeforePayment.getDate() - 1);
+
+      return this.financialDataService
+        .getExchangeRate(dayBeforePayment.toISOString().split('T')[0])
+        .pipe(
+          map((exchangeData) => {
+            const usdPlnRate =
+              exchangeData.forexList.find((rate) => rate.ticker === 'USD/PLN')?.bid ?? 1;
+            return { dividend, usdPlnRate };
+          }),
+        );
+    });
+
+    // Execute all requests in parallel and update the dividends
+    return forkJoin(exchangeRateRequests).pipe(
+      map((results) => {
+        results.forEach(({ dividend, usdPlnRate }) => {
+          dividend.usdPlnRate = usdPlnRate;
+          dividend.withholdingTaxPaid = dividend.dividend * 0.15;
+          dividend.dividendInPln = dividend.dividend * usdPlnRate;
+          dividend.taxDueInPoland =
+            dividend.dividendInPln * 0.19 - dividend.withholdingTaxPaid * usdPlnRate;
+        });
+
+        return stock; // Return the updated stock
+      }),
+    );
   }
 
   calculateMoneyInvested(transactions: Transaction[]): number {
@@ -121,27 +174,5 @@ export class TransactionService {
     }
 
     return ownershipPeriods;
-  }
-
-  filterDividendsByOwnership(dividends: any[], ownershipPeriods: OwnershipPeriod[]): any[] {
-    return dividends.filter((dividend) => {
-      const dividendDate = new Date(dividend.paymentDate);
-
-      // Check if the dividend date falls within any of the ownership periods and attach the quantity information
-      const relevantPeriod = ownershipPeriods.find((period) => {
-        const startDate = new Date(period.startDate);
-        const endDate = new Date(period.endDate ? period.endDate : new Date());
-
-        return dividendDate >= startDate && dividendDate <= endDate;
-      });
-
-      if (relevantPeriod) {
-        // Attach quantity information to the dividend for further calculations
-        dividend.quantity = relevantPeriod.quantity;
-        return true;
-      }
-
-      return false;
-    });
   }
 }

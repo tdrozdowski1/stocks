@@ -4,17 +4,19 @@
     <tr>
       <th>Date</th>
       <th>Dividend (USD)</th>
-      <th>Withholding Tax (USD)</th>
-      <th>Dividend in PLN (after conversion)</th>
+      <th>Total Dividend (USD)</th>
+      <th>Total Withholding Tax (USD)</th>
+      <th>Total Dividend in PLN (after conversion)</th>
       <th>Tax to be Paid in Poland (PLN)</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let dividend of stock?.dividends">
       <td>{{ dividend.paymentDate | date: 'yyyy-MM-dd' }}</td>
+      <td>{{ dividend.dividend | currency: 'USD' }}</td>
       <td>{{ dividend.dividend * dividend.quantity | currency: 'USD' }}</td>
       <td>{{ dividend.withholdingTaxPaid * dividend.quantity | currency: 'USD' }}</td>
-      <td>{{ dividend.totalDividendInPln * dividend.quantity | currency: 'PLN' }}</td>
+      <td>{{ dividend.dividendInPln * dividend.quantity | currency: 'PLN' }}</td>
       <td>{{ dividend.taxDueInPoland * dividend.quantity | currency: 'PLN' }}</td>
     </tr>
   </tbody>
@@ -23,16 +25,12 @@
 <!-- Tax Summary Section -->
 <div class="tax-summary">
   <p>
-    Total Dividend Income in PLN: <span>{{ totalDividendIncome | currency: 'PLN' }}</span>
+    Total Dividend Income in PLN: <span>{{ stock!.totalDividendValue | currency: 'PLN' }}</span>
   </p>
   <p>
-    Total Polish Tax Due: <span>{{ totalTaxToBePaid | currency: 'PLN' }}</span>
+    Total Polish Tax Due: <span>{{ stock!.taxToBePaidInPoland | currency: 'PLN' }}</span>
   </p>
   <p>
-    Withholding Tax Paid (USD): <span>{{ totalWithholdingTaxPaid | currency: 'USD' }}</span>
-  </p>
-  <p>
-    Additional Tax to be Paid in Poland (PLN):
-    <span>{{ taxToBePaidInPoland | currency: 'PLN' }}</span>
+    Withholding Tax Paid (USD): <span>{{ stock!.totalWithholdingTaxPaid | currency: 'USD' }}</span>
   </p>
 </div>

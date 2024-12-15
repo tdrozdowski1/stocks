@@ -8,10 +8,6 @@ import { Stock } from '../../../services/http/models/stock.model';
 })
 export class DividendSummaryComponent implements OnInit {
   @Input() stock: Stock | undefined;
-  @Input() totalDividendIncome: number | undefined;
-  @Input() totalTaxToBePaid: number | undefined;
-  @Input() totalWithholdingTaxPaid: number | undefined;
-  @Input() taxToBePaidInPoland: number | undefined;
 
   constructor() {}
 

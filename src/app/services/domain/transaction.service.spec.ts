@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FinancialDataService } from '../http/financial-data.service';
 import { DbService } from '../http/db.service';
 import any = jasmine.any;
-import { OwnershipPeriod } from '../http/models/ownershipPeriod.model';
 
 class MockDbService {
   getStocksValue() {
@@ -154,40 +153,6 @@ describe('TransactionService', () => {
           quantity: 4, // 7 - 3
         }),
       );
-    });
-  });
-
-  describe('filterDividendsByOwnership', () => {
-    it('should filter dividends based on ownership periods', () => {
-      const dividends = [
-        { paymentDate: '2024-01-10', dividend: 1.5 },
-        { paymentDate: '2024-02-10', dividend: 1.0 },
-        { paymentDate: '2024-03-10', dividend: 2.0 },
-      ];
-
-      const ownershipPeriods: OwnershipPeriod[] = [
-        { startDate: new Date('2024-01-01'), endDate: new Date('2024-01-15'), quantity: 10 },
-        { startDate: new Date('2024-01-15'), endDate: new Date('2024-02-01'), quantity: 5 },
-      ];
-
-      const filteredDividends = service.filterDividendsByOwnership(dividends, ownershipPeriods);
-
-      expect(filteredDividends.length).toBe(1); // Only 2024-01-10 and 2024-02-10 dividends should be included
-      expect(filteredDividends[0]).toEqual(
-        jasmine.objectContaining({ paymentDate: '2024-01-10', quantity: 10 }),
-      );
-    });
-
-    it('should return an empty array if there are no relevant dividends', () => {
-      const dividends = [{ paymentDate: '2024-04-10', dividend: 1.5 }];
-
-      const ownershipPeriods: OwnershipPeriod[] = [
-        { startDate: new Date('2024-01-01'), endDate: new Date('2024-01-15'), quantity: 10 },
-      ];
-
-      const filteredDividends = service.filterDividendsByOwnership(dividends, ownershipPeriods);
-
-      expect(filteredDividends.length).toBe(0); // No dividends should be returned
     });
   });
 });

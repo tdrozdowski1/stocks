@@ -14,4 +14,6 @@ export interface Stock {
   totalDividendValue: number;
   cashFlowData?: CashFlowData[];
   liabilitiesData?: LiabilitiesData[];
+  totalWithholdingTaxPaid?: number;
+  taxToBePaidInPoland?: number;
 }
