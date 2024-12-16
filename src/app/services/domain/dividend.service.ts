@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { OwnershipPeriod } from '../http/models/ownershipPeriod.model';
 import { DividendDetail } from '../http/models/dividend.details.model';
+import { Observable, forkJoin, map, of } from 'rxjs';
+import { Stock } from '../http/models/stock.model';
+import { FinancialDataService } from '../http/financial-data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DividendService {
-  constructor() {}
+  constructor(private financialDataService: FinancialDataService) {}
 
   filterDividendsByOwnership(
     dividends: any[],
@@ -39,5 +42,61 @@ export class DividendService {
     return relevantDividends.reduce((total, dividend) => {
       return total + dividend.dividend * dividend.quantity; // Multiply dividend per share by quantity held
     }, 0);
+  }
+
+  updateUsdPlnRateForDividends(stock: Stock): Observable<Stock> {
+    if (!stock.dividends || stock.dividends.length === 0) {
+      // If there are no dividends, return the stock as is
+      return of(stock);
+    }
+
+    // Create an array of observables for fetching exchange rates for each dividend
+    const exchangeRateRequests = stock.dividends.map((dividend) => {
+      const dayBeforePayment = new Date(dividend.paymentDate);
+      dayBeforePayment.setDate(dayBeforePayment.getDate() - 1);
+
+      return this.financialDataService
+        .getExchangeRate(dayBeforePayment.toISOString().split('T')[0])
+        .pipe(
+          map((exchangeData) => {
+            const usdPlnRate =
+              exchangeData.forexList.find((rate) => rate.ticker === 'USD/PLN')?.bid ?? 1;
+            return { dividend, usdPlnRate };
+          }),
+        );
+    });
+
+    // Execute all requests in parallel and update the dividends
+    return forkJoin(exchangeRateRequests).pipe(
+      map((results) => {
+        results.forEach(({ dividend, usdPlnRate }) => {
+          dividend.usdPlnRate = usdPlnRate;
+          dividend.withholdingTaxPaid = dividend.dividend * 0.15;
+          dividend.dividendInPln = dividend.dividend * usdPlnRate;
+          dividend.taxDueInPoland =
+            dividend.dividendInPln * 0.19 - dividend.withholdingTaxPaid * usdPlnRate;
+        });
+
+        return stock; // Return the updated stock
+      }),
+    );
+  }
+
+  calculateTaxToBePaidInPoland(stock: Stock) {
+    stock.taxToBePaidInPoland =
+      stock.dividends!.reduce(
+        (total, dividend) => total + dividend.taxDueInPoland * dividend.quantity,
+        0,
+      ) ?? 0;
+    return stock;
+  }
+
+  calculateTotalWithholdingTaxPaid(stock: Stock) {
+    stock.totalWithholdingTaxPaid =
+      stock.dividends!.reduce(
+        (total, dividend) => total + dividend.withholdingTaxPaid * dividend.quantity,
+        0,
+      ) ?? 0;
+    return stock;
   }
 }
