@@ -29,7 +29,6 @@ export class TransactionService {
         ownershipPeriods: this.calculateOwnershipPeriods(updatedTransactions),
         totalDividendValue: 0,
       };
-      currentStocks = currentStocks.filter((stock) => stock.symbol !== stock.symbol);
     } else {
       stock = {
         symbol: transaction.symbol,
@@ -61,8 +60,11 @@ export class TransactionService {
         stock = this.dividendService.calculateTotalWithholdingTaxPaid(stock);
 
         // Save or update the stock object in your database or state
-        currentStocks.push(stock!);
-        this.dbService.updateStocks(currentStocks);
+        const filteredStocks = currentStocks.filter(
+          (savedStock) => savedStock.symbol !== stock.symbol,
+        );
+        filteredStocks.push(stock!);
+        this.dbService.updateStocks(filteredStocks);
         console.log(currentStocks);
       });
     });
