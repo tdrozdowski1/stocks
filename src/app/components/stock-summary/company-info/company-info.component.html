@@ -43,7 +43,7 @@
         </td>
         <td
           [ngStyle]="{
-            color: info.payoutRatio < 50 ? 'green' : info.payoutRatio > 50 ? 'red' : 'inherit',
+            color: info.payoutRatio < 0.50 ? 'green' : info.payoutRatio > 0.50 ? 'red' : 'inherit',
           }"
         >
           {{ info.payoutRatio }}
