@@ -7,9 +7,14 @@ import { Stock } from '../http/models/stock.model';
 
 // Mock for FinancialDataService
 class MockFinancialDataService {
-  getExchangeRate(date: string) {
+  getHistoricalExchangeRate() {
     return of({
-      forexList: [{ ticker: 'USD/PLN', bid: 4.5 }],
+      historical: [
+        { date: '2023-12-01', close: 4.5 },
+        { date: '2023-11-30', close: 4.4 },
+        { date: '2023-11-01', close: 4.2 },
+        { date: '2023-10-31', close: 4.1 },
+      ],
     });
   }
 }
@@ -130,19 +135,61 @@ describe('DividendService', () => {
             paymentDate: new Date('2023-12-01'),
             dividend: 100,
             quantity: 10,
-            dividendInPln: 450, // 100 * 4.5
+            dividendInPln: 440.00000000000006, // 100 * 4.5
             withholdingTaxPaid: 15, // 100 * 0.15
-            taxDueInPoland: 18, // (450 * 0.19) - (15 * 4.5)
-            usdPlnRate: 4.5,
+            taxDueInPoland: 17.60000000000001, // (450 * 0.19) - (15 * 4.5)
+            usdPlnRate: 4.4,
           },
           {
             paymentDate: new Date('2023-11-01'),
             dividend: 200,
             quantity: 5,
-            dividendInPln: 900, // 200 * 4.5
+            dividendInPln: 819.9999999999999, // 200 * 4.5
             withholdingTaxPaid: 30, // 200 * 0.15
-            taxDueInPoland: 36, // (900 * 0.19) - (30 * 4.5)
-            usdPlnRate: 4.5,
+            taxDueInPoland: 32.8, // (900 * 0.19) - (30 * 4.5)
+            usdPlnRate: 4.1,
+          },
+        ],
+      };
+
+      // when
+      // then
+      service.updateUsdPlnRateForDividends(stock).subscribe((result) => {
+        expect(result).toEqual(expectedStock);
+      });
+    });
+
+    it('should use a date from the day earlier if no rate is found for the first day', () => {
+      const stock: Stock = {
+        symbol: 'AAPL',
+        moneyInvested: 1000,
+        currentPrice: 150,
+        ownershipPeriods: [],
+        transactions: [],
+        totalDividendValue: 0,
+        dividends: [
+          {
+            paymentDate: new Date('2023-12-01'),
+            dividend: 100,
+            quantity: 10,
+            dividendInPln: 0,
+            withholdingTaxPaid: 0,
+            taxDueInPoland: 0,
+          },
+        ],
+      };
+
+      const expectedStock = {
+        ...stock,
+        dividends: [
+          {
+            paymentDate: new Date('2023-12-01'),
+            dividend: 100,
+            quantity: 10,
+            dividendInPln: 440.00000000000006, // 100 * 4.4
+            withholdingTaxPaid: 15, // 100 * 0.15
+            taxDueInPoland: 17.60000000000001, // (440 * 0.19) - (15 * 4.4)
+            usdPlnRate: 4.4,
           },
         ],
       };

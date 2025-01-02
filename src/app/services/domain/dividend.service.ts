@@ -55,23 +55,34 @@ export class DividendService {
       const dayBeforePayment = new Date(dividend.paymentDate);
       dayBeforePayment.setDate(dayBeforePayment.getDate() - 1);
 
-      const requestedDay = dayBeforePayment.toISOString().split('T')[0];
-      return this.financialDataService
-        .getHistoricalExchangeRate()
-        .pipe(
+      const fetchRate = (date: Date): any => {
+        const requestedDay = date.toISOString().split('T')[0];
+
+        return this.financialDataService.getHistoricalExchangeRate().pipe(
           map((exchangeData) => {
-            const usdPlnRate =
-              exchangeData.historical.find((rate: any) => rate.date === requestedDay)?.close ?? 1;
-            return { dividend, usdPlnRate };
+            const usdPlnRate = exchangeData.historical.find(
+              (rate: any) => rate.date === requestedDay,
+            )?.close;
+            if (usdPlnRate !== undefined) {
+              return { dividend, usdPlnRate };
+            } else {
+              // If not found, retry with the previous day
+              const previousDay = new Date(date);
+              previousDay.setDate(date.getDate() - 1);
+              return fetchRate(previousDay);
+            }
           }),
         );
+      };
+
+      return fetchRate(dayBeforePayment);
     });
 
     // Execute all requests in parallel and update the dividends
     return forkJoin(exchangeRateRequests).pipe(
       map((results) => {
         results.forEach(({ dividend, usdPlnRate }) => {
-          dividend.usdPlnRate = usdPlnRate;
+          dividend.usdPlnRate = usdPlnRate === undefined ? 1 : usdPlnRate;
           dividend.withholdingTaxPaid = dividend.dividend * 0.15;
           dividend.dividendInPln = dividend.dividend * usdPlnRate;
           dividend.taxDueInPoland =

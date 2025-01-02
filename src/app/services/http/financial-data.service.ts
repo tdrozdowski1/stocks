@@ -45,7 +45,7 @@ export class FinancialDataService {
         catchError((err) => {
           console.error('Error fetching historical exchange rates:', err);
           return throwError(err);
-        })
+        }),
       );
   }
 
