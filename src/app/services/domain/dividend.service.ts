@@ -55,12 +55,13 @@ export class DividendService {
       const dayBeforePayment = new Date(dividend.paymentDate);
       dayBeforePayment.setDate(dayBeforePayment.getDate() - 1);
 
+      const requestedDay = dayBeforePayment.toISOString().split('T')[0];
       return this.financialDataService
-        .getExchangeRate(dayBeforePayment.toISOString().split('T')[0])
+        .getHistoricalExchangeRate()
         .pipe(
           map((exchangeData) => {
             const usdPlnRate =
-              exchangeData.forexList.find((rate) => rate.ticker === 'USD/PLN')?.bid ?? 1;
+              exchangeData.historical.find((rate: any) => rate.date === requestedDay)?.close ?? 1;
             return { dividend, usdPlnRate };
           }),
         );

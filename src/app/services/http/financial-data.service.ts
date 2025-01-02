@@ -37,8 +37,16 @@ export class FinancialDataService {
     );
   }
 
-  getExchangeRate(date: string): Observable<ForexData> {
-    return this.http.get<ForexData>(`${this.BASE_URL}/forex?date=${date}&apikey=${this.API_KEY}`);
+  getHistoricalExchangeRate(): Observable<any> {
+    return this.http
+      .get(`${this.BASE_URL}/historical-price-full/USDPLN?apikey=${this.API_KEY}`)
+      .pipe(
+        tap((response) => console.log('Historical Exchange Rate API Response:', response)),
+        catchError((err) => {
+          console.error('Error fetching historical exchange rates:', err);
+          return throwError(err);
+        })
+      );
   }
 
   getStockPerformance(symbol: string): Observable<any> {
