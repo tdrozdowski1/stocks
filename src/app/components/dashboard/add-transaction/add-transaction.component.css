@@ -47,3 +47,25 @@ form button {
 form button:hover {
   background-color: #2980b9; /* Darker blue on hover */
 }
+
+.autocomplete-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  width: calc(100% - 22px);
+  z-index: 1000;
+}
+
+.autocomplete-list li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.autocomplete-list li:hover {
+  background-color: #f0f0f0;
+}

@@ -2,8 +2,18 @@
   <h2>Add Transaction</h2>
 
   <label for="symbol">Stock Symbol</label>
-  <input id="symbol" formControlName="symbol" type="text" placeholder="e.g., AAPL" />
-
+  <input
+    id="symbol"
+    formControlName="symbol"
+    type="text"
+    placeholder="e.g., AAPL"
+    (focus)="suggestions = []"
+  />
+  <ul *ngIf="suggestions.length > 0" class="autocomplete-list">
+    <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+      {{ suggestion }}
+    </li>
+  </ul>
   <label for="date">Date</label>
   <input id="date" formControlName="date" type="date" />
 

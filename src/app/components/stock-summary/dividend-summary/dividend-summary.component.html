@@ -25,12 +25,12 @@
 <!-- Tax Summary Section -->
 <div class="tax-summary">
   <p>
-    Total Dividend Income in PLN: <span>{{ stock!.totalDividendValue | currency: 'PLN' }}</span>
+    Total Dividend Income: <span>{{ stock!.totalDividendValue | currency: 'USD' }}</span>
   </p>
   <p>
     Total Polish Tax Due: <span>{{ stock!.taxToBePaidInPoland | currency: 'PLN' }}</span>
   </p>
   <p>
-    Withholding Tax Paid (USD): <span>{{ stock!.totalWithholdingTaxPaid | currency: 'USD' }}</span>
+    Withholding Tax Paid: <span>{{ stock!.totalWithholdingTaxPaid | currency: 'USD' }}</span>
   </p>
 </div>

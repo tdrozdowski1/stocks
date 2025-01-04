@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 export interface CompanyInfo {
   date: string;
@@ -20,6 +21,13 @@ export class CompanyInfoService {
   private BASE_URL = 'https://financialmodelingprep.com/api/v3';
 
   constructor(private http: HttpClient) {}
+
+  fetchNameSuggestions(query: string) {
+    const url = `https://financialmodelingprep.com/api/v3/search?query=${query}&limit=5&exchange=NYSE,NASDAQ&apikey=${this.API_KEY}`;
+    return this.http.get<any[]>(url).pipe(
+      switchMap((data) => of(data.map((item) => `${item.symbol} (${item.name})`))), // Combine symbol and name
+    );
+  }
 
   getCompanyInfo(symbol: string): Observable<CompanyInfo[]> {
     return this.http.get<CompanyInfo[]>(

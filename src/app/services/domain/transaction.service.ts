@@ -25,9 +25,9 @@ export class TransactionService {
         symbol: stock.symbol,
         transactions: updatedTransactions,
         moneyInvested: this.calculateMoneyInvested(updatedTransactions),
-        currentPrice: 0,
+        currentPrice: stock.currentPrice,
         ownershipPeriods: this.calculateOwnershipPeriods(updatedTransactions),
-        totalDividendValue: 0,
+        totalDividendValue: stock.totalDividendValue,
       };
     } else {
       stock = {
