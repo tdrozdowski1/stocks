@@ -1,0 +1,33 @@
+<p>stock-table works!</p>
+<div class="table-container">
+  <input type="text" [(ngModel)]="filter" placeholder="Filter stocks" class="filter-input" />
+
+  <table class="stock-table">
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns" (click)="sortBy(column)">
+          {{ column }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of paginatedStocks()">
+        <td>{{ stock.name }}</td>
+        <td>{{ stock.symbol }}</td>
+        <td>{{ stock.marketCap }}</td>
+        <td>{{ stock.sector }}</td>
+        <td>{{ stock.dividendYield }}</td>
+        <td>{{ stock.payoutRatio }}</td>
+        <td>{{ stock.roic }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="page === 1">Previous</button>
+    <span>Page {{ page }}</span>
+    <button (click)="nextPage()" [disabled]="page * pageSize >= filteredStocks().length">
+      Next
+    </button>
+  </div>
+</div>
