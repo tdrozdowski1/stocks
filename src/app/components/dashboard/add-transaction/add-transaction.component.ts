@@ -35,7 +35,7 @@ export class AddTransactionComponent {
     this.transactionForm
       .get('symbol')
       ?.valueChanges.pipe(
-        debounceTime(3000), // Wait 3 seconds after the user stops typing
+        debounceTime(750), // Wait 0,75 seconds after the user stops typing
         distinctUntilChanged(), // Avoid duplicate API calls for the same input
         switchMap((query) => {
           if (!query) {
