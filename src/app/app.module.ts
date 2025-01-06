@@ -26,6 +26,7 @@ import { FreeCashChartComponent } from './components/stock-summary/free-cash-cha
 import { LiabilitiesChartComponent } from './components/stock-summary/liabilities-chart/liabilities-chart.component';
 import { StockTableComponent } from './stock-table/stock-table.component';
 import { PortfolioPanelComponent } from './components/portfolio-panel/portfolio-panel.component';
+import { TaxOverviewComponent } from './components/tax-overview/tax-overview.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { PortfolioPanelComponent } from './components/portfolio-panel/portfolio-
     LiabilitiesChartComponent,
     StockTableComponent,
     PortfolioPanelComponent,
+    TaxOverviewComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,22 @@
+<div class="table-container">
+  <table class="stock-table">
+    <thead>
+      <tr>
+        <th>Stock Symbol</th>
+        <th>Quantity</th>
+        <th>Total Withholding Tax</th>
+        <th>Tax left to be paid in Poland</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of stocks">
+        <td>{{ stock.symbol }}</td>
+        <td>
+          {{ stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity | currency: 'USD' }}
+        </td>
+        <td>{{ stock.totalWithholdingTaxPaid | currency: 'USD' }}</td>
+        <td>{{ stock.taxToBePaidInPoland | currency: 'PLN' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

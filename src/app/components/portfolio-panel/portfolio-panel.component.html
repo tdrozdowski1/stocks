@@ -3,17 +3,34 @@
     <thead>
       <tr>
         <th>Stock Symbol</th>
+        <th>Quantity</th>
         <th>Money Invested</th>
         <th>Current Price</th>
+        <th>Current Value</th>
         <th>Total Dividend Value</th>
+        <th>Current Value With Dividends</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let stock of stocks">
         <td>{{ stock.symbol }}</td>
-        <td>{{ stock.moneyInvested }}</td>
-        <td>{{ stock.currentPrice }}</td>
-        <td>{{ stock.totalDividendValue }}</td>
+        <td>{{ stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity }}</td>
+        <td>{{ stock.moneyInvested | currency: 'USD' }}</td>
+        <td>{{ stock.currentPrice | currency: 'USD' }}</td>
+        <td>
+          {{
+            stock.currentPrice * stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity
+          }}
+          | currency: 'USD'
+        </td>
+        <td>{{ stock.totalDividendValue | currency: 'USD' }}</td>
+        <td>
+          {{
+            stock.currentPrice *
+              stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity +
+              stock.totalDividendValue | currency: 'USD'
+          }}
+        </td>
       </tr>
     </tbody>
   </table>
