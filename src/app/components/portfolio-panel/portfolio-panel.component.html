@@ -1,0 +1,20 @@
+<div class="table-container">
+  <table class="stock-table">
+    <thead>
+      <tr>
+        <th>Stock Symbol</th>
+        <th>Money Invested</th>
+        <th>Current Price</th>
+        <th>Total Dividend Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of stocks">
+        <td>{{ stock.symbol }}</td>
+        <td>{{ stock.moneyInvested }}</td>
+        <td>{{ stock.currentPrice }}</td>
+        <td>{{ stock.totalDividendValue }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

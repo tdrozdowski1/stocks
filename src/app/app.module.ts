@@ -25,6 +25,7 @@ import { MultiplesComponent } from './components/stock-summary/valuation/multipl
 import { FreeCashChartComponent } from './components/stock-summary/free-cash-chart/free-cash-chart.component';
 import { LiabilitiesChartComponent } from './components/stock-summary/liabilities-chart/liabilities-chart.component';
 import { StockTableComponent } from './stock-table/stock-table.component';
+import { PortfolioPanelComponent } from './components/portfolio-panel/portfolio-panel.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { StockTableComponent } from './stock-table/stock-table.component';
     FreeCashChartComponent,
     LiabilitiesChartComponent,
     StockTableComponent,
+    PortfolioPanelComponent,
   ],
   imports: [
     BrowserModule,
