@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FinancialDataService } from '../../../services/http/financial-data.service';
-import { Dividend } from '../../../services/http/models/dividend.model';
 import { concatMap } from 'rxjs';
 import { DbService } from '../../../services/http/db.service';
 import { Stock } from '../../../services/http/models/stock.model';
