@@ -20,8 +20,8 @@
         <td>
           {{
             stock.currentPrice * stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity
+              | currency: 'USD'
           }}
-          | currency: 'USD'
         </td>
         <td>{{ stock.totalDividendValue | currency: 'USD' }}</td>
         <td>

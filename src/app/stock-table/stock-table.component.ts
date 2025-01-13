@@ -15,6 +15,7 @@ export class StockTableComponent {
       dividendYield: 0.6,
       payoutRatio: 15,
       roic: 25,
+      grossProfitMargin: 10,
     },
     {
       name: 'Microsoft',
@@ -24,13 +25,23 @@ export class StockTableComponent {
       dividendYield: 0.8,
       payoutRatio: 28,
       roic: 30,
+      grossProfitMargin: 10,
     },
     // More data...
   ];
   filter = '';
   page = 1;
   pageSize = 20;
-  columns = ['Name', 'Symbol', 'Market Cap', 'Sector', 'Dividend Yield', 'Payout Ratio', 'ROIC'];
+  columns = [
+    'Name',
+    'Symbol',
+    'Market Cap',
+    'Sector',
+    'Dividend Yield',
+    'Payout Ratio',
+    'ROIC',
+    'Gross Profit Margin',
+  ];
 
   constructor() {}
 
