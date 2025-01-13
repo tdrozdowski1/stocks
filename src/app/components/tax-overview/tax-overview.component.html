@@ -15,7 +15,9 @@
         <tr (click)="toggleRow(i)">
           <td>{{ stock.symbol }}</td>
           <td>
-            {{ stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity | currency: 'USD' }}
+            {{
+              stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity | currency: 'USD'
+            }}
           </td>
           <td>{{ stock.dividends?.[0]?.usdPlnRate || 'N/A' }}</td>
           <td>{{ stock.totalDividendValue | currency: 'USD' }}</td>
@@ -31,7 +33,8 @@
                   <th>Quantity</th>
                   <th>Dividend</th>
                   <th>Dividend in PLN</th>
-                  <th>Withholding Tax Paid</th>
+                  <th>Withholding Tax Paid (USD)</th>
+                  <th>Withholding Tax Paid (PLN)</th>
                   <th>Tax Due in Poland</th>
                 </tr>
               </thead>
@@ -39,10 +42,16 @@
                 <tr *ngFor="let detail of stock.dividends">
                   <td>{{ detail.paymentDate | date: 'shortDate' }}</td>
                   <td>{{ detail.quantity }}</td>
-                  <td>{{ detail.dividend | currency: 'USD' }}</td>
-                  <td>{{ detail.dividendInPln | currency: 'PLN' }}</td>
-                  <td>{{ detail.withholdingTaxPaid | currency: 'USD' }}</td>
-                  <td>{{ detail.taxDueInPoland | currency: 'PLN' }}</td>
+                  <td>{{ detail.dividend * detail.quantity | currency: 'USD' }}</td>
+                  <td>{{ detail.dividendInPln * detail.quantity | currency: 'PLN' }}</td>
+                  <td>{{ detail.withholdingTaxPaid * detail.quantity | currency: 'USD' }}</td>
+                  <td>
+                    {{
+                      detail.withholdingTaxPaid * detail.quantity * detail.usdPlnRate!
+                        | currency: 'PLN'
+                    }}
+                  </td>
+                  <td>{{ detail.taxDueInPoland * detail.quantity | currency: 'PLN' }}</td>
                 </tr>
               </tbody>
             </table>
