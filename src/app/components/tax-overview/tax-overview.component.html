@@ -4,21 +4,51 @@
       <tr>
         <th>Stock Symbol</th>
         <th>Quantity</th>
-        <th>Total Divivends</th>      
+        <th>USD/PLN Rate</th>
+        <th>Total Dividend Value</th>
         <th>Total Withholding Tax</th>
-        <th>Tax left to be paid in Poland</th>
+        <th>Tax to be Paid in Poland</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let stock of stocks">
-        <td>{{ stock.symbol }}</td>
-        <td>
-          {{ stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity | currency: 'USD' }}
-        </td>
-        <td>{{ stock.totalDividendValue | currency: 'USD' }}</td>
-        <td>{{ stock.totalWithholdingTaxPaid | currency: 'USD' }}</td>
-        <td>{{ stock.taxToBePaidInPoland | currency: 'PLN' }}</td>
-      </tr>
+      <ng-container *ngFor="let stock of stocks; let i = index">
+        <tr (click)="toggleRow(i)">
+          <td>{{ stock.symbol }}</td>
+          <td>
+            {{ stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity | currency: 'USD' }}
+          </td>
+          <td>{{ stock.dividends?.[0]?.usdPlnRate || 'N/A' }}</td>
+          <td>{{ stock.totalDividendValue | currency: 'USD' }}</td>
+          <td>{{ stock.totalWithholdingTaxPaid | currency: 'USD' }}</td>
+          <td>{{ stock.taxToBePaidInPoland | currency: 'PLN' }}</td>
+        </tr>
+        <tr *ngIf="expandedRowIndex === i">
+          <td colspan="6">
+            <table class="sub-table">
+              <thead>
+                <tr>
+                  <th>Payment Date</th>
+                  <th>Quantity</th>
+                  <th>Dividend</th>
+                  <th>Dividend in PLN</th>
+                  <th>Withholding Tax Paid</th>
+                  <th>Tax Due in Poland</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of stock.dividends">
+                  <td>{{ detail.paymentDate | date: 'shortDate' }}</td>
+                  <td>{{ detail.quantity }}</td>
+                  <td>{{ detail.dividend | currency: 'USD' }}</td>
+                  <td>{{ detail.dividendInPln | currency: 'PLN' }}</td>
+                  <td>{{ detail.withholdingTaxPaid | currency: 'USD' }}</td>
+                  <td>{{ detail.taxDueInPoland | currency: 'PLN' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </ng-container>
     </tbody>
   </table>
 </div>

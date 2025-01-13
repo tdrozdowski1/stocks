@@ -26,3 +26,19 @@
 .stock-table tr:hover {
   background-color: #f1f1f1;
 }
+
+.sub-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.sub-table th, .sub-table td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.sub-table th {
+  background-color: #f0f0f0;
+}

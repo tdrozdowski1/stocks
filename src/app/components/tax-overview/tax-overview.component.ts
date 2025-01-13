@@ -10,6 +10,7 @@ import { concatMap } from 'rxjs';
 })
 export class TaxOverviewComponent implements OnInit {
   stocks: Stock[] = [];
+  expandedRowIndex: number | null = null;
 
   constructor(private dbService: DbService) {}
 
@@ -18,5 +19,9 @@ export class TaxOverviewComponent implements OnInit {
       () => console.log(this.stocks),
       (error) => console.error('Error:', error),
     );
+  }
+
+  toggleRow(index: number) {
+    this.expandedRowIndex = this.expandedRowIndex === index ? null : index;
   }
 }
