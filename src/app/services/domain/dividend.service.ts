@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OwnershipPeriod } from '../http/models/ownershipPeriod.model';
 import { DividendDetail } from '../http/models/dividend.details.model';
-import { Observable, forkJoin, map, of } from 'rxjs';
+import { Observable, catchError, forkJoin, from, map, mergeMap, of } from 'rxjs';
 import { Stock } from '../http/models/stock.model';
 import { FinancialDataService } from '../http/financial-data.service';
 
@@ -46,16 +46,16 @@ export class DividendService {
 
   updateUsdPlnRateForDividends(stock: Stock): Observable<Stock> {
     if (!stock.dividends || stock.dividends.length === 0) {
-      // If there are no dividends, return the stock as is
       return of(stock);
     }
 
-    // Create an array of observables for fetching exchange rates for each dividend
     const exchangeRateRequests = stock.dividends.map((dividend) => {
       const dayBeforePayment = new Date(dividend.paymentDate);
       dayBeforePayment.setDate(dayBeforePayment.getDate() - 1);
 
-      const fetchRate = (date: Date): any => {
+      const fetchRate = (
+        date: Date,
+      ): Observable<{ dividend: DividendDetail; usdPlnRate: number }> => {
         const requestedDay = date.toISOString().split('T')[0];
 
         return this.financialDataService.getHistoricalExchangeRate().pipe(
@@ -63,14 +63,29 @@ export class DividendService {
             const usdPlnRate = exchangeData.historical.find(
               (rate: any) => rate.date === requestedDay,
             )?.close;
+
             if (usdPlnRate !== undefined) {
               return { dividend, usdPlnRate };
             } else {
-              // If not found, retry with the previous day
+              // If no rate is found, retry with the previous day
               const previousDay = new Date(date);
               previousDay.setDate(date.getDate() - 1);
-              return fetchRate(previousDay);
+              // Recursive call: Ensures that we handle undefined properly
+              return fetchRate(previousDay).toPromise(); // Convert to a Promise
             }
+          }),
+          mergeMap((result) => {
+            // If the recursive call resolved with a Promise, wrap it back into an observable
+            if (result instanceof Promise) {
+              return from(result).pipe(
+                map((promiseResult) => promiseResult ?? { dividend, usdPlnRate: 1 }), // Default fallback
+              );
+            }
+            return of(result); // Return the result directly
+          }),
+          catchError(() => {
+            // Final fallback in case of unexpected errors
+            return of({ dividend, usdPlnRate: 1 });
           }),
         );
       };
@@ -78,18 +93,19 @@ export class DividendService {
       return fetchRate(dayBeforePayment);
     });
 
-    // Execute all requests in parallel and update the dividends
     return forkJoin(exchangeRateRequests).pipe(
-      map((results) => {
+      map((results: { dividend: DividendDetail; usdPlnRate: number }[]) => {
         results.forEach(({ dividend, usdPlnRate }) => {
-          dividend.usdPlnRate = usdPlnRate === undefined ? 1 : usdPlnRate;
-          dividend.withholdingTaxPaid = dividend.dividend * 0.15;
-          dividend.dividendInPln = dividend.dividend * usdPlnRate;
-          dividend.taxDueInPoland =
-            dividend.dividendInPln * 0.19 - dividend.withholdingTaxPaid * usdPlnRate;
+          if (dividend) {
+            dividend.usdPlnRate = usdPlnRate;
+            dividend.withholdingTaxPaid = dividend.dividend * 0.15;
+            dividend.dividendInPln = dividend.dividend * usdPlnRate;
+            dividend.taxDueInPoland =
+              dividend.dividendInPln * 0.19 - dividend.withholdingTaxPaid * usdPlnRate;
+          }
         });
 
-        return stock; // Return the updated stock
+        return stock;
       }),
     );
   }
