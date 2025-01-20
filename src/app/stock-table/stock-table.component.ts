@@ -1,92 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { CompanyInfoService } from '../services/http/company-info.service';
 
 @Component({
   selector: 'app-stock-table',
   templateUrl: './stock-table.component.html',
   styleUrls: ['./stock-table.component.css'],
 })
-export class StockTableComponent {
-  stocks = [
-    {
-      name: 'Apple',
-      symbol: 'AAPL',
-      marketCap: 2.5,
-      sector: 'Technology',
-      dividendYield: 0.6,
-      payoutRatio: 15,
-      roic: 25,
-      grossProfitMargin: 10,
-    },
-    {
-      name: 'Microsoft',
-      symbol: 'MSFT',
-      marketCap: 2.3,
-      sector: 'Technology',
-      dividendYield: 0.8,
-      payoutRatio: 28,
-      roic: 30,
-      grossProfitMargin: 10,
-    },
-    // More data...
-  ];
-  filter = '';
+export class StockTableComponent implements OnInit {
+  stocks: any[] = [];
   page = 1;
-  pageSize = 20;
-  columns = [
-    'Name',
-    'Symbol',
-    'Market Cap',
-    'Sector',
-    'Dividend Yield',
-    'Payout Ratio',
-    'ROIC',
-    'Gross Profit Margin',
-  ];
+  pageSize = 50;
+  loading = false;
 
-  constructor() {}
+  constructor(private companyInfoService: CompanyInfoService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadStocks();
+  }
 
-  filteredStocks() {
-    return this.stocks.filter((stock) =>
-      Object.values(stock).some((value) =>
-        value.toString().toLowerCase().includes(this.filter.toLowerCase()),
-      ),
+  loadStocks(): void {
+    if (this.loading) return;
+
+    this.loading = true;
+    this.companyInfoService.getCompanyInfoList(this.pageSize, this.page).subscribe(
+      (data) => {
+        this.stocks = [...this.stocks, ...data];
+        this.page++;
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error fetching stock data', error);
+        this.loading = false;
+      },
     );
   }
 
-  paginatedStocks() {
-    const start = (this.page - 1) * this.pageSize;
-    return this.filteredStocks().slice(start, start + this.pageSize);
-  }
-
-  nextPage() {
-    if (this.page * this.pageSize < this.filteredStocks().length) {
-      this.page++;
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+      this.loadStocks();
     }
-  }
-
-  prevPage() {
-    if (this.page > 1) {
-      this.page--;
-    }
-  }
-
-  sortBy(column: string) {
-    const key = column.toLowerCase().replace(' ', '') as keyof (typeof this.stocks)[0];
-
-    this.stocks.sort((a, b) => {
-      const aValue = a[key];
-      const bValue = b[key];
-
-      // Compare string values or numbers depending on the key
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return aValue.localeCompare(bValue);
-      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return aValue - bValue;
-      }
-
-      return 0;
-    });
   }
 }

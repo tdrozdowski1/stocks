@@ -1,33 +1,26 @@
 <div class="table-container">
-  <input type="text" [(ngModel)]="filter" placeholder="Filter stocks" class="filter-input" />
-
   <table class="stock-table">
     <thead>
       <tr>
-        <th *ngFor="let column of columns" (click)="sortBy(column)">
-          {{ column }}
-        </th>
+        <th>Symbol</th>
+        <th>Name</th>
+        <th>Industry</th>
+        <th>Market Cap</th>
+        <th>Price</th>
+        <th>Last Dividend</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let stock of paginatedStocks()">
-        <td>{{ stock.name }}</td>
+      <tr *ngFor="let stock of stocks">
         <td>{{ stock.symbol }}</td>
+        <td>{{ stock.companyName }}</td>
+        <td>{{ stock.industry }}</td>
         <td>{{ stock.marketCap }}</td>
-        <td>{{ stock.sector }}</td>
+        <td>{{ stock.price }}</td>
+        <td>{{ stock.lastAnnualDividend }}</td>
         <td>{{ stock.dividendYield }}</td>
-        <td>{{ stock.payoutRatio }}</td>
-        <td>{{ stock.roic }}</td>
-        <td>{{ stock.grossProfitMargin }}</td>
       </tr>
     </tbody>
   </table>
-
-  <div class="pagination">
-    <button (click)="prevPage()" [disabled]="page === 1">Previous</button>
-    <span>Page {{ page }}</span>
-    <button (click)="nextPage()" [disabled]="page * pageSize >= filteredStocks().length">
-      Next
-    </button>
-  </div>
+  <div *ngIf="loading" class="loading-spinner">Loading...</div>
 </div>

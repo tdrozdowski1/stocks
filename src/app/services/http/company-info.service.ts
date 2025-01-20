@@ -34,4 +34,11 @@ export class CompanyInfoService {
       `${this.BASE_URL}/key-metrics/${symbol}?limit=5&apikey=${this.API_KEY}`,
     );
   }
+
+  getCompanyInfoList(limit: number, page: number): Observable<any[]> {
+    const url = `${this.BASE_URL}/stock-screener?marketCapMoreThan=1000000000&limit=${limit}&offset=${
+      (page - 1) * limit
+    }&apikey=${this.API_KEY}`;
+    return this.http.get<any[]>(url);
+  }
 }
