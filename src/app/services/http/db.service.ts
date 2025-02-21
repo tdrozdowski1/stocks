@@ -14,26 +14,18 @@ export class DbService {
 
   constructor(private http: HttpClient) {}
 
-  addStock(stock: Stock): void {
-    console.log('Adding Stock');
-
+  updateStocks(stocks: Stock[]): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
-    this.http.post<any>(this.apiUrl, stock, { headers }).subscribe({
+    this.http.post<any>(this.apiUrl, stocks[stocks.length -1], { headers }).subscribe({
       next: (response) => console.log('Stock added successfully:', response),
       error: (error) => console.error('Error adding stock:', error)
   });
 
-  console.log('Call Executed');
 
-    
-    const currentStocks = this.stocksSubject.value;
-    this.stocksSubject.next([...currentStocks, stock]);
-    }
 
-  updateStocks(stocks: Stock[]): void {
     this.stocksSubject.next(stocks);
   }
 
