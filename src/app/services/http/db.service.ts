@@ -22,7 +22,10 @@ export class DbService {
       'Content-Type': 'application/json'
     });
 
-    console.log(this.http.post<any>(this.apiUrl, stock, { headers }));
+    this.http.post<any>(this.apiUrl, stock, { headers }).subscribe({
+      next: (response) => console.log('Stock added successfully:', response),
+      error: (error) => console.error('Error adding stock:', error)
+  });
     }
 
   updateStocks(stocks: Stock[]): void {
