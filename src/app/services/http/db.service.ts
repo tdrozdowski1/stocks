@@ -22,7 +22,7 @@ export class DbService {
       'Content-Type': 'application/json'
     });
 
-    this.http.post<any>(this.apiUrl, stock, { headers });
+    console.log(this.http.post<any>(this.apiUrl, stock, { headers }));
     }
 
   updateStocks(stocks: Stock[]): void {
