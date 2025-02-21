@@ -1,19 +1,30 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Stock } from './models/stock.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DbService {
+  private apiUrl = 'https://n0d0byuqzh.execute-api.us-east-1.amazonaws.com/prod/stocks';
+
   private stocksSubject: BehaviorSubject<Stock[]> = new BehaviorSubject<Stock[]>([]);
   stocks$: Observable<Stock[]> = this.stocksSubject.asObservable();
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   addStock(stock: Stock): void {
     const currentStocks = this.stocksSubject.value;
     this.stocksSubject.next([...currentStocks, stock]);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    this.http.post<any>(this.apiUrl, stock, { headers });
+    }
   }
 
   updateStocks(stocks: Stock[]): void {
