@@ -16,7 +16,8 @@ export class DbService {
 
   updateStocks(stocks: Stock[]): void {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
     });
 
     this.http.post<any>(this.apiUrl, stocks[stocks.length -1], { headers }).subscribe({
