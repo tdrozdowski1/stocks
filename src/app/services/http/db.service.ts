@@ -15,8 +15,7 @@ export class DbService {
   constructor(private http: HttpClient) {}
 
   addStock(stock: Stock): void {
-    const currentStocks = this.stocksSubject.value;
-    this.stocksSubject.next([...currentStocks, stock]);
+    console.log('Adding Stock');
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -26,6 +25,12 @@ export class DbService {
       next: (response) => console.log('Stock added successfully:', response),
       error: (error) => console.error('Error adding stock:', error)
   });
+
+  console.log('Call Executed');
+
+    
+    const currentStocks = this.stocksSubject.value;
+    this.stocksSubject.next([...currentStocks, stock]);
     }
 
   updateStocks(stocks: Stock[]): void {
