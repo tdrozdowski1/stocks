@@ -25,7 +25,6 @@ export class DbService {
 
     this.http.post<any>(this.apiUrl, stock, { headers });
     }
-  }
 
   updateStocks(stocks: Stock[]): void {
     this.stocksSubject.next(stocks);
