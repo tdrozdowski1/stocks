@@ -65,7 +65,6 @@ export class TransactionService {
         );
         filteredStocks.push(stock!);
         this.dbService.updateStocks(filteredStocks);
-        console.log(currentStocks);
       });
     });
   }

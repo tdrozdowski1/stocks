@@ -18,6 +18,9 @@ export class PortfolioPanelComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.dbService.getStocks().subscribe();
+
+
     this.dbService.stocks$
       .pipe(
         concatMap((stocks) => {

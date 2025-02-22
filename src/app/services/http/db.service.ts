@@ -30,7 +30,12 @@ export class DbService {
   }
 
   getStocks(): Observable<Stock[]> {
-    return this.stocks$;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    this.stocks$ = this.http.get<Stock[]>(this.apiUrl, { headers });
+  
+    return this.stocks$
   }
 
   getStocksValue(): Stock[] {
