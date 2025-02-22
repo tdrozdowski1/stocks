@@ -3,6 +3,14 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Stock } from './models/stock.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+export interface ApiResponse {
+  statusCode: number;
+  headers: {
+    [key: string]: string;
+  };
+  body: string; // body is a string, not parsed yet
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -34,7 +42,10 @@ export class DbService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    this.stocks$ = this.http.get<Stock[]>(this.apiUrl, { headers });
+    
+    this.stocks$ = this.http.get<ApiResponse>(this.apiUrl, { headers }).pipe(
+      map(response => JSON.parse(response.body) as Stock[])
+    );
   
     return this.stocks$
   }
