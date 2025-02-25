@@ -1,11 +1,11 @@
 <div class="stock-summary-container">
   <h2 class="stock-summary-title">Stock Summary</h2>
   <ul class="stock-list">
-    <li *ngFor="let stock of stocks" class="stock-item" (click)="onStockClick(stock)">
+    <li *ngFor="let stock of stocks$ | async" class="stock-item" (click)="onStockClick(stock)">
       <span class="stock-symbol">{{ stock.symbol }}</span
       >:
       <span class="money-invested">{{
-        this.getLatestOwnershipPeriodQuantity(stock.ownershipPeriods)
+        getLatestOwnershipPeriodQuantity(stock.ownershipPeriods)
       }}</span>
     </li>
   </ul>

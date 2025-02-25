@@ -41,9 +41,13 @@ export class DbService {
       'Content-Type': 'application/json',
     });
 
-    this.stocks$ = this.http
+    this.http
       .get<ApiResponse>(this.apiUrl, { headers })
-      .pipe(map((response) => JSON.parse(response.body) as Stock[]));
+      .pipe(map((response) => JSON.parse(response.body) as Stock[]))
+      .subscribe({
+        next: (stocks) => this.stocksSubject.next(stocks),
+        error: (error) => console.error('Error fetching stocks:', error),
+      });
 
     return this.stocks$;
   }
