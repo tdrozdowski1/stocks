@@ -25,29 +25,27 @@ export class DbService {
   updateStocks(stocks: Stock[]): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     });
 
-    this.http.post<any>(this.apiUrl, stocks[stocks.length -1], { headers }).subscribe({
+    this.http.post<any>(this.apiUrl, stocks[stocks.length - 1], { headers }).subscribe({
       next: (response) => console.log('Stock added successfully:', response),
-      error: (error) => console.error('Error adding stock:', error)
-  });
-
-
+      error: (error) => console.error('Error adding stock:', error),
+    });
 
     this.stocksSubject.next(stocks);
   }
 
   getStocks(): Observable<Stock[]> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
-    
-    this.stocks$ = this.http.get<ApiResponse>(this.apiUrl, { headers }).pipe(
-      map(response => JSON.parse(response.body) as Stock[])
-    );
-  
-    return this.stocks$
+
+    this.stocks$ = this.http
+      .get<ApiResponse>(this.apiUrl, { headers })
+      .pipe(map((response) => JSON.parse(response.body) as Stock[]));
+
+    return this.stocks$;
   }
 
   getStocksValue(): Stock[] {

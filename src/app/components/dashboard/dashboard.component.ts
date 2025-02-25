@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from '../../services/domain/models/transaction.model';
 import { TransactionService } from '../../services/domain/transaction.service';
+import { catchError, concatMap, forkJoin, map, of } from 'rxjs';
+import { DbService } from '../../services/http/db.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,9 +10,17 @@ import { TransactionService } from '../../services/domain/transaction.service';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  constructor(private transactionService: TransactionService) {}
+  constructor(
+    private transactionService: TransactionService,
+    private dbService: DbService,
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dbService.getStocks().subscribe(
+      (stock) => console.log(stock),
+      (error) => console.error('Error:', error),
+    );
+  }
 
   onTransactionChange(transaction: Transaction) {
     this.transactionService.addTransaction(transaction);
