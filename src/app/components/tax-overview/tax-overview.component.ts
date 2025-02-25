@@ -3,6 +3,7 @@ import { Stock } from 'src/app/services/http/models/stock.model';
 import { DbService } from 'src/app/services/http/db.service';
 import { concatMap } from 'rxjs';
 
+
 @Component({
   selector: 'app-tax-overview',
   templateUrl: './tax-overview.component.html',

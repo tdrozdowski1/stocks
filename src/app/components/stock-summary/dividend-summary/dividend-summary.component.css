@@ -1,16 +1,52 @@
-.dividend-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.dividend-table th, .dividend-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.dividend-table th {
-  background-color: #007bff;
-  color: #fff;
-}
+h3 {
+    color: #26a69a;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 15px;
+  }
+  
+  .dividend-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #333333;
+  }
+  
+  .dividend-table thead th {
+    background-color: #26a69a;
+    color: #ffffff;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-bottom: 3px solid #1d8379;
+  }
+  
+  .dividend-table tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .dividend-table tbody tr {
+    background-color: #fafafa;
+    transition: background-color 0.2s ease;
+  }
+  
+  .dividend-table tbody tr:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .tax-summary p {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .tax-summary span {
+    font-weight: 600;
+    color: #1976d2;
+  }
+  
+  .tax-summary span:last-child {
+    color: #d81b60;
+  }

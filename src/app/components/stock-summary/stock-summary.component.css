@@ -1,50 +1,41 @@
 .stock-summary-container {
-  display: flex;
-  flex-direction: column;
+  max-width: 1400px;
+  margin: 20px auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  background-color: #f4f5f7;
+  color: #333333;
 }
 
-.top-section {
-  background-color: #f8f9fa;
+.top-section,
+.middle-section,
+.details-section,
+.company-info,
+.dividends-vs-fcf-chart,
+.liabilities-chart,
+.stock-performance-chart,
+.valuation-section {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .middle-section {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.chart-section{
-  width: 48%;
-  padding: 20px;
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-}
-
-.details-section {
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 5px;
-}
-
+.chart-section,
 .dividend-section {
-  padding: 20px;
-  background-color: #f7f9fc;
-  margin-top: 20px;
-  border: 1px solid #ddd;
+  flex: 1;
+  min-width: 300px;
 }
 
-.tax-summary {
-  margin-top: 20px;
-  font-weight: bold;
-}
-
-.tax-summary p {
-  margin: 5px 0;
+h2 {
+  color: #26a69a;
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 15px;
 }

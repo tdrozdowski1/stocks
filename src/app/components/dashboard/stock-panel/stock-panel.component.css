@@ -1,46 +1,46 @@
 .stock-summary-container {
-  background-color: #f9f9f9; /* Light background for contrast */
-  border: 1px solid #e0e0e0; /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
-  padding: 20px; /* Padding around the content */
-  margin-top: 20px; /* Space above the component */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 .stock-summary-title {
-  font-size: 1.5em; /* Title size */
-  color: #333; /* Dark color for text */
-  margin-bottom: 15px; /* Space below the title */
+  color: #26a69a;
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 15px;
 }
 
 .stock-list {
-  list-style-type: none; /* Remove default list styling */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margin */
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .stock-item {
-  font-size: 1.2em; /* Item text size */
-  color: #444; /* Slightly lighter text color */
-  padding: 10px; /* Padding around each item */
-  border-bottom: 1px solid #e0e0e0; /* Line between items */
-  transition: background-color 0.3s; /* Smooth background transition */
-}
-
-.stock-item:last-child {
-  border-bottom: none; /* Remove border from last item */
+  padding: 12px 16px;
+  background-color: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .stock-item:hover {
-  background-color: #f1f1f1; /* Highlight on hover */
-  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.stock-item:last-child {
+  border-bottom: none;
 }
 
 .stock-symbol {
-  font-weight: bold; /* Bold for stock symbol */
+  font-weight: 600;
+  color: #26a69a;
+  margin-right: 8px;
 }
 
 .money-invested {
-  color: #007bff; /* Color for money invested (blue) */
-  margin-left: 5px; /* Space between symbol and amount */
+  color: #555555;
 }

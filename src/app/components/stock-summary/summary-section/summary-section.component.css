@@ -1,0 +1,17 @@
+h1 {
+    color: #26a69a;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  
+  p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #555555;
+  }
+  
+  p span {
+    font-weight: 600;
+    color: #1976d2;
+  }
