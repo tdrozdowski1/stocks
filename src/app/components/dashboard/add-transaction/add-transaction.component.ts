@@ -17,7 +17,7 @@ export class AddTransactionComponent {
 
   constructor(
     private fb: UntypedFormBuilder,
-    private companyInfoService: CompanyInfoService,
+    private companyInfoService: CompanyInfoService
   ) {
     this.transactionForm = this.fb.group({
       symbol: ['', Validators.required],
@@ -35,24 +35,31 @@ export class AddTransactionComponent {
     this.transactionForm
       .get('symbol')
       ?.valueChanges.pipe(
-        debounceTime(750), // Wait 0,75 seconds after the user stops typing
-        distinctUntilChanged(), // Avoid duplicate API calls for the same input
-        switchMap((query) => {
-          if (!query) {
-            return of([]); // If the input is empty, return an empty array
-          }
-          return this.companyInfoService.fetchNameSuggestions(query);
-        }),
-      )
-      .subscribe((suggestions: any) => {
-        this.suggestions = suggestions;
-      });
+      debounceTime(750),
+      distinctUntilChanged(),
+      switchMap((query) => {
+        if (!query || query.length < 2) {
+          return of([]);
+        }
+        return this.companyInfoService.fetchNameSuggestions(query);
+      })
+    )
+      .subscribe(
+        (suggestions: string[]) => {
+          console.log('Suggestions:', suggestions); // Debug
+          this.suggestions = suggestions || [];
+        },
+        (error) => {
+          console.error('Error fetching suggestions:', error); // Debug errors
+          this.suggestions = [];
+        }
+      );
   }
 
   selectSuggestion(suggestion: string) {
-    const symbol = suggestion.split(' ')[0]; // Extract the symbol before the first space
-    this.transactionForm.patchValue({ symbol: symbol });
-    this.suggestions = []; // Clear suggestions to hide the list
+    const symbol = suggestion.split(' ')[0]; // Extract symbol
+    this.transactionForm.patchValue({ symbol });
+    this.suggestions = []; // Hide list
   }
 
   onSubmit() {

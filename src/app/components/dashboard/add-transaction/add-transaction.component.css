@@ -7,7 +7,7 @@ form {
   margin: 20px auto;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 15px;
 }
 
 h2 {
@@ -32,6 +32,7 @@ select {
   color: #333333;
   background-color: #ffffff;
   transition: border-color 0.2s ease;
+  width: 100%;
 }
 
 input:focus,
@@ -57,10 +58,15 @@ button:hover {
   background-color: #1d8379;
 }
 
+.autocomplete-container {
+  position: relative;
+  width: 100%;
+}
+
 .autocomplete-list {
   list-style: none;
   padding: 0;
-  margin: 5px 0 0;
+  margin: 0; /* Removed top margin for tighter alignment */
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
@@ -68,8 +74,10 @@ button:hover {
   max-height: 200px;
   overflow-y: auto;
   position: absolute;
-  width: 200px;
-  z-index: 10;
+  top: calc(100% + 2px); /* Small gap below input */
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Increased for visibility over other elements */
 }
 
 .autocomplete-list li {
