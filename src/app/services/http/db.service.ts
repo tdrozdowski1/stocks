@@ -71,4 +71,18 @@ export class DbService {
       map((stocks) => stocks.find((stock) => stock.symbol === symbol)),
     );
   }
+
+  removeStock(stock: Stock): void {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
+
+    this.http.delete<any>(`${this.apiUrl}/${stock.symbol}`, { headers }).subscribe({
+      next: (response) => console.log('Stock removed successfully:', response),
+      error: (error) => console.error('Error removing stock:', error),
+    });
+
+    this.stocksSubject.next(this.stocksSubject.value.filter((s) => s.symbol !== stock.symbol));
+  }
 }

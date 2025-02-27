@@ -30,4 +30,8 @@ export class StockPanel implements OnInit {
     }
     return ownershipPeriods[ownershipPeriods.length - 1].quantity;
   }
+
+  removeStock(stock: Stock): void {
+    this.dbService.removeStock(stock);
+  }
 }

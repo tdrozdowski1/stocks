@@ -17,7 +17,7 @@ export class AddTransactionComponent {
 
   constructor(
     private fb: UntypedFormBuilder,
-    private companyInfoService: CompanyInfoService
+    private companyInfoService: CompanyInfoService,
   ) {
     this.transactionForm = this.fb.group({
       symbol: ['', Validators.required],
@@ -35,15 +35,15 @@ export class AddTransactionComponent {
     this.transactionForm
       .get('symbol')
       ?.valueChanges.pipe(
-      debounceTime(750),
-      distinctUntilChanged(),
-      switchMap((query) => {
-        if (!query || query.length < 2) {
-          return of([]);
-        }
-        return this.companyInfoService.fetchNameSuggestions(query);
-      })
-    )
+        debounceTime(750),
+        distinctUntilChanged(),
+        switchMap((query) => {
+          if (!query || query.length < 2) {
+            return of([]);
+          }
+          return this.companyInfoService.fetchNameSuggestions(query);
+        }),
+      )
       .subscribe(
         (suggestions: string[]) => {
           console.log('Suggestions:', suggestions); // Debug
@@ -52,7 +52,7 @@ export class AddTransactionComponent {
         (error) => {
           console.error('Error fetching suggestions:', error); // Debug errors
           this.suggestions = [];
-        }
+        },
       );
   }
 
