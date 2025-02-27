@@ -73,10 +73,7 @@ export class DbService {
   }
 
   removeStock(stock: Stock): void {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    });
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     this.http.delete<any>(`${this.apiUrl}/${stock.symbol}`, { headers }).subscribe({
       next: (response) => console.log('Stock removed successfully:', response),
