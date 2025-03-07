@@ -1,50 +1,80 @@
-import { Component, OnInit } from '@angular/core';
-import { Stock } from 'src/app/services/http/models/stock.model';
-import { DbService } from 'src/app/services/http/db.service';
-import { concatMap, forkJoin, of, catchError, map } from 'rxjs';
-import { FinancialDataService } from './../../services/http/financial-data.service';
+.table-container {
+  padding: 20px;
+  background-color: #ffffff; /* White background */
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
 
-@Component({
-  selector: 'app-portfolio-panel',
-  templateUrl: './portfolio-panel.component.html',
-  styleUrls: ['./portfolio-panel.component.css'],
-})
-export class PortfolioPanelComponent implements OnInit {
-  stocks: Stock[] = [];
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Roboto', sans-serif; /* Modern font */
+  color: #333333; /* Dark gray text */
+}
 
-  constructor(
-    private dbService: DbService,
-    private financialDataService: FinancialDataService,
-  ) {}
+.stock-table thead th {
+  background-color: #26a69a; /* Teal header */
+  color: #ffffff;
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-bottom: 3px solid #1d8379; /* Darker teal border */
+}
 
-  ngOnInit() {
-    this.dbService.stocks$
-      .pipe(
-        concatMap((stocks) => {
-          this.stocks = stocks;
-          return forkJoin(
-            stocks.map((stock) =>
-              this.financialDataService.getStockPrice(stock.symbol).pipe(
-                map((priceResponse) => ({
-                  ...stock,
-                  currentPrice: priceResponse[0].price, // Update with actual response structure
-                })),
-                catchError((error) => {
-                  console.error(`Error fetching price for ${stock.symbol}:`, error);
-                  return of(stock); // Fallback to the original stock if there's an error
-                }),
-              ),
-            ),
-          );
-        }),
-      )
-      .subscribe(
-        (updatedStocks) => ((this.stocks = updatedStocks), console.log(this.stocks, updatedStocks)),
-        (error) => console.error('Error:', error),
-      );
-  }
+.stock-table tbody td {
+  padding: 14px 18px;
+  font-size: 14px;
+  border-bottom: 1px solid #e0e0e0; /* Light gray separation */
+}
 
-  removeStock(stock: Stock): void {
-    this.dbService.removeStock(stock);
-  }
+.stock-table tbody tr {
+  background-color: #fafafa; /* Off-white row background */
+  transition: all 0.2s ease;
+}
+
+.stock-table tbody tr:hover {
+  background-color: #f0f0f0; /* Light gray hover */
+  box-shadow: inset 0 0 0 1px #26a69a; /* Teal outline on hover */
+}
+
+.stock-table tbody td:first-child {
+  font-weight: 600;
+  color: #26a69a; /* Teal stock symbols */
+}
+
+.stock-table tbody td:nth-child(even) {
+  color: #555555; /* Slightly darker text for contrast */
+}
+
+/* New styles for remove button and action column */
+.stock-table th:last-child,
+.stock-table td:last-child {
+  width: 60px;
+  text-align: center;
+}
+
+.stock-row .remove-btn {
+  visibility: hidden;
+  background-color: #e74c3c; /* Red for removal */
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.stock-row:hover .remove-btn {
+  visibility: visible;
+}
+
+.remove-btn:hover {
+  background-color: #c0392b; /* Darker red on hover */
 }
