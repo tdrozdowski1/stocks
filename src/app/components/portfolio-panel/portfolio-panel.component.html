@@ -9,10 +9,11 @@
         <th>Current Value</th>
         <th>Total Dividend Value</th>
         <th>Current Value With Dividends</th>
+        <th></th> <!-- Empty header for remove button -->
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let stock of stocks">
+      <tr *ngFor="let stock of stocks" class="stock-row">
         <td>{{ stock.symbol }}</td>
         <td>{{ stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity }}</td>
         <td>{{ stock.moneyInvested | currency: 'USD' }}</td>
@@ -31,6 +32,7 @@
               stock.totalDividendValue | currency: 'USD'
           }}
         </td>
+        <td><button class="remove-btn" (click)="removeStock(stock)">x</button></td>
       </tr>
     </tbody>
   </table>
