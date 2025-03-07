@@ -43,4 +43,8 @@ export class PortfolioPanelComponent implements OnInit {
         (error) => console.error('Error:', error),
       );
   }
+
+  removeStock(stock: Stock): void {
+    this.dbService.removeStock(stock);
+  }
 }
