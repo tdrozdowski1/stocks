@@ -32,6 +32,8 @@ export class StockPanel implements OnInit {
   }
 
   removeStock(stock: Stock): void {
-    this.dbService.removeStock(stock);
+    if (confirm(`Are you sure you want to remove ${stock.symbol}?`)) {
+      this.dbService.removeStock(stock);
+    }
   }
 }
