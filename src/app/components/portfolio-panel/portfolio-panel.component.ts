@@ -44,7 +44,9 @@ export class PortfolioPanelComponent implements OnInit {
       );
   }
 
-  removeStock(stock: Stock): void {
+removeStock(stock: Stock): void {
+  if (confirm(`Are you sure you want to remove ${stock.symbol}?`)) {
     this.dbService.removeStock(stock);
   }
+}
 }
