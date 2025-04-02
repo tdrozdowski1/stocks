@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 
 import { TransactionService } from './transaction.service';
 import { Transaction } from './models/transaction.model';
-import { HttpClientModule } from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { FinancialDataService } from '../http/financial-data.service';
 import { DbService } from '../http/db.service';
 import any = jasmine.any;
@@ -84,6 +84,7 @@ describe('TransactionService', () => {
   let dbServiceMock: any;
   let financialDataServiceMock: FinancialDataServiceMock;
   let dividendServiceMock: DividendServiceMock;
+  let httpClient: HttpClient;
 
   beforeEach(() => {
     financialDataServiceMock = new FinancialDataServiceMock();
@@ -96,6 +97,7 @@ describe('TransactionService', () => {
       dbServiceMock as any,
       financialDataServiceMock as any,
       dividendServiceMock as any,
+      httpClient as any
     );
   });
 
