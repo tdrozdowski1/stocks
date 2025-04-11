@@ -1,3 +1,5 @@
+/* Existing styles remain unchanged */
+
 .stock-summary-container {
   background-color: #ffffff;
   border-radius: 10px;
@@ -61,4 +63,37 @@
 .remove-stock:hover {
   background-color: #d32f2f;
   color: #ffffff;
+}
+
+/* New spinner styles */
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3; /* Light gray border */
+  border-top: 4px solid #26a69a; /* Match theme color */
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+.spinner-container p {
+  color: #555555;
+  font-size: 14px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

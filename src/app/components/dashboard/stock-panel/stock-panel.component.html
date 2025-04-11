@@ -1,13 +1,20 @@
 <div class="stock-summary-container">
   <h2 class="stock-summary-title">Stock Summary</h2>
-  <ul class="stock-list">
-    <li *ngFor="let stock of stocks$ | async" class="stock-item">
-      <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span
-      >:
-      <span class="money-invested" (click)="onStockClick(stock)">{{
-        getLatestOwnershipPeriodQuantity(stock.ownershipPeriods)
-      }}</span>
-      <span class="remove-stock" (click)="removeStock(stock)">✕</span>
-    </li>
-  </ul>
+  <div *ngIf="stocks$ | async as stocks; else loading" class="stock-list-container">
+    <ul class="stock-list">
+      <li *ngFor="let stock of stocks" class="stock-item">
+        <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span>:
+        <span class="money-invested" (click)="onStockClick(stock)">{{
+          getLatestOwnershipPeriodQuantity(stock.ownershipPeriods)
+          }}</span>
+        <span class="remove-stock" (click)="removeStock(stock)">✕</span>
+      </li>
+    </ul>
+  </div>
+  <ng-template #loading>
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <p>Loading stocks...</p>
+    </div>
+  </ng-template>
 </div>
