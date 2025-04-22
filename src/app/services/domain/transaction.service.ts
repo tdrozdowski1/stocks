@@ -11,7 +11,7 @@ import { catchError, of } from 'rxjs';
   providedIn: 'root',
 })
 export class TransactionService {
-  private lambdaUrl = 'https://n0d0byuqzh.execute-api.us-east-1.amazonaws.com/transactions';
+  private lambdaUrl = 'https://n0d0byuqzh.execute-api.us-east-1.amazonaws.com/prod/transactions';
 
   constructor(
     private http: HttpClient,
