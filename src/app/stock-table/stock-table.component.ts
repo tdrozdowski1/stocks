@@ -11,6 +11,7 @@ export class StockTableComponent implements OnInit {
   page = 1;
   pageSize = 50;
   loading = false;
+  errorMessage: string | null = null;
 
   constructor(private companyInfoService: CompanyInfoService) {}
 
@@ -22,6 +23,8 @@ export class StockTableComponent implements OnInit {
     if (this.loading) return;
 
     this.loading = true;
+    this.errorMessage = null;
+
     this.companyInfoService.getCompanyInfoList(this.pageSize, this.page).subscribe(
       (data) => {
         this.stocks = [...this.stocks, ...data];
@@ -30,14 +33,18 @@ export class StockTableComponent implements OnInit {
       },
       (error) => {
         console.error('Error fetching stock data', error);
+        this.errorMessage = 'Failed to load stock data. Scroll down to retry.';
         this.loading = false;
-      },
+      }
     );
   }
 
   @HostListener('window:scroll', [])
   onScroll(): void {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+      !this.loading
+    ) {
       this.loadStocks();
     }
   }

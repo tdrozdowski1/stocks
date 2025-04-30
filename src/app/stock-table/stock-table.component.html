@@ -21,5 +21,7 @@
       </tr>
     </tbody>
   </table>
-  <div *ngIf="loading" class="loading-spinner">Loading...</div>
+  <div *ngIf="loading || errorMessage" class="loading-spinner">
+    {{ errorMessage ? errorMessage : 'Loading...' }}
+  </div>
 </div>

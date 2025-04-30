@@ -53,3 +53,11 @@
   font-size: 16px;
   color: #555555;
 }
+
+.loading-spinner.ng-invalid {
+  color: red;
+}
+
+.loading-spinner.error {
+  color: #e53935;
+}
