@@ -35,16 +35,13 @@ export class StockTableComponent implements OnInit {
         console.error('Error fetching stock data', error);
         this.errorMessage = 'Failed to load stock data. Scroll down to retry.';
         this.loading = false;
-      }
+      },
     );
   }
 
   @HostListener('window:scroll', [])
   onScroll(): void {
-    if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-      !this.loading
-    ) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !this.loading) {
       this.loadStocks();
     }
   }

@@ -73,6 +73,7 @@
 
 .stock-row:hover .remove-btn {
   visibility: visible;
+  cursor: pointer;
 }
 
 .remove-btn:hover {

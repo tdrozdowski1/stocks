@@ -17,18 +17,21 @@ export class TransactionService {
     private http: HttpClient,
     private dbService: DbService,
     private financialDataService: FinancialDataService,
-    private dividendService: DividendService
+    private dividendService: DividendService,
   ) {}
 
   addTransaction(transaction: Transaction) {
-    this.http.post(this.lambdaUrl, { body: JSON.stringify(transaction) }).pipe(
-      catchError(() => of(null)) // If Lambda call fails, return null
-    ).subscribe((response: any) => {
-      if (!response || response.error) {
-        // If Lambda response is negative, execute fallback logic
-        this.fallbackAddTransaction(transaction);
-      }
-    });
+    this.http
+      .post(this.lambdaUrl, { body: JSON.stringify(transaction) })
+      .pipe(
+        catchError(() => of(null)), // If Lambda call fails, return null
+      )
+      .subscribe((response: any) => {
+        if (!response || response.error) {
+          // If Lambda response is negative, execute fallback logic
+          this.fallbackAddTransaction(transaction);
+        }
+      });
   }
 
   private fallbackAddTransaction(transaction: Transaction) {
@@ -62,14 +65,19 @@ export class TransactionService {
 
     this.financialDataService.getDividends(stock!.symbol).subscribe((data) => {
       const ownershipPeriods = this.calculateOwnershipPeriods(stock!.transactions);
-      stock!.dividends = this.dividendService.filterDividendsByOwnership(data.historical, ownershipPeriods);
+      stock!.dividends = this.dividendService.filterDividendsByOwnership(
+        data.historical,
+        ownershipPeriods,
+      );
       stock!.totalDividendValue = this.dividendService.calculateTotalDividens(stock!.dividends);
 
       this.dividendService.updateUsdPlnRateForDividends(stock!).subscribe((stock) => {
         stock = this.dividendService.calculateTaxToBePaidInPoland(stock);
         stock = this.dividendService.calculateTotalWithholdingTaxPaid(stock);
 
-        const filteredStocks = currentStocks.filter((savedStock) => savedStock.symbol !== stock.symbol);
+        const filteredStocks = currentStocks.filter(
+          (savedStock) => savedStock.symbol !== stock.symbol,
+        );
         filteredStocks.push(stock!);
         this.dbService.updateStocks(filteredStocks);
       });
