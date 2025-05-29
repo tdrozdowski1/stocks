@@ -16,23 +16,15 @@
     <tbody>
       <tr *ngFor="let stock of stocks" class="stock-row" (click)="onStockClick(stock)">
         <td>{{ stock.symbol }}</td>
-        <td>{{ stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity }}</td>
+        <td>{{ stock.ownershipPeriods?.length ? stock.ownershipPeriods[stock.ownershipPeriods.length - 1]?.quantity || 0 : 0 }}</td>
         <td>{{ stock.moneyInvested | currency: 'USD' }}</td>
         <td>{{ stock.currentPrice | currency: 'USD' }}</td>
         <td>
-          {{
-            stock.currentPrice * stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity
-              | currency: 'USD'
-          }}
+          {{ (stock?.currentPrice || 0) * (stock?.ownershipPeriods?.length ? stock.ownershipPeriods[stock.ownershipPeriods.length - 1]?.quantity || 0 : 0) | currency: 'USD' }}
         </td>
         <td>{{ stock.totalDividendValue | currency: 'USD' }}</td>
         <td>
-          {{
-            stock.currentPrice *
-              stock.ownershipPeriods[stock.ownershipPeriods.length - 1].quantity +
-              stock.totalDividendValue | currency: 'USD'
-          }}
-        </td>
+          {{ ((stock?.currentPrice || 0) * (stock?.ownershipPeriods?.length ? stock.ownershipPeriods[stock.ownershipPeriods.length - 1]?.quantity || 0 : 0) + (stock?.totalDividendValue || 0)) | currency: 'USD' }}        </td>
         <td>
           <button class="remove-btn" (click)="removeStock(stock); $event.stopPropagation()">
             x
