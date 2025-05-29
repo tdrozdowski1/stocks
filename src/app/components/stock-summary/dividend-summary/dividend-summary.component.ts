@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Stock } from '../../../services/http/models/stock.model';
+import { StockModel } from '../../../services/http/models/stock.model';
 
 @Component({
   selector: 'app-dividend-summary',
@@ -7,7 +7,7 @@ import { Stock } from '../../../services/http/models/stock.model';
   styleUrls: ['./dividend-summary.component.css'],
 })
 export class DividendSummaryComponent implements OnInit {
-  @Input() stock: Stock | undefined;
+  @Input() stock: StockModel | undefined;
 
   constructor() {}
 

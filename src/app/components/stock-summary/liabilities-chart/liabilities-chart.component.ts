@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Stock } from './../../../services/http/models/stock.model';
+import { StockModel } from './../../../services/http/models/stock.model';
 import { Chart } from 'chart.js';
 
 @Component({
@@ -8,7 +8,7 @@ import { Chart } from 'chart.js';
   styleUrls: ['./liabilities-chart.component.css'],
 })
 export class LiabilitiesChartComponent implements OnInit {
-  @Input() stock: Stock | undefined;
+  @Input() stock: StockModel | undefined;
 
   liabilitiesChart: Chart | undefined;
 

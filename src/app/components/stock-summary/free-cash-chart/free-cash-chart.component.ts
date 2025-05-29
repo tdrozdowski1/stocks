@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Stock } from './../../../services/http/models/stock.model';
+import { StockModel } from './../../../services/http/models/stock.model';
 import { Chart } from 'chart.js';
 
 @Component({
@@ -8,7 +8,7 @@ import { Chart } from 'chart.js';
   styleUrls: ['./free-cash-chart.component.css'],
 })
 export class FreeCashChartComponent implements OnInit {
-  @Input() stock: Stock | undefined;
+  @Input() stock: StockModel | undefined;
 
   dividendsVsFcfChart: Chart | undefined;
 

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Stock } from '../../../services/http/models/stock.model';
+import { StockModel } from '../../../services/http/models/stock.model';
 
 @Component({
   selector: 'app-summary-section',
@@ -7,7 +7,7 @@ import { Stock } from '../../../services/http/models/stock.model';
   styleUrls: ['./summary-section.component.css'],
 })
 export class SummarySectionComponent implements OnInit {
-  @Input() stock: Stock | undefined;
+  @Input() stock: StockModel | undefined;
 
   constructor() {}
 

@@ -4,10 +4,9 @@ import { DividendDetail } from './dividend.details.model';
 import { CashFlowData } from './cashFlowData.model';
 import { LiabilitiesData } from './liabilitiesData.model';
 
-export interface Stock {
+export interface StockModel {
   symbol: string;
   moneyInvested: number;
-  currentPrice: number;
   ownershipPeriods: OwnershipPeriod[];
   transactions: Transaction[];
   dividends?: DividendDetail[];
@@ -16,4 +15,5 @@ export interface Stock {
   liabilitiesData?: LiabilitiesData[];
   totalWithholdingTaxPaid?: number;
   taxToBePaidInPoland?: number;
+  currentPrice?: number;
 }

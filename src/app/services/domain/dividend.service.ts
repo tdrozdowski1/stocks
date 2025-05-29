@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { OwnershipPeriod } from '../http/models/ownershipPeriod.model';
 import { DividendDetail } from '../http/models/dividend.details.model';
 import { Observable, catchError, forkJoin, from, map, mergeMap, of } from 'rxjs';
-import { Stock } from '../http/models/stock.model';
+import { StockModel } from '../http/models/stock.model';
 import { FinancialDataService } from '../http/financial-data.service';
 
 @Injectable({
@@ -44,7 +44,7 @@ export class DividendService {
     }, 0);
   }
 
-  updateUsdPlnRateForDividends(stock: Stock): Observable<Stock> {
+  updateUsdPlnRateForDividends(stock: StockModel): Observable<StockModel> {
     if (!stock.dividends || stock.dividends.length === 0) {
       return of(stock);
     }
@@ -110,7 +110,7 @@ export class DividendService {
     );
   }
 
-  calculateTaxToBePaidInPoland(stock: Stock) {
+  calculateTaxToBePaidInPoland(stock: StockModel) {
     stock.taxToBePaidInPoland =
       stock.dividends!.reduce(
         (total, dividend) => total + dividend.taxDueInPoland * dividend.quantity,
@@ -119,7 +119,7 @@ export class DividendService {
     return stock;
   }
 
-  calculateTotalWithholdingTaxPaid(stock: Stock) {
+  calculateTotalWithholdingTaxPaid(stock: StockModel) {
     stock.totalWithholdingTaxPaid =
       stock.dividends!.reduce(
         (total, dividend) => total + dividend.withholdingTaxPaid * dividend.quantity,

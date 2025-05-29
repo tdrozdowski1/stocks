@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { Stock } from './models/stock.model';
+import { StockModel } from './models/stock.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {FinancialDataService} from "./financial-data.service";
+import {DividendService} from "../domain/dividend.service";
 
 export interface ApiResponse {
   statusCode: number;
@@ -17,18 +19,28 @@ export interface ApiResponse {
 export class DbService {
   private apiUrl = 'https://n0d0byuqzh.execute-api.us-east-1.amazonaws.com/prod/stocks';
 
-  private stocksSubject: BehaviorSubject<Stock[]> = new BehaviorSubject<Stock[]>([]);
-  stocks$: Observable<Stock[]> = this.stocksSubject.asObservable();
+  private stocksSubject: BehaviorSubject<StockModel[]> = new BehaviorSubject<StockModel[]>([]);
+  stocks$: Observable<StockModel[]> = this.stocksSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private financialDataService: FinancialDataService, private dividendService: DividendService) {}
 
-  updateStocks(stocks: Stock[]): void {
+  updateStocks(stocks: StockModel[]): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
     });
 
-    this.http.post<any>(this.apiUrl, stocks[stocks.length - 1], { headers }).subscribe({
+    const stocksResource = stocks.map((stock) => ({
+      symbol: stock.symbol,
+      moneyInvested: stock.moneyInvested,
+      ownershipPeriods: stock.ownershipPeriods,
+      transactions: stock.transactions
+      // ,
+      // totalWithholdingTaxPaid: stock.totalWithholdingTaxPaid,
+      // taxToBePaidInPoland: stock.taxToBePaidInPoland,
+    }));
+
+    this.http.post<any>(this.apiUrl, stocksResource[stocksResource.length - 1], { headers }).subscribe({
       next: (response) => console.log('Stock added successfully:', response),
       error: (error) => console.error('Error adding stock:', error),
     });
@@ -36,14 +48,34 @@ export class DbService {
     this.stocksSubject.next(stocks);
   }
 
-  getStocks(): Observable<Stock[]> {
+  getStocks(): Observable<StockModel[]> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
 
     this.http
       .get<ApiResponse>(this.apiUrl, { headers })
-      .pipe(map((response) => JSON.parse(response.body) as Stock[]))
+      .pipe(
+        map((response) => JSON.parse(response.body) as StockModel[]),
+      //   map((stocks) =>
+      //     stocks.map((stock) => {
+      //       // Fetch additional data for each stock
+      //       this.financialDataService.getStockPrice(stock.symbol).subscribe((price) => {
+      //         stock.currentPrice = price;
+      //       });
+      //
+      //       this.financialDataService.getDividends(stock.symbol).subscribe((data) => {
+      //         stock.dividends = this.dividendService.filterDividendsByOwnership(
+      //           data.historical,
+      //           stock.ownershipPeriods,
+      //         );
+      //         stock.totalDividendValue = this.dividendService.calculateTotalDividens(stock.dividends);
+      //       });
+      //
+      //       return stock;
+      //     }),
+      //   ),
+       )
       .subscribe({
         next: (stocks) => this.stocksSubject.next(stocks),
         error: (error) => console.error('Error fetching stocks:', error),
@@ -52,7 +84,7 @@ export class DbService {
     return this.stocks$;
   }
 
-  getStocksValue(): Stock[] {
+  getStocksValue(): StockModel[] {
     return this.stocksSubject.value;
   }
 
@@ -65,14 +97,14 @@ export class DbService {
    * @param symbol The stock symbol to search for.
    * @returns An Observable of the Stock object or undefined if not found.
    */
-  getStockBySymbol(symbol: string): Observable<Stock | undefined> {
+  getStockBySymbol(symbol: string): Observable<StockModel | undefined> {
     return this.stocks$.pipe(
       // Use map to transform the list of stocks to the stock with the given symbol
       map((stocks) => stocks.find((stock) => stock.symbol === symbol)),
     );
   }
 
-  removeStock(stock: Stock): void {
+  removeStock(stock: StockModel): void {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     this.http.delete<any>(`${this.apiUrl}/${stock.symbol}`, { headers }).subscribe({

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Stock } from 'src/app/services/http/models/stock.model';
+import { StockModel } from 'src/app/services/http/models/stock.model';
 import { DbService } from 'src/app/services/http/db.service';
 import { concatMap } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { concatMap } from 'rxjs';
   styleUrls: ['./tax-overview.component.css'],
 })
 export class TaxOverviewComponent implements OnInit {
-  stocks: Stock[] = [];
+  stocks: StockModel[] = [];
   expandedRowIndex: number | null = null;
 
   constructor(private dbService: DbService) {}

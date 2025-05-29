@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Stock } from '../../services/http/models/stock.model';
+import { StockModel } from '../../services/http/models/stock.model';
 import { DbService } from '../../services/http/db.service';
 import { ActivatedRoute } from '@angular/router';
 import { CompanyInfo, CompanyInfoService } from '../../services/http/company-info.service';
@@ -11,7 +11,7 @@ import { FinancialDataService } from '../../services/http/financial-data.service
   styleUrls: ['./stock-summary.component.css'],
 })
 export class StockSummaryComponent implements OnInit {
-  stock: Stock | undefined; // Store the selected stock data
+  stock: StockModel | undefined; // Store the selected stock data
   companyInfo: CompanyInfo[] = [];
 
   cashFlowData: boolean = false;

@@ -7,7 +7,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FinancialDataService } from '../http/financial-data.service';
 import { DbService } from '../http/db.service';
 import any = jasmine.any;
-import { Stock } from '../http/models/stock.model';
+import { StockModel } from '../http/models/stock.model';
 
 class MockDbService {
   getStocksValue() {
@@ -63,17 +63,17 @@ class DividendServiceMock {
     return 100;
   }
 
-  updateUsdPlnRateForDividends(stock: Stock) {
+  updateUsdPlnRateForDividends(stock: StockModel) {
     // Mock response for updating USD/PLN rates for dividends
     return of(stock);
   }
 
-  calculateTaxToBePaidInPoland(stock: Stock) {
+  calculateTaxToBePaidInPoland(stock: StockModel) {
     // Mock response for calculating tax to be paid in Poland
     return stock;
   }
 
-  calculateTotalWithholdingTaxPaid(stock: Stock) {
+  calculateTotalWithholdingTaxPaid(stock: StockModel) {
     // Mock response for calculating total withholding tax paid
     return stock;
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Stock } from 'src/app/services/http/models/stock.model';
+import { StockModel } from 'src/app/services/http/models/stock.model';
 import { DbService } from 'src/app/services/http/db.service';
 import { concatMap, forkJoin, of, catchError, map } from 'rxjs';
 import { FinancialDataService } from './../../services/http/financial-data.service';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./portfolio-panel.component.css'],
 })
 export class PortfolioPanelComponent implements OnInit {
-  stocks: Stock[] = [];
+  stocks: StockModel[] = [];
 
   constructor(
     private dbService: DbService,
@@ -46,11 +46,11 @@ export class PortfolioPanelComponent implements OnInit {
       );
   }
 
-  onStockClick(stock: Stock): void {
+  onStockClick(stock: StockModel): void {
     this.router.navigate(['/stock-summary', stock.symbol]);
   }
 
-  removeStock(stock: Stock): void {
+  removeStock(stock: StockModel): void {
     if (confirm(`Are you sure you want to remove ${stock.symbol}?`)) {
       this.dbService.removeStock(stock);
     }

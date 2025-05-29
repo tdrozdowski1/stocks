@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DbService } from '../../../services/http/db.service';
-import { Stock } from '../../../services/http/models/stock.model';
+import { StockModel } from '../../../services/http/models/stock.model';
 import { Router } from '@angular/router';
 import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
 
@@ -11,7 +11,7 @@ import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.m
   styleUrls: ['./stock-panel.component.css'],
 })
 export class StockPanel implements OnInit {
-  stocks$: Observable<Stock[]> = this.dbService.stocks$;
+  stocks$: Observable<StockModel[]> = this.dbService.stocks$;
 
   constructor(
     private dbService: DbService,
@@ -20,7 +20,7 @@ export class StockPanel implements OnInit {
 
   ngOnInit() {}
 
-  onStockClick(stock: Stock): void {
+  onStockClick(stock: StockModel): void {
     this.router.navigate(['/stock-summary', stock.symbol]);
   }
 
@@ -31,7 +31,7 @@ export class StockPanel implements OnInit {
     return ownershipPeriods[ownershipPeriods.length - 1].quantity;
   }
 
-  removeStock(stock: Stock): void {
+  removeStock(stock: StockModel): void {
     if (confirm(`Are you sure you want to remove ${stock.symbol}?`)) {
       this.dbService.removeStock(stock);
     }

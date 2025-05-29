@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 
 import { DividendService } from './dividend.service';
 import { OwnershipPeriod } from '../http/models/ownershipPeriod.model';
-import { Stock } from '../http/models/stock.model';
+import { StockModel } from '../http/models/stock.model';
 
 // Mock for FinancialDataService
 class MockFinancialDataService {
@@ -102,7 +102,7 @@ describe('DividendService', () => {
   describe('updateUsdPlnRateForDividends', () => {
     it('should update dividends with USD/PLN rate and calculated values', () => {
       // given
-      const stock: Stock = {
+      const stock: StockModel = {
         symbol: 'AAPL',
         moneyInvested: 1000,
         currentPrice: 150,
@@ -161,7 +161,7 @@ describe('DividendService', () => {
     });
 
     it('should use a date from the day earlier if no rate is found for the first day', () => {
-      const stock: Stock = {
+      const stock: StockModel = {
         symbol: 'AAPL',
         moneyInvested: 1000,
         currentPrice: 150,
@@ -203,7 +203,7 @@ describe('DividendService', () => {
     });
 
     it('should use a date from two days earlier if no rate is found for the first day', () => {
-      const stock: Stock = {
+      const stock: StockModel = {
         symbol: 'AAPL',
         moneyInvested: 1000,
         currentPrice: 150,
@@ -248,7 +248,7 @@ describe('DividendService', () => {
   describe('calculateTaxes', () => {
     it('calculateTaxToBePaidInPoland', () => {
       // give
-      const stock: Stock = {
+      const stock: StockModel = {
         symbol: 'AAPL',
         moneyInvested: 1000,
         currentPrice: 150,
@@ -286,7 +286,7 @@ describe('DividendService', () => {
 
     it('calculateTotalWithholdingTaxPaid', () => {
       // give
-      const stock: Stock = {
+      const stock: StockModel = {
         symbol: 'AAPL',
         moneyInvested: 1000,
         currentPrice: 150,
