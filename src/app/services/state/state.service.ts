@@ -16,6 +16,7 @@ export class StockStateService {
   }
 
   addStock(stock: StockModel): void {
+    console.log('Adding stock:', stock);
     const currentStocks = this.stocksSubject.getValue();
     const updatedStocks = [...currentStocks.filter((s) => s.symbol !== stock.symbol), stock];
     this.stocksSubject.next(updatedStocks);
