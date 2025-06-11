@@ -59,11 +59,8 @@ export class DbService {
   // }
 
   getStocks(): Observable<StockModel[]> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
     this.http
-      .get<ApiResponse>(this.apiUrl, { headers })
+      .get<ApiResponse>(this.apiUrl) // No headers
       .pipe(map((response) => JSON.parse(response.body) as StockModel[]))
       .subscribe({
         next: (stocks) => this.stockStateService.updateStocks(stocks),
