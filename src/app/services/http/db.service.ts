@@ -4,6 +4,7 @@ import { StockModel } from './models/stock.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {FinancialDataService} from "./financial-data.service";
 import {DividendService} from "../domain/dividend.service";
+import {StockStateService} from "../state/state.service";
 
 export interface ApiResponse {
   statusCode: number;
@@ -22,62 +23,51 @@ export class DbService {
   private stocksSubject: BehaviorSubject<StockModel[]> = new BehaviorSubject<StockModel[]>([]);
   stocks$: Observable<StockModel[]> = this.stocksSubject.asObservable();
 
-  constructor(private http: HttpClient, private financialDataService: FinancialDataService, private dividendService: DividendService) {}
-
-  updateStocks(stocks: StockModel[]): void {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    });
-
-    const stocksResource = stocks.map((stock) => ({
-      symbol: stock.symbol,
-      moneyInvested: stock.moneyInvested,
-      ownershipPeriods: stock.ownershipPeriods,
-      transactions: stock.transactions
-      // ,
-      // totalWithholdingTaxPaid: stock.totalWithholdingTaxPaid,
-      // taxToBePaidInPoland: stock.taxToBePaidInPoland,
-    }));
-
-    this.http.post<any>(this.apiUrl, stocksResource[stocksResource.length - 1], { headers }).subscribe({
-      next: (response) => console.log('Stock added successfully:', response),
-      error: (error) => console.error('Error adding stock:', error),
-    });
-
-    this.stocksSubject.next(stocks);
+  constructor(private http: HttpClient, private stockStateService: StockStateService) {
+    this.loadInitialStocks();
   }
+
+  private loadInitialStocks(): void {
+    this.getStocks();
+  }
+
+  //TODO: probably not needed
+
+  // updateStocks(stocks: StockModel[]): void {
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     Accept: 'application/json',
+  //   });
+  //
+  //   const stocksResource = stocks.map((stock) => ({
+  //     symbol: stock.symbol,
+  //     moneyInvested: stock.moneyInvested,
+  //     ownershipPeriods: stock.ownershipPeriods,
+  //     transactions: stock.transactions
+  //     // ,
+  //     // totalWithholdingTaxPaid: stock.totalWithholdingTaxPaid,
+  //     // taxToBePaidInPoland: stock.taxToBePaidInPoland,
+  //   }));
+  //
+  //   this.http.post<any>(this.apiUrl, stocksResource[stocksResource.length - 1], { headers }).subscribe({
+  //     next: (response) => console.log('Stock added successfully:', response),
+  //     error: (error) => console.error('Error adding stock:', error),
+  //   });
+  //
+  //   this.stocksSubject.next(stocks);
+  // }
 
   getStocks(): Observable<StockModel[]> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-
     this.http
       .get<ApiResponse>(this.apiUrl, { headers })
       .pipe(
         map((response) => JSON.parse(response.body) as StockModel[]),
-      //   map((stocks) =>
-      //     stocks.map((stock) => {
-      //       // Fetch additional data for each stock
-      //       this.financialDataService.getStockPrice(stock.symbol).subscribe((price) => {
-      //         stock.currentPrice = price;
-      //       });
-      //
-      //       this.financialDataService.getDividends(stock.symbol).subscribe((data) => {
-      //         stock.dividends = this.dividendService.filterDividendsByOwnership(
-      //           data.historical,
-      //           stock.ownershipPeriods,
-      //         );
-      //         stock.totalDividendValue = this.dividendService.calculateTotalDividens(stock.dividends);
-      //       });
-      //
-      //       return stock;
-      //     }),
-      //   ),
        )
       .subscribe({
-        next: (stocks) => this.stocksSubject.next(stocks),
+        next: stocks => this.stockStateService.updateStocks(stocks),
         error: (error) => console.error('Error fetching stocks:', error),
       });
 

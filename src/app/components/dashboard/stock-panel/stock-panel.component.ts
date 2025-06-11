@@ -1,24 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DbService } from '../../../services/http/db.service';
 import { StockModel } from '../../../services/http/models/stock.model';
 import { Router } from '@angular/router';
 import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
+import {StockStateService} from "../../../services/state/state.service";
 
 @Component({
   selector: 'app-stock-panel',
   templateUrl: './stock-panel.component.html',
   styleUrls: ['./stock-panel.component.css'],
 })
-export class StockPanel implements OnInit {
-  stocks$: Observable<StockModel[]> = this.dbService.stocks$;
+export class StockPanel {
+  stocks$: Observable<StockModel[]> = this.stockStateService.stocks$;
 
   constructor(
-    private dbService: DbService,
+    private stockStateService: StockStateService,
     private router: Router,
   ) {}
-
-  ngOnInit() {}
 
   onStockClick(stock: StockModel): void {
     this.router.navigate(['/stock-summary', stock.symbol]);
@@ -32,8 +30,9 @@ export class StockPanel implements OnInit {
   }
 
   removeStock(stock: StockModel): void {
+    //TODO: update db
     if (confirm(`Are you sure you want to remove ${stock.symbol}?`)) {
-      this.dbService.removeStock(stock);
+      this.stockStateService.removeStock(stock.symbol);
     }
   }
 }
