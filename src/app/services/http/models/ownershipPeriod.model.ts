@@ -1,5 +1,5 @@
 export interface OwnershipPeriod {
   startDate: Date;
-  endDate?: Date;
+  endDate: Date | null;
   quantity: number;
 }

@@ -23,6 +23,7 @@ export class StockPanel {
   }
 
   getLatestOwnershipPeriodQuantity(ownershipPeriods: OwnershipPeriod[]): number {
+    console.log('Ownership periods:', ownershipPeriods);
     if (ownershipPeriods.length === 0) {
       return 0;
     }
