@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from './models/transaction.model';
-import { DbService } from '../http/db.service';
-import { FinancialDataService } from '../http/financial-data.service';
-import { DividendService } from './dividend.service';
-import { catchError, Observable, of, tap } from 'rxjs';
+import {catchError, map, Observable, tap} from 'rxjs';
 import { StockStateService } from '../state/state.service';
 import { StockModel } from '../http/models/stock.model';
 
@@ -16,22 +13,32 @@ export class TransactionService {
 
   constructor(
     private http: HttpClient,
-    private dbService: DbService,
-    private financialDataService: FinancialDataService,
-    private dividendService: DividendService,
-    private stockStateService: StockStateService,
+    private stockStateService: StockStateService
   ) {}
 
   addTransaction(transaction: Transaction): Observable<StockModel> {
-    return this.http.post<StockModel>(this.lambdaUrl, { body: JSON.stringify(transaction) }).pipe(
-      tap((stock) => {
-        this.stockStateService.addStock(stock);
-        // this.dbService.updateStocks(this.stockStateService.stocksSubject.getValue());
-      }),
-      catchError((error) => {
-        console.error('Failed to add transaction:', error);
-        throw error; // Let the caller handle the error
-      }),
-    );
+    console.log('Sending transaction to Lambda:', transaction);
+    return this.http
+      .post<{ body: string }>(this.lambdaUrl, { body: JSON.stringify(transaction) }, { observe: 'response' })
+      .pipe(
+        tap(response => {
+          console.log('Lambda response:', response);
+          try {
+            const stock: StockModel = JSON.parse(response.body?.body || '{}');
+            console.log('Parsed stock:', stock); // Debug log
+            this.stockStateService.addStock(stock);
+            // TODO: not needed?
+            // this.dbService.updateStocks(this.stockStateService.stocksSubject.getValue());
+          } catch (e) {
+            console.error('Failed to parse stock response:', e);
+            throw new Error('Invalid stock response format');
+          }
+        }),
+        catchError(error => {
+          console.error('HTTP error in addTransaction:', error);
+          throw error;
+        }),
+        map(response => JSON.parse(response.body?.body || '{}')) // Map to StockModel
+      );
   }
 }
