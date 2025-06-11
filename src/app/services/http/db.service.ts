@@ -16,7 +16,7 @@ export interface ApiResponse {
   providedIn: 'root',
 })
 export class DbService {
-  private apiUrl = 'https://v7eu1cmimh.execute-api.us-east-1.amazonaws.com/prod/stocks';
+  private stocksApi = '/stocks';
 
   private stocksSubject: BehaviorSubject<StockModel[]> = new BehaviorSubject<StockModel[]>([]);
   stocks$: Observable<StockModel[]> = this.stocksSubject.asObservable();
@@ -60,7 +60,7 @@ export class DbService {
 
   getStocks(): Observable<StockModel[]> {
     this.http
-      .get<ApiResponse>(this.apiUrl) // No headers
+      .get<ApiResponse>('${environment.STOCKS_API}' + this.stocksApi)
       .pipe(map((response) => JSON.parse(response.body) as StockModel[]))
       .subscribe({
         next: (stocks) => this.stockStateService.updateStocks(stocks),
@@ -84,15 +84,13 @@ export class DbService {
    * @returns An Observable of the Stock object or undefined if not found.
    */
   getStockBySymbol(symbol: string): Observable<StockModel | undefined> {
-    return this.stocks$.pipe(
-      map((stocks) => stocks.find((stock) => stock.symbol === symbol)),
-    );
+    return this.stocks$.pipe(map((stocks) => stocks.find((stock) => stock.symbol === symbol)));
   }
 
   removeStock(stock: StockModel): void {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    this.http.delete<any>(`${this.apiUrl}/${stock.symbol}`, { headers }).subscribe({
+    this.http.delete<any>(`${this.stocksApi}/${stock.symbol}`, { headers }).subscribe({
       next: (response) => console.log('Stock removed successfully:', response),
       error: (error) => console.error('Error removing stock:', error),
     });

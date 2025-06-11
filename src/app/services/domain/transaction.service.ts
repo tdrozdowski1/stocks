@@ -9,7 +9,7 @@ import { StockModel } from '../http/models/stock.model';
   providedIn: 'root',
 })
 export class TransactionService {
-  private lambdaUrl = 'https://v7eu1cmimh.execute-api.us-east-1.amazonaws.com/prod/transactions';
+  private transactionsApi = '/transactions';
 
   constructor(
     private http: HttpClient,
@@ -21,7 +21,11 @@ export class TransactionService {
     return this.http
       .post<{
         body: string;
-      }>(this.lambdaUrl, { body: JSON.stringify(transaction) }, { observe: 'response' })
+      }>(
+        '${environment.STOCKS_API}' + this.transactionsApi,
+        { body: JSON.stringify(transaction) },
+        { observe: 'response' },
+      )
       .pipe(
         tap((response) => {
           console.log('Lambda response:', response);

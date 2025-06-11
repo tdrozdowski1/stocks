@@ -3,7 +3,7 @@ import { StockModel } from '../../services/http/models/stock.model';
 import { ActivatedRoute } from '@angular/router';
 import { CompanyInfo, CompanyInfoService } from '../../services/http/company-info.service';
 import { FinancialDataService } from '../../services/http/financial-data.service';
-import {StockStateService} from "../../services/state/state.service";
+import { StockStateService } from '../../services/state/state.service';
 
 @Component({
   selector: 'app-stock-summary',
@@ -21,7 +21,7 @@ export class StockSummaryComponent implements OnInit {
     private route: ActivatedRoute,
     private financialDataService: FinancialDataService,
     private companyInfoService: CompanyInfoService,
-    private stateService: StockStateService
+    private stateService: StockStateService,
   ) {}
 
   ngOnInit(): void {

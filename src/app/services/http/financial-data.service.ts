@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface ForexRate {
   ticker: string;
@@ -22,24 +23,25 @@ interface ForexRate {
   providedIn: 'root',
 })
 export class FinancialDataService {
-  private API_KEY = 'tQr6CjESc8UVhkFN4Eugr7WXpyYCu82D';
-  private BASE_URL = 'https://financialmodelingprep.com/api/v3';
-
   constructor(private http: HttpClient) {}
 
   getStockPrice(symbol: string): Observable<any> {
-    return this.http.get(`${this.BASE_URL}/quote/${symbol}?apikey=${this.API_KEY}`);
+    return this.http.get(
+      `'${environment.FINANCIAL_MODELING_API}'/quote/${symbol}?apikey='${environment.FINANCIAL_MODELING_API_KEY}'`,
+    );
   }
 
   getDividends(symbol: string): Observable<any> {
     return this.http.get(
-      `${this.BASE_URL}/historical-price-full/stock_dividend/${symbol}?apikey=${this.API_KEY}`,
+      `'${environment.FINANCIAL_MODELING_API}'/historical-price-full/stock_dividend/${symbol}?apikey='${environment.FINANCIAL_MODELING_API_KEY}'`,
     );
   }
 
   getHistoricalExchangeRate(): Observable<any> {
     return this.http
-      .get(`${this.BASE_URL}/historical-price-full/USDPLN?apikey=${this.API_KEY}`)
+      .get(
+        `'${environment.FINANCIAL_MODELING_API}'/historical-price-full/USDPLN?apikey='${environment.FINANCIAL_MODELING_API_KEY}'`,
+      )
       .pipe(
         tap((response) => console.log('Historical Exchange Rate API Response:', response)),
         catchError((err) => {
@@ -52,7 +54,9 @@ export class FinancialDataService {
   getStockPerformance(symbol: string): Observable<any> {
     // Adjust the endpoint according to the API documentation for historical stock prices.
     return this.http
-      .get(`${this.BASE_URL}/historical-price-full/${symbol}?timeseries=90&apikey=${this.API_KEY}`)
+      .get(
+        `'${environment.FINANCIAL_MODELING_API}'/historical-price-full/${symbol}?timeseries=90&apikey='${environment.FINANCIAL_MODELING_API_KEY}'`,
+      )
       .pipe(
         tap((response) => console.log('API Response:', response)), // Log the response
         catchError((err) => {
@@ -64,7 +68,9 @@ export class FinancialDataService {
 
   getCashFlowStatement(symbol: string): Observable<any> {
     return this.http
-      .get(`${this.BASE_URL}/cash-flow-statement/${symbol}?apikey=${this.API_KEY}`)
+      .get(
+        `'${environment.FINANCIAL_MODELING_API}'/cash-flow-statement/${symbol}?apikey='${environment.FINANCIAL_MODELING_API_KEY}'`,
+      )
       .pipe(
         tap((response) => console.log('Cash Flow API Response:', response)), // Log the response
         catchError((err) => {
@@ -76,7 +82,9 @@ export class FinancialDataService {
 
   getBalanceSheet(symbol: string): Observable<any> {
     return this.http
-      .get(`${this.BASE_URL}/balance-sheet-statement/${symbol}?apikey=${this.API_KEY}`)
+      .get(
+        `'${environment.FINANCIAL_MODELING_API}'/balance-sheet-statement/${symbol}?apikey='${environment.FINANCIAL_MODELING_API_KEY}'`,
+      )
       .pipe(
         tap((response) => console.log('Balance Sheet API Response:', response)), // Log the response
         catchError((err) => {
