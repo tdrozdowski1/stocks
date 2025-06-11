@@ -17,12 +17,12 @@ export class StockStateService {
 
   addStock(stock: StockModel): void {
     const currentStocks = this.stocksSubject.getValue();
-    const updatedStocks = [...currentStocks.filter(s => s.symbol !== stock.symbol), stock];
+    const updatedStocks = [...currentStocks.filter((s) => s.symbol !== stock.symbol), stock];
     this.stocksSubject.next(updatedStocks);
   }
 
   removeStock(symbol: string): void {
-    const updatedStocks = this.stocksSubject.getValue().filter(s => s.symbol !== symbol);
+    const updatedStocks = this.stocksSubject.getValue().filter((s) => s.symbol !== symbol);
     this.stocksSubject.next(updatedStocks);
   }
 }

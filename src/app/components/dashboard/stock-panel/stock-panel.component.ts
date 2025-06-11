@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { StockModel } from '../../../services/http/models/stock.model';
 import { Router } from '@angular/router';
 import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
-import {StockStateService} from "../../../services/state/state.service";
+import { StockStateService } from '../../../services/state/state.service';
 
 @Component({
   selector: 'app-stock-panel',

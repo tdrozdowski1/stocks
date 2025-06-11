@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { StockModel } from './models/stock.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {FinancialDataService} from "./financial-data.service";
-import {DividendService} from "../domain/dividend.service";
-import {StockStateService} from "../state/state.service";
+import { FinancialDataService } from './financial-data.service';
+import { DividendService } from '../domain/dividend.service';
+import { StockStateService } from '../state/state.service';
 
 export interface ApiResponse {
   statusCode: number;
@@ -23,7 +23,10 @@ export class DbService {
   private stocksSubject: BehaviorSubject<StockModel[]> = new BehaviorSubject<StockModel[]>([]);
   stocks$: Observable<StockModel[]> = this.stocksSubject.asObservable();
 
-  constructor(private http: HttpClient, private stockStateService: StockStateService) {
+  constructor(
+    private http: HttpClient,
+    private stockStateService: StockStateService,
+  ) {
     this.loadInitialStocks();
   }
 
@@ -63,11 +66,9 @@ export class DbService {
     });
     this.http
       .get<ApiResponse>(this.apiUrl, { headers })
-      .pipe(
-        map((response) => JSON.parse(response.body) as StockModel[]),
-       )
+      .pipe(map((response) => JSON.parse(response.body) as StockModel[]))
       .subscribe({
-        next: stocks => this.stockStateService.updateStocks(stocks),
+        next: (stocks) => this.stockStateService.updateStocks(stocks),
         error: (error) => console.error('Error fetching stocks:', error),
       });
 
