@@ -23,6 +23,9 @@ export class DashboardComponent implements OnInit {
   }
 
   onTransactionChange(transaction: Transaction) {
-    this.transactionService.addTransaction(transaction);
+    this.transactionService.addTransaction(transaction).subscribe({
+      next: stock => console.log('Transaction added, stock updated:', stock),
+      error: err => console.error('Transaction error:', err)
+    });
   }
 }
