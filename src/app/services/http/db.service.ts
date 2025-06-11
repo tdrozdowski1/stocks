@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { StockModel } from './models/stock.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FinancialDataService } from './financial-data.service';
-import { DividendService } from '../domain/dividend.service';
 import { StockStateService } from '../state/state.service';
 
 export interface ApiResponse {
@@ -18,7 +16,7 @@ export interface ApiResponse {
   providedIn: 'root',
 })
 export class DbService {
-  private apiUrl = 'https://n0d0byuqzh.execute-api.us-east-1.amazonaws.com/prod/stocks';
+  private apiUrl = 'https://v7eu1cmimh.execute-api.us-east-1.amazonaws.com/prod/stocks';
 
   private stocksSubject: BehaviorSubject<StockModel[]> = new BehaviorSubject<StockModel[]>([]);
   stocks$: Observable<StockModel[]> = this.stocksSubject.asObservable();
@@ -90,7 +88,6 @@ export class DbService {
    */
   getStockBySymbol(symbol: string): Observable<StockModel | undefined> {
     return this.stocks$.pipe(
-      // Use map to transform the list of stocks to the stock with the given symbol
       map((stocks) => stocks.find((stock) => stock.symbol === symbol)),
     );
   }
