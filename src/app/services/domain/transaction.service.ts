@@ -27,6 +27,7 @@ export class TransactionService {
         catchError(() => of(null)), // If Lambda call fails, return null
       )
       .subscribe((response: any) => {
+        console.log("Add Transaction Response:", response); // Debug response
         if (!response || response.error) {
           // If Lambda response is negative, execute fallback logic
           this.fallbackAddTransaction(transaction);
