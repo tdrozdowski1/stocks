@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { StockModel } from '../../services/http/models/stock.model';
-import { DbService } from '../../services/http/db.service';
 import { ActivatedRoute } from '@angular/router';
 import { CompanyInfo, CompanyInfoService } from '../../services/http/company-info.service';
 import { FinancialDataService } from '../../services/http/financial-data.service';
+import {StockStateService} from "../../services/state/state.service";
 
 @Component({
   selector: 'app-stock-summary',
@@ -19,16 +19,16 @@ export class StockSummaryComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private dbService: DbService,
     private financialDataService: FinancialDataService,
     private companyInfoService: CompanyInfoService,
+    private stateService: StockStateService
   ) {}
 
   ngOnInit(): void {
     const symbol = this.route.snapshot.paramMap.get('symbol');
 
     if (symbol) {
-      this.dbService.getStockBySymbol(symbol).subscribe((stock) => {
+      this.stateService.getStockBySymbol(symbol).subscribe((stock) => {
         this.stock = stock;
       });
 

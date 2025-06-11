@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {BehaviorSubject, map, Observable} from 'rxjs';
 import { StockModel } from '../http/models/stock.model';
 
 @Injectable({ providedIn: 'root' })
@@ -9,6 +9,12 @@ export class StockStateService {
 
   constructor() {
     // Initialize state (e.g., load from DbService on startup)
+  }
+
+  getStockBySymbol(symbol: string): Observable<StockModel | undefined> {
+    return this.stocks$.pipe(
+      map((stocks) => stocks.find((stock) => stock.symbol === symbol)),
+    );
   }
 
   updateStocks(stocks: StockModel[]): void {
