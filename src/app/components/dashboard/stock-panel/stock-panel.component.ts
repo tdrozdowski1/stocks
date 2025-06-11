@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { StockModel } from '../../../services/http/models/stock.model';
 import { Router } from '@angular/router';
 import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
@@ -11,19 +11,27 @@ import { StockStateService } from '../../../services/state/state.service';
   styleUrls: ['./stock-panel.component.css'],
 })
 export class StockPanel {
-  stocks$: Observable<StockModel[]> = this.stockStateService.stocks$;
+  stocks$: Observable<(StockModel & { latestQuantity: number })[]>;
 
   constructor(
     private stockStateService: StockStateService,
     private router: Router,
-  ) {}
+  ) {
+    this.stocks$ = this.stockStateService.stocks$.pipe(
+      map((stocks) =>
+        stocks.map((stock) => ({
+          ...stock,
+          latestQuantity: this.getLatestOwnershipPeriodQuantity(stock.ownershipPeriods),
+        })),
+      ),
+    );
+  }
 
   onStockClick(stock: StockModel): void {
     this.router.navigate(['/stock-summary', stock.symbol]);
   }
 
   getLatestOwnershipPeriodQuantity(ownershipPeriods: OwnershipPeriod[]): number {
-    console.log('Ownership periods:', ownershipPeriods);
     if (ownershipPeriods.length === 0) {
       return 0;
     }

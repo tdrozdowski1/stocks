@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from './models/transaction.model';
-import {catchError, map, Observable, tap} from 'rxjs';
+import { catchError, map, Observable, tap } from 'rxjs';
 import { StockStateService } from '../state/state.service';
 import { StockModel } from '../http/models/stock.model';
 
@@ -13,15 +13,17 @@ export class TransactionService {
 
   constructor(
     private http: HttpClient,
-    private stockStateService: StockStateService
+    private stockStateService: StockStateService,
   ) {}
 
   addTransaction(transaction: Transaction): Observable<StockModel> {
     console.log('Sending transaction to Lambda:', transaction);
     return this.http
-      .post<{ body: string }>(this.lambdaUrl, { body: JSON.stringify(transaction) }, { observe: 'response' })
+      .post<{
+        body: string;
+      }>(this.lambdaUrl, { body: JSON.stringify(transaction) }, { observe: 'response' })
       .pipe(
-        tap(response => {
+        tap((response) => {
           console.log('Lambda response:', response);
           try {
             const stock: StockModel = JSON.parse(response.body?.body || '{}');
@@ -34,11 +36,11 @@ export class TransactionService {
             throw new Error('Invalid stock response format');
           }
         }),
-        catchError(error => {
+        catchError((error) => {
           console.error('HTTP error in addTransaction:', error);
           throw error;
         }),
-        map(response => JSON.parse(response.body?.body || '{}')) // Map to StockModel
+        map((response) => JSON.parse(response.body?.body || '{}')), // Map to StockModel
       );
   }
 }

@@ -5,9 +5,9 @@
       <li *ngFor="let stock of stocks" class="stock-item">
         <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span
         >:
-        <span class="money-invested" (click)="onStockClick(stock)">{{
-          getLatestOwnershipPeriodQuantity(stock.ownershipPeriods)
-        }}</span>
+        <span class="money-invested" (click)="onStockClick(stock)">
+          {{ stock.latestQuantity }}
+        </span>
         <span class="remove-stock" (click)="removeStock(stock)">✕</span>
       </li>
     </ul>
