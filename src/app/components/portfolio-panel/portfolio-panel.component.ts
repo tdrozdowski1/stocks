@@ -4,6 +4,7 @@ import { DbService } from 'src/app/services/http/db.service';
 import { concatMap, forkJoin, of, catchError, map } from 'rxjs';
 import { FinancialDataService } from './../../services/http/financial-data.service';
 import { Router } from '@angular/router';
+import {StockStateService} from "../../services/state/state.service";
 
 @Component({
   selector: 'app-portfolio-panel',
@@ -14,13 +15,13 @@ export class PortfolioPanelComponent implements OnInit {
   stocks: StockModel[] = [];
 
   constructor(
-    private dbService: DbService,
+    private stockStateService: StockStateService,
     private financialDataService: FinancialDataService,
     private router: Router,
   ) {}
 
   ngOnInit() {
-    this.dbService.stocks$
+    this.stockStateService.stocks$
       .pipe(
         concatMap((stocks) => {
           this.stocks = stocks;
@@ -52,7 +53,7 @@ export class PortfolioPanelComponent implements OnInit {
 
   removeStock(stock: StockModel): void {
     if (confirm(`Are you sure you want to remove ${stock.symbol}?`)) {
-      this.dbService.removeStock(stock);
+      this.stockStateService.removeStock(stock.symbol);
     }
   }
 }

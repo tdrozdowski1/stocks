@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StockModel } from 'src/app/services/http/models/stock.model';
-import { DbService } from 'src/app/services/http/db.service';
 import { concatMap } from 'rxjs';
+import {StockStateService} from "../../services/state/state.service";
 
 @Component({
   selector: 'app-tax-overview',
@@ -12,10 +12,10 @@ export class TaxOverviewComponent implements OnInit {
   stocks: StockModel[] = [];
   expandedRowIndex: number | null = null;
 
-  constructor(private dbService: DbService) {}
+  constructor(private stockStateService: StockStateService) {}
 
   ngOnInit() {
-    this.dbService.stocks$.pipe(concatMap((stocks) => (this.stocks = stocks))).subscribe(
+    this.stockStateService.stocks$.pipe(concatMap((stocks) => (this.stocks = stocks))).subscribe(
       () => console.log(this.stocks),
       (error) => console.error('Error:', error),
     );
