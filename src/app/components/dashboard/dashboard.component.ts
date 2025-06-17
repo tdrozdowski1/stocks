@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from '../../services/domain/models/transaction.model';
 import { TransactionService } from '../../services/domain/transaction.service';
-import { catchError, concatMap, forkJoin, map, of } from 'rxjs';
-import { DbService } from '../../services/http/db.service';
+import {catchError, concatMap, forkJoin, map, Observable, of} from 'rxjs';
+import {StockModel} from "../../services/http/models/stock.model";
+import {StockStateService} from "../../services/state/state.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -10,15 +11,18 @@ import { DbService } from '../../services/http/db.service';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
+  stocks$: Observable<StockModel[]>;
   constructor(
     private transactionService: TransactionService,
-    private dbService: DbService,
-  ) {}
+    private stockStateService: StockStateService
+  ) {
+    this.stocks$ = this.stockStateService.stocks$;
+  }
 
   ngOnInit(): void {
-    this.dbService.getStocks().subscribe(
-      (stock) => console.log(stock),
-      (error) => console.error('Error:', error),
+    this.stocks$.subscribe(
+      (stocks) => console.log('Stocks from state:', stocks),
+      (error) => console.error('Error fetching stocks:', error)
     );
   }
 
