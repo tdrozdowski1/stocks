@@ -4,12 +4,14 @@ import { Transaction } from './models/transaction.model';
 import { catchError, map, Observable, tap } from 'rxjs';
 import { StockStateService } from '../state/state.service';
 import { StockModel } from '../http/models/stock.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransactionService {
   private transactionsApi = '/transactions';
+  private apiUrl = `${environment.STOCKS_API}${this.transactionsApi}`;
 
   constructor(
     private http: HttpClient,
@@ -21,11 +23,7 @@ export class TransactionService {
     return this.http
       .post<{
         body: string;
-      }>(
-        '${environment.STOCKS_API}' + this.transactionsApi,
-        { body: JSON.stringify(transaction) },
-        { observe: 'response' },
-      )
+      }>(this.apiUrl, { body: JSON.stringify(transaction) }, { observe: 'response' })
       .pipe(
         tap((response) => {
           console.log('Lambda response:', response);
