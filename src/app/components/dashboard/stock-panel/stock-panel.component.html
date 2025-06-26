@@ -1,10 +1,12 @@
 <div class="stock-summary-container">
   <h2 class="stock-summary-title">Stock Panel</h2>
   <div *ngIf="stocks$ | async as stocks; else loading" class="stock-list-container">
-    <ul class="stock-list">
+    <div *ngIf="stocks.length === 0" class="no-stocks-message">
+      <span>No stocks available.</span>
+    </div>
+    <ul *ngIf="stocks.length > 0" class="stock-list">
       <li *ngFor="let stock of stocks" class="stock-item">
-        <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span
-        >:
+        <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span>:
         <span class="money-invested" (click)="onStockClick(stock)">
           {{ stock.latestQuantity }}
         </span>
