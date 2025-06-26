@@ -22,10 +22,10 @@ export class CompanyInfoService {
 
   constructor(private http: HttpClient) {}
 
-  fetchNameSuggestions(query: string) {
+  fetchNameSuggestions(query: string): Observable<string[]> {
     const url = `https://financialmodelingprep.com/api/v3/search?query=${query}&limit=5&exchange=NYSE,NASDAQ&apikey=${this.API_KEY}`;
     return this.http.get<any[]>(url).pipe(
-      switchMap((data) => of(data.map((item) => `${item.symbol} (${item.name})`))), // Combine symbol and name
+      switchMap((data) => of(data.map((item) => `${item.symbol} - ${item.name}`))), // Format as "symbol - name"
     );
   }
 

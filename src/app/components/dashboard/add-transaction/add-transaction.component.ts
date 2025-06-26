@@ -14,6 +14,8 @@ export class AddTransactionComponent {
   transactionForm: UntypedFormGroup;
   @Output() transactionChange = new EventEmitter<Transaction>();
   suggestions: string[] = [];
+  displayValue: string = '';
+  symbolControl = this.fb.control('', Validators.required);
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -32,40 +34,47 @@ export class AddTransactionComponent {
   }
 
   setupSymbolAutocomplete() {
-    this.transactionForm
-      .get('symbol')
-      ?.valueChanges.pipe(
-        debounceTime(750),
-        distinctUntilChanged(),
-        switchMap((query) => {
-          if (!query || query.length < 2) {
-            return of([]);
-          }
-          return this.companyInfoService.fetchNameSuggestions(query);
-        }),
-      )
-      .subscribe(
-        (suggestions: string[]) => {
-          console.log('Suggestions:', suggestions); // Debug
-          this.suggestions = suggestions || [];
-        },
-        (error) => {
-          console.error('Error fetching suggestions:', error); // Debug errors
+    this.symbolControl.valueChanges.pipe(
+      debounceTime(750),
+      distinctUntilChanged(),
+      switchMap((query) => {
+        if (!query || query.length < 2) {
           this.suggestions = [];
-        },
-      );
+          return of([]);
+        }
+        return this.companyInfoService.fetchNameSuggestions(query);
+      }),
+    ).subscribe(
+      (suggestions: string[]) => {
+        console.log('Suggestions:', suggestions);
+        this.suggestions = suggestions || [];
+      },
+      (error) => {
+        console.error('Error fetching suggestions:', error);
+        this.suggestions = [];
+      },
+    );
+
+    this.symbolControl.valueChanges.subscribe((value: string) => {
+      const symbol = value.split(' - ')[0];
+      this.transactionForm.patchValue({ symbol }, { emitEvent: false });
+    });
   }
 
   selectSuggestion(suggestion: string) {
-    const symbol = suggestion.split(' ')[0]; // Extract symbol
-    this.transactionForm.patchValue({ symbol });
-    this.suggestions = []; // Hide list
+    this.displayValue = suggestion;
+    const symbol = suggestion.split(' ')[0];
+    this.transactionForm.patchValue({ symbol }, { emitEvent: false });
+    this.symbolControl.setValue(suggestion, { emitEvent: false });
+    this.suggestions = [];
   }
 
   onSubmit() {
     if (this.transactionForm.valid) {
       this.transactionChange.emit(this.transactionForm.value);
       this.transactionForm.reset();
+      this.displayValue = '';
+      this.symbolControl.setValue('');
     }
   }
 }

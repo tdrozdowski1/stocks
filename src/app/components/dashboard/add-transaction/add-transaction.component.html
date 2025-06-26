@@ -5,10 +5,11 @@
   <div class="autocomplete-container">
     <input
       id="symbol"
-      formControlName="symbol"
+      [formControl]="symbolControl"
       type="text"
-      placeholder="e.g., AAPL"
+      placeholder="e.g., AAPL - Apple Inc."
       (focus)="suggestions = []"
+      [(ngModel)]="displayValue"
     />
     <ul *ngIf="suggestions.length > 0" class="autocomplete-list">
       <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
