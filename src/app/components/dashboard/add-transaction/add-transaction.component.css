@@ -3,11 +3,13 @@ form {
   border-radius: 10px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  width: 100%;
   max-width: 500px;
   margin: 20px auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  box-sizing: border-box;
 }
 
 h2 {
@@ -33,6 +35,14 @@ select {
   background-color: #ffffff;
   transition: border-color 0.2s ease;
   width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="text"] {
+  width: 200px; /* Fixed width for stock symbol input */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 input:focus,
@@ -65,7 +75,8 @@ button:disabled {
 
 .autocomplete-container {
   position: relative;
-  width: 100%;
+  width: 200px; /* Match input width */
+  box-sizing: border-box;
 }
 
 .autocomplete-list {
@@ -81,7 +92,8 @@ button:disabled {
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
-  width: 100%;
+  width: 200px; /* Match input width */
+  box-sizing: border-box;
   z-index: 1000;
 }
 
@@ -91,6 +103,9 @@ button:disabled {
   color: #333333;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .autocomplete-list li:hover {

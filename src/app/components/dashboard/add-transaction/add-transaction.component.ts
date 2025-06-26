@@ -36,11 +36,12 @@ export class AddTransactionComponent {
   // Custom validator to ensure symbol is selected from suggestions
   symbolSelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      if (!control.value || this.suggestions.length === 0) {
-        return null;
+      const value = control.value;
+      if (!value) {
+        return { required: true };
       }
-      const symbol = control.value.split(' - ')[0];
-      const isValid = this.suggestions.some(suggestion => suggestion.startsWith(symbol));
+      // Check if the value is in the suggestions or was previously valid
+      const isValid = this.suggestions.length === 0 || this.suggestions.includes(value);
       return isValid ? null : { invalidSymbol: true };
     };
   }
@@ -52,34 +53,48 @@ export class AddTransactionComponent {
       switchMap((query) => {
         if (!query || query.length < 2) {
           this.suggestions = [];
+          this.symbolControl.setErrors({ noSuggestions: true });
           return of([]);
         }
         return this.companyInfoService.fetchNameSuggestions(query);
       }),
     ).subscribe(
       (suggestions: string[]) => {
-        console.log('Suggestions:', suggestions);
         this.suggestions = suggestions || [];
+        if (this.suggestions.length === 0) {
+          this.symbolControl.setErrors({ noSuggestions: true });
+        } else {
+          // Only validate if the current value is not a selected suggestion
+          if (!this.suggestions.includes(this.symbolControl.value)) {
+            this.symbolControl.setErrors({ invalidSymbol: true });
+          } else {
+            this.symbolControl.setErrors(null);
+          }
+        }
         this.symbolControl.updateValueAndValidity({ emitEvent: false });
       },
       (error) => {
         console.error('Error fetching suggestions:', error);
         this.suggestions = [];
+        this.symbolControl.setErrors({ noSuggestions: true });
       },
     );
 
     this.symbolControl.valueChanges.subscribe((value: string) => {
       const symbol = value.split(' - ')[0];
       this.transactionForm.patchValue({ symbol }, { emitEvent: false });
+      this.displayValue = value;
     });
   }
 
   selectSuggestion(suggestion: string) {
     this.displayValue = suggestion;
-    const symbol = suggestion.split(' ')[0];
+    const symbol = suggestion.split(' - ')[0];
     this.transactionForm.patchValue({ symbol }, { emitEvent: false });
     this.symbolControl.setValue(suggestion, { emitEvent: false });
-    this.suggestions = [];
+    this.suggestions = []; // Clear suggestions after selection
+    this.symbolControl.setErrors(null); // Clear errors on valid selection
+    this.symbolControl.updateValueAndValidity({ emitEvent: false });
   }
 
   onSubmit() {
@@ -88,6 +103,8 @@ export class AddTransactionComponent {
       this.transactionForm.reset();
       this.displayValue = '';
       this.symbolControl.setValue('');
+      this.suggestions = [];
+      this.symbolControl.setErrors(null);
     }
   }
 }
