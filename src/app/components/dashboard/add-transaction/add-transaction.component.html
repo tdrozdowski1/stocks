@@ -10,7 +10,14 @@
       placeholder="e.g., AAPL - Apple Inc."
       (focus)="suggestions = []"
       [(ngModel)]="displayValue"
+      [class.error-border]="symbolControl.touched && symbolControl.errors"
     />
+    <div *ngIf="symbolControl.touched && symbolControl.errors?.['invalidSymbol']" class="error">
+      Please select a valid symbol from the suggestions
+    </div>
+    <div *ngIf="symbolControl.touched && symbolControl.errors?.['required']" class="error">
+      Stock symbol is required
+    </div>
     <ul *ngIf="suggestions.length > 0" class="autocomplete-list">
       <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
         {{ suggestion }}
@@ -19,22 +26,73 @@
   </div>
 
   <label for="date">Date</label>
-  <input id="date" formControlName="date" type="date" />
+  <input
+    id="date"
+    formControlName="date"
+    type="date"
+    [class.error-border]="transactionForm.get('date')?.touched && transactionForm.get('date')?.errors"
+  />
+  <div *ngIf="transactionForm.get('date')?.touched && transactionForm.get('date')?.errors?.['required']" class="error">
+    Date is required
+  </div>
 
   <label for="type">Type</label>
-  <select id="type" formControlName="type">
+  <select
+    id="type"
+    formControlName="type"
+    [class.error-border]="transactionForm.get('type')?.touched && transactionForm.get('type')?.errors"
+  >
     <option value="buy">Buy</option>
     <option value="sell">Sell</option>
   </select>
+  <div *ngIf="transactionForm.get('type')?.touched && transactionForm.get('type')?.errors?.['required']" class="error">
+    Transaction type is required
+  </div>
 
   <label for="amount">Amount</label>
-  <input id="amount" formControlName="amount" type="number" placeholder="e.g., 10" />
+  <input
+    id="amount"
+    formControlName="amount"
+    type="number"
+    placeholder="Please enter your value"
+    [class.error-border]="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.errors"
+  />
+  <div *ngIf="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.errors?.['required']" class="error">
+    Amount is required
+  </div>
+  <div *ngIf="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.errors?.['min']" class="error">
+    Amount must be greater than 0
+  </div>
 
   <label for="price">Price</label>
-  <input id="price" formControlName="price" type="number" placeholder="e.g., 150.00" />
+  <input
+    id="price"
+    formControlName="price"
+    type="number"
+    placeholder="Please enter your value"
+    [class.error-border]="transactionForm.get('price')?.touched && transactionForm.get('price')?.errors"
+  />
+  <div *ngIf="transactionForm.get('price')?.touched && transactionForm.get('price')?.errors?.['required']" class="error">
+    Price is required
+  </div>
+  <div *ngIf="transactionForm.get('price')?.touched && transactionForm.get('price')?.errors?.['min']" class="error">
+    Price must be greater than 0
+  </div>
 
   <label for="commission">Commission</label>
-  <input id="commission" formControlName="commission" type="number" placeholder="e.g., 5.00" />
+  <input
+    id="commission"
+    formControlName="commission"
+    type="number"
+    placeholder="e.g., 5.00"
+    [class.error-border]="transactionForm.get('commission')?.touched && transactionForm.get('commission')?.errors"
+  />
+  <div *ngIf="transactionForm.get('commission')?.touched && transactionForm.get('commission')?.errors?.['required']" class="error">
+    Commission is required
+  </div>
+  <div *ngIf="transactionForm.get('commission')?.touched && transactionForm.get('commission')?.errors?.['min']" class="error">
+    Commission cannot be negative
+  </div>
 
-  <button type="submit">Add Transaction</button>
+  <button type="submit" [disabled]="!transactionForm.valid || !symbolControl.valid">Add Transaction</button>
 </form>

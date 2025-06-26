@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Transaction } from '../../../services/domain/models/transaction.model';
 import { CompanyInfoService } from 'src/app/services/http/company-info.service';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -15,7 +15,7 @@ export class AddTransactionComponent {
   @Output() transactionChange = new EventEmitter<Transaction>();
   suggestions: string[] = [];
   displayValue: string = '';
-  symbolControl = this.fb.control('', Validators.required);
+  symbolControl = this.fb.control('', [Validators.required, this.symbolSelectedValidator()]);
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -25,12 +25,24 @@ export class AddTransactionComponent {
       symbol: ['', Validators.required],
       date: ['', Validators.required],
       type: ['buy', Validators.required],
-      amount: [0, Validators.required],
-      price: [0, Validators.required],
-      commission: [0, Validators.required],
+      amount: [0, [Validators.required, Validators.min(1)]],
+      price: [0, [Validators.required, Validators.min(0.01)]],
+      commission: [0, [Validators.required, Validators.min(0)]],
     });
 
     this.setupSymbolAutocomplete();
+  }
+
+  // Custom validator to ensure symbol is selected from suggestions
+  symbolSelectedValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value || this.suggestions.length === 0) {
+        return null;
+      }
+      const symbol = control.value.split(' - ')[0];
+      const isValid = this.suggestions.some(suggestion => suggestion.startsWith(symbol));
+      return isValid ? null : { invalidSymbol: true };
+    };
   }
 
   setupSymbolAutocomplete() {
@@ -48,6 +60,7 @@ export class AddTransactionComponent {
       (suggestions: string[]) => {
         console.log('Suggestions:', suggestions);
         this.suggestions = suggestions || [];
+        this.symbolControl.updateValueAndValidity({ emitEvent: false });
       },
       (error) => {
         console.error('Error fetching suggestions:', error);
@@ -70,7 +83,7 @@ export class AddTransactionComponent {
   }
 
   onSubmit() {
-    if (this.transactionForm.valid) {
+    if (this.transactionForm.valid && this.symbolControl.valid) {
       this.transactionChange.emit(this.transactionForm.value);
       this.transactionForm.reset();
       this.displayValue = '';

@@ -58,6 +58,11 @@ button:hover {
   background-color: #1d8379;
 }
 
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 .autocomplete-container {
   position: relative;
   width: 100%;
@@ -66,7 +71,7 @@ button:hover {
 .autocomplete-list {
   list-style: none;
   padding: 0;
-  margin: 0; /* Removed top margin for tighter alignment */
+  margin: 0;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
@@ -74,10 +79,10 @@ button:hover {
   max-height: 200px;
   overflow-y: auto;
   position: absolute;
-  top: calc(100% + 2px); /* Small gap below input */
+  top: calc(100% + 2px);
   left: 0;
   width: 100%;
-  z-index: 1000; /* Increased for visibility over other elements */
+  z-index: 1000;
 }
 
 .autocomplete-list li {
@@ -90,4 +95,14 @@ button:hover {
 
 .autocomplete-list li:hover {
   background-color: #f0f0f0;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.error-border {
+  border-color: #d32f2f !important;
 }
