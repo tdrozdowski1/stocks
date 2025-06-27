@@ -40,7 +40,7 @@ export class TransactionService {
           console.error('HTTP error in addTransaction:', error);
           throw error;
         }),
-        map((response) => JSON.parse(response.body?.body || '{}')), // Map to StockModel
+        map((response) => JSON.parse(response.body?.body || '{}')),
       );
   }
 }

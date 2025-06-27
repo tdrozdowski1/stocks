@@ -1,275 +1,109 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TransactionService } from './transaction.service';
-import { Transaction } from './models/transaction.model';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { FinancialDataService } from '../http/financial-data.service';
-import { DbService } from '../http/db.service';
-import any = jasmine.any;
+import { StockStateService } from '../state/state.service';
 import { StockModel } from '../http/models/stock.model';
-
-class MockDbService {
-  getStocksValue() {
-    return [
-      {
-        symbol: 'AAPL',
-        moneyInvested: 0,
-        currentPrice: 0,
-        ownershipPeriods: [],
-        transactions: [],
-        totalDividendValue: 0,
-        dividends: [],
-      },
-    ];
-  }
-  updateStocks(stocks: any[]) {}
-}
-
-class MockFinancialDataService {
-  getStockPrice(symbol: string) {
-    return { subscribe: (fn: any) => fn(100) }; // Mock stock price
-  }
-  getDividends(symbol: string) {
-    return { subscribe: (fn: any) => fn({ historical: [] }) }; // Mock dividends
-  }
-}
-
-class FinancialDataServiceMock {
-  getStockPrice(symbol: string) {
-    // Mock response for getStockPrice
-    return of(150);
-  }
-
-  getDividends(symbol: string) {
-    // Mock response for getDividends
-    return of({
-      historical: [
-        { paymentDate: '2023-12-01', amount: 100 },
-        { paymentDate: '2023-11-01', amount: 200 },
-      ],
-    });
-  }
-}
-
-class DividendServiceMock {
-  filterDividendsByOwnership(historical: any[], ownershipPeriods: any[]) {
-    // Mock response for filtering dividends
-    return [{ paymentDate: '2023-12-01', dividend: 10, quantity: 10 }];
-  }
-
-  calculateTotalDividens(dividends: any[]) {
-    // Mock response for total dividends calculation
-    return 100;
-  }
-
-  updateUsdPlnRateForDividends(stock: StockModel) {
-    // Mock response for updating USD/PLN rates for dividends
-    return of(stock);
-  }
-
-  calculateTaxToBePaidInPoland(stock: StockModel) {
-    // Mock response for calculating tax to be paid in Poland
-    return stock;
-  }
-
-  calculateTotalWithholdingTaxPaid(stock: StockModel) {
-    // Mock response for calculating total withholding tax paid
-    return stock;
-  }
-}
+import { environment } from '../../../environments/environment';
+import { Transaction } from './models/transaction.model';
 
 describe('TransactionService', () => {
   let service: TransactionService;
-  let dbServiceMock: any;
-  let financialDataServiceMock: FinancialDataServiceMock;
-  let dividendServiceMock: DividendServiceMock;
-  let httpClient: HttpClient;
+  let httpMock: HttpTestingController;
+  let stockStateService: jasmine.SpyObj<StockStateService>;
+
+  const mockTransaction: Transaction = {
+    symbol: 'AAPL',
+    date: new Date('2025-06-27T02:00:00.000Z'),
+    type: 'buy',
+    amount: 10,
+    price: 150,
+    commission: 5,
+  };
+
+  const mockStock: StockModel = {
+    symbol: 'AAPL',
+    moneyInvested: 1505, // 10 * 150 + 5 commission
+    ownershipPeriods: [],
+    transactions: [{ ...mockTransaction, date: new Date('2025-06-27T02:00:00.000Z') }],
+    totalDividendValue: 0,
+    dividends: [],
+    cashFlowData: [],
+    liabilitiesData: [],
+    totalWithholdingTaxPaid: 0,
+    taxToBePaidInPoland: 0,
+  };
 
   beforeEach(() => {
-    financialDataServiceMock = new FinancialDataServiceMock();
-    dividendServiceMock = new DividendServiceMock();
-    dbServiceMock = new MockDbService();
+    const stockStateSpy = jasmine.createSpyObj('StockStateService', ['addStock']);
 
-    TestBed.configureTestingModule({});
-
-    service = new TransactionService(
-      dbServiceMock as any,
-      financialDataServiceMock as any,
-      dividendServiceMock as any,
-      httpClient as any,
-    );
-  });
-
-  describe('calculateMoneyInvested', () => {
-    it('should calculate the correct money invested for mixed transactions', () => {
-      // given
-      const transactions: Transaction[] = [
-        {
-          symbol: 'AAPL',
-          date: new Date('2024-01-01'),
-          type: 'buy',
-          amount: 10,
-          price: 150,
-          commission: 1,
-        },
-        {
-          symbol: 'AAPL',
-          date: new Date('2024-01-15'),
-          type: 'sell',
-          amount: 5,
-          price: 160,
-          commission: 1,
-        },
-        {
-          symbol: 'AAPL',
-          date: new Date('2024-01-20'),
-          type: 'buy',
-          amount: 20,
-          price: 155,
-          commission: 1,
-        },
-      ];
-
-      // when
-      const result = service.calculateMoneyInvested(transactions);
-
-      // then
-      expect(result).toBe(3803); // (10*150 + 20*155) - (5*160) + (1 + 1 + 1) commissions
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [TransactionService, { provide: StockStateService, useValue: stockStateSpy }],
     });
 
-    it('should return 0 for no transactions', () => {
-      // when
-      const result = service.calculateMoneyInvested([]);
-
-      // then
-      expect(result).toBe(0);
-    });
+    service = TestBed.inject(TransactionService);
+    httpMock = TestBed.inject(HttpTestingController);
+    stockStateService = TestBed.inject(StockStateService) as jasmine.SpyObj<StockStateService>;
   });
 
-  describe('calculateOwnershipPeriods', () => {
-    // given
-    it('should calculate ownership periods correctly for buys and sells', () => {
-      const transactions: Transaction[] = [
-        {
-          symbol: 'AAPL',
-          date: new Date('2024-01-01'),
-          type: 'buy',
-          amount: 10,
-          price: 100,
-          commission: 5,
-        },
-        {
-          symbol: 'AAPL',
-          date: new Date('2024-01-15'),
-          type: 'buy',
-          amount: 5,
-          price: 120,
-          commission: 3,
-        },
-        {
-          symbol: 'AAPL',
-          date: new Date('2024-02-01'),
-          type: 'sell',
-          amount: 8,
-          price: 130,
-          commission: 2,
-        },
-        {
-          symbol: 'AAPL',
-          date: new Date('2024-03-01'),
-          type: 'sell',
-          amount: 3,
-          price: 140,
-          commission: 1,
-        },
-      ];
-
-      // when
-      const ownershipPeriods = service.calculateOwnershipPeriods(transactions);
-
-      // then
-      expect(ownershipPeriods.length).toBe(4); // 4 periods should be recorded
-      // Check first period
-      expect(ownershipPeriods[0]).toEqual(
-        jasmine.objectContaining({
-          startDate: new Date('2024-01-01'),
-          endDate: new Date('2024-01-15'),
-          quantity: 10,
-        }),
-      );
-      // Check second period after first buy
-      expect(ownershipPeriods[1]).toEqual(
-        jasmine.objectContaining({
-          startDate: new Date('2024-01-15'),
-          endDate: new Date('2024-02-01'),
-          quantity: 15, // 10 + 5
-        }),
-      );
-      // Check next period after first sell
-      expect(ownershipPeriods[2]).toEqual(
-        jasmine.objectContaining({
-          startDate: new Date('2024-02-01'),
-          endDate: new Date('2024-03-01'),
-          quantity: 7, // 15 - 8
-        }),
-      );
-      expect(ownershipPeriods[3]).toEqual(
-        jasmine.objectContaining({
-          startDate: new Date('2024-03-01'),
-          endDate: any(Date), // Current date
-          quantity: 4, // 7 - 3
-        }),
-      );
-    });
+  afterEach(() => {
+    httpMock.verify(); // Verify no outstanding HTTP requests
   });
 
-  describe('TransactionService', () => {
-    let service: TransactionService;
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        imports: [HttpClientModule],
-        providers: [
-          TransactionService,
-          { provide: DbService, useClass: MockDbService },
-          { provide: FinancialDataService, useClass: MockFinancialDataService },
-        ],
+  describe('addTransaction', () => {
+    it('should send POST request and add stock to state on success', (done) => {
+      service.addTransaction(mockTransaction).subscribe({
+        next: (stock) => {
+          expect(stockStateService.addStock).toHaveBeenCalled();
+          done();
+        },
+        error: () => fail('Expected successful response'),
       });
 
-      service = TestBed.inject(TransactionService);
+      const req = httpMock.expectOne(`${environment.STOCKS_API}/transactions`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ body: JSON.stringify(mockTransaction) });
+
+      // Simulate the response with date as a string, as it would come from the server
+      const responseStock = {
+        ...mockStock,
+        transactions: [{ ...mockTransaction, date: '2025-06-27T02:00:00.000Z' }],
+      };
+      req.flush({ body: JSON.stringify(responseStock) });
     });
 
-    describe('addTransaction', () => {
-      it('should add transaction', () => {
-        // given
-        const mockTransaction: Transaction = {
-          symbol: 'AAPL',
-          date: new Date('2024-01-01'),
-          type: 'buy',
-          amount: 10,
-          price: 150,
-          commission: 5,
-        };
+    it('should handle HTTP error', (done) => {
+      const errorMessage = 'Server error';
 
-        // when
-        service.addTransaction(mockTransaction);
-
-        // then
-        setTimeout(() => {
-          expect(dbServiceMock.updateStocks).toHaveBeenCalledWith([
-            {
-              symbol: 'AAPL',
-              transactions: [mockTransaction],
-              moneyInvested: 1505, // Example calculation
-              currentPrice: 0, // Default or mock value
-              ownershipPeriods: [], // Mock or calculated ownership periods
-              totalDividendValue: 0, // Default value or calculated
-              dividends: [], // Default or mock value
-            },
-          ]);
-        }, 100);
+      service.addTransaction(mockTransaction).subscribe({
+        next: () => fail('Expected error response'),
+        error: (error) => {
+          expect(error).toBeTruthy();
+          expect(stockStateService.addStock).not.toHaveBeenCalled();
+          done();
+        },
       });
+
+      const req = httpMock.expectOne(`${environment.STOCKS_API}/transactions`);
+      req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
+    });
+
+    it('should throw error on invalid JSON response', (done) => {
+      service.addTransaction(mockTransaction).subscribe({
+        next: () => fail('Expected error response'),
+        error: (error) => {
+          expect(error.message).toBe('Invalid stock response format');
+          expect(stockStateService.addStock).not.toHaveBeenCalled();
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.STOCKS_API}/transactions`);
+      req.flush({ body: 'invalid json' });
     });
   });
 });

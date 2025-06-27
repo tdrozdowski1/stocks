@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from '../../services/domain/models/transaction.model';
 import { TransactionService } from '../../services/domain/transaction.service';
-import { catchError, concatMap, forkJoin, map, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { StockModel } from '../../services/http/models/stock.model';
 import { StockStateService } from '../../services/state/state.service';
 

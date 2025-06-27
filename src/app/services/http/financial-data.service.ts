@@ -3,22 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-interface ForexRate {
-  ticker: string;
-  bid: number;
-  ask: number;
-}
-
-interface ForexData {
-  forexList: ForexRate[];
-}
-
-interface ForexRate {
-  ticker: string;
-  bid: number;
-  ask: number;
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -35,17 +19,6 @@ export class FinancialDataService {
   getDividends(symbol: string): Observable<any> {
     const url = `${this.baseApiUrl}/historical-price-full/stock_dividend/${symbol}?apikey=${this.apiKey}`;
     return this.http.get(url);
-  }
-
-  getHistoricalExchangeRate(): Observable<any> {
-    const url = `${this.baseApiUrl}/historical-price-full/USDPLN?apikey=${this.apiKey}`;
-    return this.http.get(url).pipe(
-      tap((response) => console.log('Historical Exchange Rate API Response:', response)),
-      catchError((err) => {
-        console.error('Error fetching historical exchange rates:', err);
-        return throwError(err);
-      }),
-    );
   }
 
   getStockPerformance(symbol: string): Observable<any> {
