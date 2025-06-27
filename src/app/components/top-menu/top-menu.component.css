@@ -1,16 +1,28 @@
 .navbar {
   background-color: #26a69a;
-  
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .navbar .navbar-brand {
   color: #fff;
   font-size: 24px;
   text-decoration: none;
+}
+
+.navbar .navbar-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .navbar .navbar-nav {
@@ -32,4 +44,36 @@
 
 .navbar .nav-link:hover {
   text-decoration: underline;
+}
+
+.auth-section {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.auth-container {
+  display: flex;
+  align-items: center;
+}
+
+.hello-message {
+  color: #fff;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.auth-button {
+  background-color: #ffffff;
+  color: #26a69a;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+  background-color: #e0e0e0;
 }

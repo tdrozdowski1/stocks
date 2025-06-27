@@ -27,6 +27,7 @@ import { LiabilitiesChartComponent } from './components/stock-summary/liabilitie
 import { StockTableComponent } from './stock-table/stock-table.component';
 import { PortfolioPanelComponent } from './components/portfolio-panel/portfolio-panel.component';
 import { TaxOverviewComponent } from './components/tax-overview/tax-overview.component';
+import { AuthConfigModule } from './auth/auth-config.module';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { TaxOverviewComponent } from './components/tax-overview/tax-overview.com
     AppRoutingModule,
     RouterModule,
     FormsModule,
+    AuthConfigModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
