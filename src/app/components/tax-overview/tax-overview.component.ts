@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StockModel } from 'src/app/services/http/models/stock.model';
 import { concatMap } from 'rxjs';
-import {StockStateService} from "../../services/state/state.service";
+import { StockStateService } from '../../services/state/state.service';
 
 @Component({
   selector: 'app-tax-overview',

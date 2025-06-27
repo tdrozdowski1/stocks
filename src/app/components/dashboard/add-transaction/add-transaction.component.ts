@@ -1,5 +1,11 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+  ValidatorFn,
+  AbstractControl,
+} from '@angular/forms';
 import { Transaction } from '../../../services/domain/models/transaction.model';
 import { CompanyInfoService } from 'src/app/services/http/company-info.service';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -47,38 +53,40 @@ export class AddTransactionComponent {
   }
 
   setupSymbolAutocomplete() {
-    this.symbolControl.valueChanges.pipe(
-      debounceTime(750),
-      distinctUntilChanged(),
-      switchMap((query) => {
-        if (!query || query.length < 2) {
+    this.symbolControl.valueChanges
+      .pipe(
+        debounceTime(750),
+        distinctUntilChanged(),
+        switchMap((query) => {
+          if (!query || query.length < 2) {
+            this.suggestions = [];
+            this.symbolControl.setErrors({ noSuggestions: true });
+            return of([]);
+          }
+          return this.companyInfoService.fetchNameSuggestions(query);
+        }),
+      )
+      .subscribe(
+        (suggestions: string[]) => {
+          this.suggestions = suggestions || [];
+          if (this.suggestions.length === 0) {
+            this.symbolControl.setErrors({ noSuggestions: true });
+          } else {
+            // Only validate if the current value is not a selected suggestion
+            if (!this.suggestions.includes(this.symbolControl.value)) {
+              this.symbolControl.setErrors({ invalidSymbol: true });
+            } else {
+              this.symbolControl.setErrors(null);
+            }
+          }
+          this.symbolControl.updateValueAndValidity({ emitEvent: false });
+        },
+        (error) => {
+          console.error('Error fetching suggestions:', error);
           this.suggestions = [];
           this.symbolControl.setErrors({ noSuggestions: true });
-          return of([]);
-        }
-        return this.companyInfoService.fetchNameSuggestions(query);
-      }),
-    ).subscribe(
-      (suggestions: string[]) => {
-        this.suggestions = suggestions || [];
-        if (this.suggestions.length === 0) {
-          this.symbolControl.setErrors({ noSuggestions: true });
-        } else {
-          // Only validate if the current value is not a selected suggestion
-          if (!this.suggestions.includes(this.symbolControl.value)) {
-            this.symbolControl.setErrors({ invalidSymbol: true });
-          } else {
-            this.symbolControl.setErrors(null);
-          }
-        }
-        this.symbolControl.updateValueAndValidity({ emitEvent: false });
-      },
-      (error) => {
-        console.error('Error fetching suggestions:', error);
-        this.suggestions = [];
-        this.symbolControl.setErrors({ noSuggestions: true });
-      },
-    );
+        },
+      );
 
     this.symbolControl.valueChanges.subscribe((value: string) => {
       const symbol = value.split(' - ')[0];

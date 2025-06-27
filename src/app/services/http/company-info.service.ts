@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import {environment} from "../../../environments/environment.prod";
+import { environment } from '../../../environments/environment.prod';
 
 export interface CompanyInfo {
   date: string;
@@ -18,14 +18,13 @@ export interface CompanyInfo {
   providedIn: 'root',
 })
 export class CompanyInfoService {
-
   constructor(private http: HttpClient) {}
 
   fetchNameSuggestions(query: string): Observable<string[]> {
     const url = `${environment.FINANCIAL_MODELING_API}/search?query=${query}&limit=5&exchange=NYSE,NASDAQ&apikey=${environment.STOCKS_API}`;
-    return this.http.get<any[]>(url).pipe(
-      switchMap((data) => of(data.map((item) => `${item.symbol} - ${item.name}`))),
-    );
+    return this.http
+      .get<any[]>(url)
+      .pipe(switchMap((data) => of(data.map((item) => `${item.symbol} - ${item.name}`))));
   }
 
   getCompanyInfo(symbol: string): Observable<CompanyInfo[]> {

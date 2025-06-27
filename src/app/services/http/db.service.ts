@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StockModel } from './models/stock.model';
-import {environment} from "../../../environments/environment";
+import { environment } from '../../../environments/environment';
 
 export interface ApiResponse {
   statusCode: number;
@@ -36,11 +36,15 @@ export class DbService {
       ownershipPeriods: stock.ownershipPeriods,
       transactions: stock.transactions,
     };
-    return this.http.post<any>(`${environment.STOCKS_API}${this.stocksApi}`, stockResource, { headers });
+    return this.http.post<any>(`${environment.STOCKS_API}${this.stocksApi}`, stockResource, {
+      headers,
+    });
   }
 
   removeStock(symbol: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.delete<any>(`${environment.STOCKS_API}${this.stocksApi}/${symbol}`, { headers });
+    return this.http.delete<any>(`${environment.STOCKS_API}${this.stocksApi}/${symbol}`, {
+      headers,
+    });
   }
 }

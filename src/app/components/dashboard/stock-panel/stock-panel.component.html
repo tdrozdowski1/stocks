@@ -6,7 +6,8 @@
     </div>
     <ul *ngIf="stocks.length > 0" class="stock-list">
       <li *ngFor="let stock of stocks" class="stock-item">
-        <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span>:
+        <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span
+        >:
         <span class="money-invested" (click)="onStockClick(stock)">
           {{ stock.latestQuantity }}
         </span>
