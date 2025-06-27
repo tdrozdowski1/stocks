@@ -39,7 +39,6 @@ export class StockPanel {
   }
 
   removeStock(stock: StockModel): void {
-    //TODO: update db
     if (confirm(`Are you sure you want to remove ${stock.symbol}?`)) {
       this.stockStateService.removeStock(stock.symbol);
     }

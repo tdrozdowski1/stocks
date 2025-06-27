@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { StockModel } from 'src/app/services/http/models/stock.model';
-import { DbService } from 'src/app/services/http/db.service';
 import { concatMap, forkJoin, of, catchError, map } from 'rxjs';
 import { FinancialDataService } from './../../services/http/financial-data.service';
 import { Router } from '@angular/router';

@@ -39,14 +39,12 @@ export class AddTransactionComponent {
     this.setupSymbolAutocomplete();
   }
 
-  // Custom validator to ensure symbol is selected from suggestions
   symbolSelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const value = control.value;
       if (!value) {
         return { required: true };
       }
-      // Check if the value is in the suggestions or was previously valid
       const isValid = this.suggestions.length === 0 || this.suggestions.includes(value);
       return isValid ? null : { invalidSymbol: true };
     };
@@ -72,7 +70,6 @@ export class AddTransactionComponent {
           if (this.suggestions.length === 0) {
             this.symbolControl.setErrors({ noSuggestions: true });
           } else {
-            // Only validate if the current value is not a selected suggestion
             if (!this.suggestions.includes(this.symbolControl.value)) {
               this.symbolControl.setErrors({ invalidSymbol: true });
             } else {
@@ -100,8 +97,8 @@ export class AddTransactionComponent {
     const symbol = suggestion.split(' - ')[0];
     this.transactionForm.patchValue({ symbol }, { emitEvent: false });
     this.symbolControl.setValue(suggestion, { emitEvent: false });
-    this.suggestions = []; // Clear suggestions after selection
-    this.symbolControl.setErrors(null); // Clear errors on valid selection
+    this.suggestions = [];
+    this.symbolControl.setErrors(null);
     this.symbolControl.updateValueAndValidity({ emitEvent: false });
   }
 

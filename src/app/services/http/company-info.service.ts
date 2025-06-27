@@ -21,7 +21,7 @@ export class CompanyInfoService {
   constructor(private http: HttpClient) {}
 
   fetchNameSuggestions(query: string): Observable<string[]> {
-    const url = `${environment.FINANCIAL_MODELING_API}/search?query=${query}&limit=5&exchange=NYSE,NASDAQ&apikey=${environment.STOCKS_API}`;
+    const url = `${environment.FINANCIAL_MODELING_API}/search?query=${query}&limit=5&exchange=NYSE,NASDAQ&apikey=${environment.FINANCIAL_MODELING_API_KEY}`;
     return this.http
       .get<any[]>(url)
       .pipe(switchMap((data) => of(data.map((item) => `${item.symbol} - ${item.name}`))));
@@ -29,14 +29,14 @@ export class CompanyInfoService {
 
   getCompanyInfo(symbol: string): Observable<CompanyInfo[]> {
     return this.http.get<CompanyInfo[]>(
-      `${environment.FINANCIAL_MODELING_API}/key-metrics/${symbol}?limit=5&apikey=${environment.STOCKS_API}`,
+      `${environment.FINANCIAL_MODELING_API}/key-metrics/${symbol}?limit=5&apikey=${environment.FINANCIAL_MODELING_API_KEY}`,
     );
   }
 
   getCompanyInfoList(limit: number, page: number): Observable<any[]> {
     const url = `${environment.FINANCIAL_MODELING_API}/stock-screener?marketCapMoreThan=1000000000&limit=${limit}&offset=${
       (page - 1) * limit
-    }&apikey=${environment.STOCKS_API}`;
+    }&apikey=${environment.FINANCIAL_MODELING_API_KEY}`;
     return this.http.get<any[]>(url);
   }
 }
