@@ -31,8 +31,6 @@ export class TransactionService {
             const stock: StockModel = JSON.parse(response.body?.body || '{}');
             console.log('Parsed stock:', stock); // Debug log
             this.stockStateService.addStock(stock);
-            // TODO: not needed?
-            // this.dbService.updateStocks(this.stockStateService.stocksSubject.getValue());
           } catch (e) {
             console.error('Failed to parse stock response:', e);
             throw new Error('Invalid stock response format');

@@ -25,22 +25,6 @@ export class DbService {
       .pipe(map((response) => JSON.parse(response.body) as StockModel[]));
   }
 
-  addStock(stock: StockModel): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    });
-    const stockResource = {
-      symbol: stock.symbol,
-      moneyInvested: stock.moneyInvested,
-      ownershipPeriods: stock.ownershipPeriods,
-      transactions: stock.transactions,
-    };
-    return this.http.post<any>(`${environment.STOCKS_API}${this.stocksApi}`, stockResource, {
-      headers,
-    });
-  }
-
   removeStock(symbol: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.delete<any>(`${environment.STOCKS_API}${this.stocksApi}/${symbol}`, {

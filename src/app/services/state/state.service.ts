@@ -32,8 +32,6 @@ export class StockStateService {
     const currentStocks = this.stocksSubject.getValue();
     const updatedStocks = [...currentStocks.filter((s) => s.symbol !== stock.symbol), stock];
     this.stocksSubject.next(updatedStocks);
-    // TODO Optionally, sync with backend via DbService
-    // this.dbService.addStock(stock).subscribe();
   }
 
   removeStock(symbol: string): void {
