@@ -64,10 +64,19 @@ export class TopMenuComponent implements OnInit {
 
   logout(): void {
     console.log('Logout button clicked');
-    this.oidcSecurityService.logoff();
-    if (window.sessionStorage) {
-      window.sessionStorage.clear();
-    }
-    window.localStorage.clear();
+    this.oidcSecurityService.logoff().subscribe(
+      () => {
+        console.log('Logoff successful');
+        this.isAuthenticated = false;
+        this.userName = null;
+        if (window.sessionStorage) {
+          window.sessionStorage.clear();
+        }
+        window.localStorage.clear();
+      },
+      (error) => {
+        console.error('Logoff error:', error);
+      }
+    );
   }
 }
