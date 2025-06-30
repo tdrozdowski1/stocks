@@ -16,11 +16,9 @@ export class TopMenuComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    // Log query parameters to debug redirect
     const urlParams = new URLSearchParams(window.location.search);
     console.log('Redirect URL params:', urlParams.toString());
 
-    // Subscribe to authentication state
     this.oidcSecurityService.isAuthenticated$.subscribe(
       ({ isAuthenticated }) => {
         this.isAuthenticated = isAuthenticated;
@@ -28,7 +26,6 @@ export class TopMenuComponent implements OnInit {
       }
     );
 
-    // Subscribe to user data
     this.oidcSecurityService.userData$.subscribe((userData) => {
       const attributes = userData?.userData || {};
       this.userName =
@@ -40,15 +37,14 @@ export class TopMenuComponent implements OnInit {
       console.log('userData:', userData);
     });
 
-    // Check authentication state after redirect
     this.oidcSecurityService.checkAuth().subscribe(
       ({ isAuthenticated, userData }) => {
         this.isAuthenticated = isAuthenticated;
         this.userName =
           userData?.given_name ||
-          userData?.name ||
+          userData?.email ||
           userData?.preferred_username ||
-          userData?.['custom:name'] ||
+          userData?.['custom:email'] ||
           null;
         console.warn('checkAuth - isAuthenticated:', isAuthenticated, 'userData:', userData);
       },
@@ -67,16 +63,30 @@ export class TopMenuComponent implements OnInit {
     this.oidcSecurityService.logoff().subscribe(
       () => {
         console.log('Logoff successful');
-        this.isAuthenticated = false;
-        this.userName = null;
-        if (window.sessionStorage) {
-          window.sessionStorage.clear();
-        }
-        window.localStorage.clear();
+        this.clearAuthState();
       },
       (error) => {
         console.error('Logoff error:', error);
+        this.redirectToCognitoLogout();
       }
     );
+  }
+
+  private clearAuthState(): void {
+    this.isAuthenticated = false;
+    this.userName = null;
+    if (window.sessionStorage) {
+      window.sessionStorage.clear();
+    }
+    window.localStorage.clear();
+  }
+
+  private redirectToCognitoLogout(): void {
+    const clientId = 'istc6rrsed9f2jnguse7c6pk0';
+    const logoutUri = 'https://main.d1kexow7pbduqr.amplifyapp.com/';
+    const cognitoDomain = 'https://us-east-1i9ivjsumd.auth.us-east-1.amazoncognito.com';
+    const logoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+    console.log('Redirecting to Cognito logout:', logoutUrl);
+    window.location.href = logoutUrl;
   }
 }
