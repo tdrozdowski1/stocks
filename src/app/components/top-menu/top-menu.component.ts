@@ -63,6 +63,7 @@ export class TopMenuComponent implements OnInit {
   }
 
   logout(): void {
+    console.log('Logout button clicked');
     this.oidcSecurityService.logoff();
     if (window.sessionStorage) {
       window.sessionStorage.clear();
