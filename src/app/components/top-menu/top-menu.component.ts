@@ -37,12 +37,17 @@ export class TopMenuComponent implements OnInit {
   login(): void {
     this.oidcSecurityService.authorize(undefined, {
       urlHandler: (url) => {
+        console.log('Generated Auth URL:', url); // Debug the URL
         window.location.href = url;
-      }
+      },
     });
   }
 
   logout(): void {
     this.oidcSecurityService.logoff();
+    if (window.sessionStorage) {
+      window.sessionStorage.clear();
+    }
+    window.localStorage.clear(); // Also clear local storage
   }
 }
