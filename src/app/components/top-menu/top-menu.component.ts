@@ -36,9 +36,6 @@ export class TopMenuComponent implements OnInit {
 
   login(): void {
     this.oidcSecurityService.authorize(undefined, {
-      customParams: {
-        redirect_uri: 'https://main.d1kexow7pbduqr.amplifyapp.com/'
-      },
       urlHandler: (url) => {
         window.location.href = url;
       }
@@ -46,9 +43,6 @@ export class TopMenuComponent implements OnInit {
   }
 
   logout(): void {
-    if (window.sessionStorage) {
-      window.sessionStorage.clear();
-    }
-    window.location.href = "https://us-east-1i9ivjsumd.auth.us-east-1.amazoncognito.com/logout?client_id=istc6rrsed9f2jnguse7c6pk0&logout_uri=https://main.d1kexow7pbduqr.amplifyapp.com/";
+    this.oidcSecurityService.logoff();
   }
 }
