@@ -42,7 +42,7 @@ export class TopMenuComponent implements OnInit {
         this.isAuthenticated = isAuthenticated;
         this.userName =
           userData?.given_name ||
-          userData?.name ||
+          userData?.email ||
           userData?.preferred_username ||
           userData?.['custom:name'] ||
           null;
