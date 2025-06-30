@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
@@ -16,18 +16,23 @@ export class TopMenuComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    // Log query parameters to debug redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log('Redirect URL params:', urlParams.toString());
+
     // Subscribe to authentication state
     this.oidcSecurityService.isAuthenticated$.subscribe(
       ({ isAuthenticated }) => {
         this.isAuthenticated = isAuthenticated;
-        console.warn('authenticated: ', isAuthenticated);
+        console.warn('isAuthenticated:', isAuthenticated);
       }
     );
 
     // Subscribe to user data
     this.oidcSecurityService.userData$.subscribe((userData) => {
       const attributes = userData?.userData || {};
-      this.userName = attributes.given_name ||
+      this.userName =
+        attributes.given_name ||
         attributes.name ||
         attributes.preferred_username ||
         attributes['custom:name'] ||
@@ -35,16 +40,22 @@ export class TopMenuComponent implements OnInit {
       console.log('userData:', userData);
     });
 
-    // Manually check authentication state after redirect
-    this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData }) => {
-      this.isAuthenticated = isAuthenticated;
-      this.userName = userData?.given_name ||
-        userData?.name ||
-        userData?.preferred_username ||
-        userData?.['custom:name'] ||
-        null;
-      console.warn('checkAuth - authenticated:', isAuthenticated, 'userData:', userData);
-    });
+    // Check authentication state after redirect
+    this.oidcSecurityService.checkAuth().subscribe(
+      ({ isAuthenticated, userData }) => {
+        this.isAuthenticated = isAuthenticated;
+        this.userName =
+          userData?.given_name ||
+          userData?.name ||
+          userData?.preferred_username ||
+          userData?.['custom:name'] ||
+          null;
+        console.warn('checkAuth - isAuthenticated:', isAuthenticated, 'userData:', userData);
+      },
+      (error) => {
+        console.error('checkAuth error:', error);
+      }
+    );
   }
 
   login(): void {
@@ -56,6 +67,6 @@ export class TopMenuComponent implements OnInit {
     if (window.sessionStorage) {
       window.sessionStorage.clear();
     }
-    window.localStorage.clear(); // Also clear local storage
+    window.localStorage.clear();
   }
 }
