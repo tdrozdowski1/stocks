@@ -50,6 +50,12 @@ export class TopMenuComponent implements OnInit {
         console.error('checkAuth error:', error);
       }
     );
+
+    // Debug ID token on init
+    this.oidcSecurityService.getIdToken().subscribe(
+      (idToken) => console.log('ID Token on init:', idToken),
+      (error) => console.error('ID Token error on init:', error)
+    );
   }
 
   login(): void {
@@ -60,9 +66,15 @@ export class TopMenuComponent implements OnInit {
     console.log('Logout button clicked');
     this.oidcSecurityService.getIdToken().subscribe(
       (idToken) => {
+        if (!idToken) {
+          console.error('No ID token available');
+          this.redirectToCognitoLogout();
+          return;
+        }
         console.log('ID Token:', idToken);
-        // Call logoff without parameters, let the library handle the logout URL
-        this.oidcSecurityService.logoff().subscribe(
+        // Try logoff with a custom logout URL to ensure client_id is included
+        const logoutUrl = this.buildCognitoLogoutUrl(idToken);
+        this.oidcSecurityService.logoff(logoutUrl).subscribe(
           () => {
             console.log('Logoff successful');
             this.clearAuthState();
@@ -70,13 +82,13 @@ export class TopMenuComponent implements OnInit {
           (error) => {
             console.error('Logoff error:', error);
             console.log('Error details:', JSON.stringify(error, null, 2));
-            this.redirectToCognitoLogout(idToken); // Fallback with idToken
+            this.redirectToCognitoLogout(idToken); // Fallback
           }
         );
       },
       (error) => {
         console.error('Error retrieving ID token:', error);
-        this.redirectToCognitoLogout(); // Fallback without idToken
+        this.redirectToCognitoLogout();
       }
     );
   }
@@ -89,6 +101,13 @@ export class TopMenuComponent implements OnInit {
     }
     window.localStorage.clear();
     console.log('Auth state cleared');
+  }
+
+  private buildCognitoLogoutUrl(idToken: string): string {
+    const clientId = 'istc6rrsed9f2jnguse7c6pk0';
+    const logoutUri = 'https://main.d1kexow7pbduqr.amplifyapp.com/';
+    const cognitoDomain = 'https://us-east-1i9ivjsumd.auth.us-east-1.amazoncognito.com';
+    return `${cognitoDomain}/logout?client_id=${clientId}&id_token_hint=${idToken}&logout_uri=${encodeURIComponent(logoutUri)}`;
   }
 
   private redirectToCognitoLogout(idToken?: string): void {
