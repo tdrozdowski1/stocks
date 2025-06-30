@@ -42,9 +42,9 @@ export class TopMenuComponent implements OnInit {
         this.isAuthenticated = isAuthenticated;
         this.userName =
           userData?.given_name ||
-          userData?.email ||
+          userData?.name ||
           userData?.preferred_username ||
-          userData?.['custom:email'] ||
+          userData?.['custom:name'] ||
           null;
         console.warn('checkAuth - isAuthenticated:', isAuthenticated, 'userData:', userData);
       },
@@ -79,6 +79,7 @@ export class TopMenuComponent implements OnInit {
       window.sessionStorage.clear();
     }
     window.localStorage.clear();
+    console.log('Auth state cleared');
   }
 
   private redirectToCognitoLogout(): void {
@@ -87,6 +88,7 @@ export class TopMenuComponent implements OnInit {
     const cognitoDomain = 'https://us-east-1i9ivjsumd.auth.us-east-1.amazoncognito.com';
     const logoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
     console.log('Redirecting to Cognito logout:', logoutUrl);
+    this.clearAuthState(); // Clear state before redirect
     window.location.href = logoutUrl;
   }
 }
