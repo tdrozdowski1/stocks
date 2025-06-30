@@ -33,9 +33,9 @@ export class TopMenuComponent implements OnInit {
       const attributes = userData?.userData || {};
       this.userName =
         attributes.given_name ||
-        attributes.name ||
+        attributes.email ||
         attributes.preferred_username ||
-        attributes['custom:name'] ||
+        attributes['custom:email'] ||
         null;
       console.log('userData:', userData);
     });
