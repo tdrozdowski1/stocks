@@ -19,6 +19,11 @@ export class TopMenuComponent implements OnInit {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('Redirect URL params:', urlParams.toString());
 
+    // Check if redirected from logout
+    if (urlParams.get('logout')) {
+      this.clearAuthState();
+    }
+
     this.oidcSecurityService.isAuthenticated$.subscribe(
       ({ isAuthenticated }) => {
         this.isAuthenticated = isAuthenticated;
@@ -27,13 +32,6 @@ export class TopMenuComponent implements OnInit {
     );
 
     this.oidcSecurityService.userData$.subscribe((userData) => {
-      const attributes = userData?.userData || {};
-      this.userName =
-        attributes.given_name ||
-        attributes.email ||
-        attributes.preferred_username ||
-        attributes['custom:email'] ||
-        null;
       console.log('userData:', userData);
     });
 
@@ -60,14 +58,25 @@ export class TopMenuComponent implements OnInit {
 
   logout(): void {
     console.log('Logout button clicked');
-    this.oidcSecurityService.logoff().subscribe(
-      () => {
-        console.log('Logoff successful');
-        this.clearAuthState();
+    this.oidcSecurityService.getIdToken().subscribe(
+      (idToken) => {
+        console.log('ID Token:', idToken);
+        // Call logoff without parameters, let the library handle the logout URL
+        this.oidcSecurityService.logoff().subscribe(
+          () => {
+            console.log('Logoff successful');
+            this.clearAuthState();
+          },
+          (error) => {
+            console.error('Logoff error:', error);
+            console.log('Error details:', JSON.stringify(error, null, 2));
+            this.redirectToCognitoLogout(idToken); // Fallback with idToken
+          }
+        );
       },
       (error) => {
-        console.error('Logoff error:', error);
-        this.redirectToCognitoLogout();
+        console.error('Error retrieving ID token:', error);
+        this.redirectToCognitoLogout(); // Fallback without idToken
       }
     );
   }
@@ -82,13 +91,16 @@ export class TopMenuComponent implements OnInit {
     console.log('Auth state cleared');
   }
 
-  private redirectToCognitoLogout(): void {
+  private redirectToCognitoLogout(idToken?: string): void {
     const clientId = 'istc6rrsed9f2jnguse7c6pk0';
     const logoutUri = 'https://main.d1kexow7pbduqr.amplifyapp.com/';
     const cognitoDomain = 'https://us-east-1i9ivjsumd.auth.us-east-1.amazoncognito.com';
-    const logoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+    let logoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+    if (idToken) {
+      logoutUrl += `&id_token_hint=${idToken}`;
+    }
     console.log('Redirecting to Cognito logout:', logoutUrl);
-    this.clearAuthState(); // Clear state before redirect
+    this.clearAuthState();
     window.location.href = logoutUrl;
   }
 }

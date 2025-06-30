@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AuthModule } from 'angular-auth-oidc-client';
 
-
 @NgModule({
   imports: [
     AuthModule.forRoot({
@@ -19,6 +18,6 @@ import { AuthModule } from 'angular-auth-oidc-client';
       },
     }),
   ],
-    exports: [AuthModule],
+  exports: [AuthModule],
 })
 export class AuthConfigModule {}
