@@ -24,12 +24,10 @@ export class TopMenuComponent implements OnInit {
       this.clearAuthState();
     }
 
-    this.oidcSecurityService.isAuthenticated$.subscribe(
-      ({ isAuthenticated }) => {
-        this.isAuthenticated = isAuthenticated;
-        console.warn('isAuthenticated:', isAuthenticated);
-      }
-    );
+    this.oidcSecurityService.isAuthenticated$.subscribe(({ isAuthenticated }) => {
+      this.isAuthenticated = isAuthenticated;
+      console.warn('isAuthenticated:', isAuthenticated);
+    });
 
     this.oidcSecurityService.userData$.subscribe((userData) => {
       console.log('userData:', userData);
@@ -48,13 +46,13 @@ export class TopMenuComponent implements OnInit {
       },
       (error) => {
         console.error('checkAuth error:', error);
-      }
+      },
     );
 
     // Debug ID token on init
     this.oidcSecurityService.getIdToken().subscribe(
       (idToken) => console.log('ID Token on init:', idToken),
-      (error) => console.error('ID Token error on init:', error)
+      (error) => console.error('ID Token error on init:', error),
     );
   }
 
@@ -83,13 +81,13 @@ export class TopMenuComponent implements OnInit {
             console.error('Logoff error:', error);
             console.log('Error details:', JSON.stringify(error, null, 2));
             this.redirectToCognitoLogout(idToken); // Fallback
-          }
+          },
         );
       },
       (error) => {
         console.error('Error retrieving ID token:', error);
         this.redirectToCognitoLogout();
-      }
+      },
     );
   }
 

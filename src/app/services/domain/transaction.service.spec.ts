@@ -5,11 +5,14 @@ import { StockStateService } from '../state/state.service';
 import { StockModel } from '../http/models/stock.model';
 import { environment } from '../../../environments/environment';
 import { Transaction } from './models/transaction.model';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { of } from 'rxjs';
 
 describe('TransactionService', () => {
   let service: TransactionService;
   let httpMock: HttpTestingController;
   let stockStateService: jasmine.SpyObj<StockStateService>;
+  let oidcSecurityServiceSpy: jasmine.SpyObj<OidcSecurityService>;
 
   const mockTransaction: Transaction = {
     symbol: 'AAPL',
@@ -22,7 +25,7 @@ describe('TransactionService', () => {
 
   const mockStock: StockModel = {
     symbol: 'AAPL',
-    moneyInvested: 1505, // 10 * 150 + 5 commission
+    moneyInvested: 1505,
     ownershipPeriods: [],
     transactions: [{ ...mockTransaction, date: new Date('2025-06-27T02:00:00.000Z') }],
     totalDividendValue: 0,
@@ -33,12 +36,25 @@ describe('TransactionService', () => {
     taxToBePaidInPoland: 0,
   };
 
+  const mockUserData = {
+    userData: {
+      email: 'test@example.com',
+    },
+  };
+
   beforeEach(() => {
     const stockStateSpy = jasmine.createSpyObj('StockStateService', ['addStock']);
+    oidcSecurityServiceSpy = jasmine.createSpyObj('OidcSecurityService', [], {
+      userData$: of(mockUserData),
+    });
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [TransactionService, { provide: StockStateService, useValue: stockStateSpy }],
+      providers: [
+        TransactionService,
+        { provide: StockStateService, useValue: stockStateSpy },
+        { provide: OidcSecurityService, useValue: oidcSecurityServiceSpy },
+      ],
     });
 
     service = TestBed.inject(TransactionService);
@@ -47,7 +63,7 @@ describe('TransactionService', () => {
   });
 
   afterEach(() => {
-    httpMock.verify(); // Verify no outstanding HTTP requests
+    httpMock.verify();
   });
 
   it('should be created', () => {
@@ -58,7 +74,11 @@ describe('TransactionService', () => {
     it('should send POST request and add stock to state on success', (done) => {
       service.addTransaction(mockTransaction).subscribe({
         next: (stock) => {
-          expect(stockStateService.addStock).toHaveBeenCalled();
+          expect(stockStateService.addStock).toHaveBeenCalledWith(
+            jasmine.anything(),
+            'test@example.com',
+          );
+          expect(stock.symbol).toBe('AAPL');
           done();
         },
         error: () => fail('Expected successful response'),
@@ -66,9 +86,8 @@ describe('TransactionService', () => {
 
       const req = httpMock.expectOne(`${environment.STOCKS_API}/transactions`);
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ body: JSON.stringify(mockTransaction) });
+      expect(JSON.parse(req.request.body.body).email).toBe('test@example.com');
 
-      // Simulate the response with date as a string, as it would come from the server
       const responseStock = {
         ...mockStock,
         transactions: [{ ...mockTransaction, date: '2025-06-27T02:00:00.000Z' }],
@@ -77,8 +96,6 @@ describe('TransactionService', () => {
     });
 
     it('should handle HTTP error', (done) => {
-      const errorMessage = 'Server error';
-
       service.addTransaction(mockTransaction).subscribe({
         next: () => fail('Expected error response'),
         error: (error) => {
@@ -89,7 +106,7 @@ describe('TransactionService', () => {
       });
 
       const req = httpMock.expectOne(`${environment.STOCKS_API}/transactions`);
-      req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
+      req.flush('Server error', { status: 500, statusText: 'Server Error' });
     });
 
     it('should throw error on invalid JSON response', (done) => {

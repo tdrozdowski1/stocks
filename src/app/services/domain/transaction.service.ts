@@ -17,7 +17,7 @@ export class TransactionService {
   constructor(
     private http: HttpClient,
     private stockStateService: StockStateService,
-    private oidcSecurityService: OidcSecurityService
+    private oidcSecurityService: OidcSecurityService,
   ) {}
 
   addTransaction(transaction: Transaction): Observable<StockModel> {
@@ -37,7 +37,7 @@ export class TransactionService {
               try {
                 const stock: StockModel = JSON.parse(response.body?.body || '{}');
                 console.log('Parsed stock:', stock);
-                this.stockStateService.addStock(stock);
+                this.stockStateService.addStock(stock, email);
               } catch (e) {
                 console.error('Failed to parse stock response:', e);
                 throw new Error('Invalid stock response format');
@@ -47,9 +47,9 @@ export class TransactionService {
               console.error('HTTP error in addTransaction:', error);
               throw error;
             }),
-            map((response) => JSON.parse(response.body?.body || '{}'))
+            map((response) => JSON.parse(response.body?.body || '{}')),
           );
-      })
+      }),
     );
   }
 }

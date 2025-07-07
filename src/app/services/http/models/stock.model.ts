@@ -6,6 +6,7 @@ import { LiabilitiesData } from './liabilitiesData.model';
 
 export interface StockModel {
   symbol: string;
+  user?: string;
   moneyInvested: number;
   ownershipPeriods: OwnershipPeriod[];
   transactions: Transaction[];
