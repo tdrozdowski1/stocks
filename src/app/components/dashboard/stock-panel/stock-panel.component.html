@@ -1,4 +1,4 @@
-<div class="stock-summary-container">
+<div *ngIf="isAuthenticated$ | async; else notAuthenticated" class="stock-summary-container">
   <h2 class="stock-summary-title">Stock Panel</h2>
   <div *ngIf="stocks$ | async as stocks; else loading" class="stock-list-container">
     <div *ngIf="stocks.length === 0" class="no-stocks-message">
@@ -6,8 +6,7 @@
     </div>
     <ul *ngIf="stocks.length > 0" class="stock-list">
       <li *ngFor="let stock of stocks" class="stock-item">
-        <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span
-        >:
+        <span class="stock-symbol" (click)="onStockClick(stock)">{{ stock.symbol }}</span>:
         <span class="money-invested" (click)="onStockClick(stock)">
           {{ stock.latestQuantity }}
         </span>
@@ -22,3 +21,8 @@
     </div>
   </ng-template>
 </div>
+<ng-template #notAuthenticated>
+  <div class="not-authenticated-message">
+    <span>Please log in to view your stocks.</span>
+  </div>
+</ng-template>

@@ -4,6 +4,7 @@ import { StockModel } from '../../../services/http/models/stock.model';
 import { Router } from '@angular/router';
 import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
 import { StockStateService } from '../../../services/state/state.service';
+import {AuthenticationStateService} from "../../../auth/authentication-state.service";
 
 @Component({
   selector: 'app-stock-panel',
@@ -12,11 +13,14 @@ import { StockStateService } from '../../../services/state/state.service';
 })
 export class StockPanel {
   stocks$: Observable<(StockModel & { latestQuantity: number })[]>;
+  isAuthenticated$: Observable<boolean>;
 
   constructor(
     private stockStateService: StockStateService,
     private router: Router,
+    private authStateService: AuthenticationStateService
   ) {
+    this.isAuthenticated$ = this.authStateService.isAuthenticated$;
     this.stocks$ = this.stockStateService.stocks$.pipe(
       map((stocks) =>
         stocks.map((stock) => ({

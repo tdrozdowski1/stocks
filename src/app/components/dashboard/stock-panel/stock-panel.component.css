@@ -96,6 +96,15 @@
   font-size: 16px;
 }
 
+.not-authenticated-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #555555;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
