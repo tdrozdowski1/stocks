@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import {map, Observable, of} from 'rxjs';
 import { StockModel } from '../../../services/http/models/stock.model';
 import { Router } from '@angular/router';
 import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
@@ -13,7 +13,7 @@ import {AuthenticationStateService} from "../../../auth/authentication-state.ser
 })
 export class StockPanel {
   stocks$: Observable<(StockModel & { latestQuantity: number })[]>;
-  isAuthenticated$: Observable<boolean>;
+  isAuthenticated$ = of(false)
 
   constructor(
     private stockStateService: StockStateService,
