@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from './models/transaction.model';
-import { catchError, map, Observable, tap, switchMap } from 'rxjs';
+import { catchError, map, Observable, switchMap, tap } from 'rxjs';
 import { StockStateService } from '../state/state.service';
 import { StockModel } from '../http/models/stock.model';
 import { environment } from '../../../environments/environment';
@@ -21,23 +21,31 @@ export class TransactionService {
   ) {}
 
   addTransaction(transaction: Transaction): Observable<StockModel> {
-    console.log('Preparing transaction:', transaction);
-    return this.oidcSecurityService.userData$.pipe(
-      switchMap((userData) => {
-        const email = userData?.userData?.email || 'unknown@example.com';
-        const transactionWithEmail = { ...transaction, email };
-        console.log('Sending transaction to Lambda:', transactionWithEmail);
+    console.log('Preparing transaction (no email):', transaction);
+    return this.oidcSecurityService.getIdToken().pipe(
+      switchMap((idToken: string | null) => {
+        if (!idToken) {
+          throw new Error('ID Token is missing. User may not be logged in.');
+        }
+
+        const headers = {
+          Authorization: `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        };
+
         return this.http
-          .post<{
-            body: string;
-          }>(this.apiUrl, { body: JSON.stringify(transactionWithEmail) }, { observe: 'response' })
+          .post<{ body: string }>(
+            this.apiUrl,
+            { body: JSON.stringify(transaction) }, // 👈 no email here
+            { headers, observe: 'response' }
+          )
           .pipe(
             tap((response) => {
               console.log('Lambda response:', response);
               try {
                 const stock: StockModel = JSON.parse(response.body?.body || '{}');
                 console.log('Parsed stock:', stock);
-                this.stockStateService.addStock(stock, email);
+                this.stockStateService.addStock(stock);
               } catch (e) {
                 console.error('Failed to parse stock response:', e);
                 throw new Error('Invalid stock response format');
