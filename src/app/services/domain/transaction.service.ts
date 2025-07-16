@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Transaction } from './models/transaction.model';
 import { catchError, map, Observable, switchMap, tap } from 'rxjs';
 import { StockStateService } from '../state/state.service';
@@ -34,26 +34,36 @@ export class TransactionService {
         };
 
         return this.http
-          .post<{ body: string }>(this.apiUrl, transaction, { headers, observe: 'response' })
+          .post<{ statusCode: number; headers: any; body: string }>(this.apiUrl, transaction, { headers, observe: 'response' })
           .pipe(
             tap((response) => {
               console.log('Lambda response:', response);
+              if (response.status !== 200) {
+                throw new Error(`Server error: ${response.body?.body || 'Unknown error'}`);
+              }
               if (!response.body?.body) {
                 throw new Error('Invalid response: body is missing');
               }
-              const stock: StockModel = JSON.parse(response.body.body);
-              console.log('Parsed stock:', stock);
-              this.stockStateService.addStock(stock);
+              try {
+                const stock: StockModel = JSON.parse(response.body.body);
+                console.log('Parsed stock:', stock);
+                this.stockStateService.addStock(stock);
+              } catch (e) {
+                throw new Error(`Failed to parse stock`);
+              }
             }),
             map((response) => {
+              if (response.status !== 200) {
+                throw new Error(`Server error: ${response.body?.body || 'Unknown error'}`);
+              }
               if (!response.body?.body) {
                 throw new Error('Invalid response: body is missing');
               }
               return JSON.parse(response.body.body) as StockModel;
             }),
-            catchError((error) => {
-              console.error('HTTP error in addTransaction:', error);
-              throw error;
+            catchError((error: HttpErrorResponse | Error) => {
+              console.error('Error in addTransaction:', error);
+              throw new Error(`Transaction failed: ${error.message}`);
             }),
           );
       }),
