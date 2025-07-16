@@ -14,9 +14,8 @@
         </li>
       </ul>
       <div class="auth-section">
-        <ng-container *ngIf="authState$ | async as authState; else noAuth">
-          <div class="debug-auth">isAuthenticated: {{ authState.isAuthenticated }} | userName: {{ authState.userName }}</div>
-          <div *ngIf="authState.isAuthenticated" class="auth-container">
+        <ng-container *ngIf="authState$ | async as authState">
+          <div *ngIf="authState.isAuthenticated; else noAuth" class="auth-container">
     <span class="hello-message" *ngIf="authState.userName">
       Hello, {{ authState.userName }}
     </span>
@@ -27,6 +26,7 @@
         <ng-template #noAuth>
           <button class="auth-button" (click)="login()">Login</button>
         </ng-template>
+
       </div>
     </div>
   </div>
