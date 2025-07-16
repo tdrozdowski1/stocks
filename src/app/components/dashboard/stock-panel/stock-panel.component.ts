@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { map, Observable, of, switchMap } from 'rxjs';
+import {map, Observable, of, switchMap, tap} from 'rxjs';
 import { StockModel } from '../../../services/http/models/stock.model';
 import { Router } from '@angular/router';
 import { OwnershipPeriod } from '../../../services/http/models/ownershipPeriod.model';
@@ -29,13 +29,14 @@ export class StockPanel {
       switchMap((isAuthenticated) =>
         isAuthenticated
           ? this.stockStateService.stocks$.pipe(
-              map((stocks) =>
-                stocks.map((stock) => ({
-                  ...stock,
-                  latestQuantity: this.getLatestOwnershipPeriodQuantity(stock.ownershipPeriods),
-                })),
-              ),
-            )
+            tap((stocks) => console.log('StockStateService emitted:', stocks)), // <- Add this
+            map((stocks) =>
+              stocks.map((stock) => ({
+                ...stock,
+                latestQuantity: this.getLatestOwnershipPeriodQuantity(stock.ownershipPeriods),
+              })),
+            ),
+          )
           : of([]),
       ),
     );
