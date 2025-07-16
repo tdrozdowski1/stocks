@@ -34,11 +34,9 @@ export class TransactionService {
         };
 
         return this.http
-          .post<{ body: string }>(
-            this.apiUrl,
-            { body: JSON.stringify(transaction) }, // 👈 no email here
-            { headers, observe: 'response' }
-          )
+          .post<{
+            body: string;
+          }>(this.apiUrl, { body: JSON.stringify(transaction) }, { headers, observe: 'response' })
           .pipe(
             tap((response) => {
               console.log('Lambda response:', response);

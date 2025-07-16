@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {Observable} from "rxjs";
-import {AuthenticationStateService} from "../../auth/authentication-state.service";
+import { combineLatest, map, Observable } from 'rxjs';
+import { AuthenticationStateService } from '../../auth/authentication-state.service';
 
 @Component({
   selector: 'app-top-menu',
@@ -8,12 +8,18 @@ import {AuthenticationStateService} from "../../auth/authentication-state.servic
   styleUrls: ['./top-menu.component.css'],
 })
 export class TopMenuComponent {
-  isAuthenticated$: Observable<boolean>;
-  userData$: Observable<{ userName: string | null }>;
+  authState$: Observable<{ isAuthenticated: boolean; userName: string | null }>;
 
   constructor(private authStateService: AuthenticationStateService) {
-    this.isAuthenticated$ = this.authStateService.isAuthenticated$;
-    this.userData$ = this.authStateService.userData$;
+    this.authState$ = combineLatest([
+      this.authStateService.isAuthenticated$,
+      this.authStateService.userData$,
+    ]).pipe(
+      map(([isAuthenticated, userData]) => ({
+        isAuthenticated,
+        userName: userData.userName,
+      })),
+    );
   }
 
   login(): void {

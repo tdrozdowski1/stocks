@@ -17,10 +17,14 @@
         <ng-template #noAuth>
           <button class="auth-button" (click)="login()">Login</button>
         </ng-template>
-        <div *ngIf="isAuthenticated; else noAuth" class="auth-container">
-          <span class="hello-message" *ngIf="userName">Hello, {{ userName }}</span>
-          <button class="auth-button" (click)="logout()">Logout</button>
-        </div>
+        <ng-container *ngIf="authState$ | async as authState; else noAuth">
+          <div *ngIf="authState.isAuthenticated" class="auth-container">
+            <span class="hello-message" *ngIf="authState.userName"
+              >Hello, {{ authState.userName }}</span
+            >
+            <button class="auth-button" (click)="logout()">Logout</button>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

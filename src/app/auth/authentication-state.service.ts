@@ -24,7 +24,6 @@ export class AuthenticationStateService {
       console.log('AuthenticationStateService: isAuthenticated:', isAuthenticated);
     });
 
-    // Initial auth check
     this.oidcSecurityService.checkAuth().subscribe(
       ({ isAuthenticated, userData }) => {
         this.isAuthenticatedSubject.next(isAuthenticated);
@@ -35,7 +34,12 @@ export class AuthenticationStateService {
           userData?.['custom:name'] ||
           null;
         this.userDataSubject.next({ userName });
-        console.log('AuthenticationStateService: checkAuth - isAuthenticated:', isAuthenticated, 'userData:', userData);
+        console.log(
+          'AuthenticationStateService: checkAuth - isAuthenticated:',
+          isAuthenticated,
+          'userData:',
+          userData,
+        );
       },
       (error) => {
         console.error('AuthenticationStateService: checkAuth error:', error);
