@@ -21,7 +21,7 @@ export class TransactionService {
   ) {}
 
   addTransaction(transaction: Transaction): Observable<StockModel> {
-    console.log('Preparing transaction (no email):', transaction);
+    console.log('Preparing transaction:', transaction);
     return this.oidcSecurityService.getIdToken().pipe(
       switchMap((idToken: string | null) => {
         if (!idToken) {
@@ -34,26 +34,27 @@ export class TransactionService {
         };
 
         return this.http
-          .post<{
-            body: string;
-          }>(this.apiUrl, { body: JSON.stringify(transaction) }, { headers, observe: 'response' })
+          .post<{ body: string }>(this.apiUrl, transaction, { headers, observe: 'response' })
           .pipe(
             tap((response) => {
               console.log('Lambda response:', response);
-              try {
-                const stock: StockModel = JSON.parse(response.body?.body || '{}');
-                console.log('Parsed stock:', stock);
-                this.stockStateService.addStock(stock);
-              } catch (e) {
-                console.error('Failed to parse stock response:', e);
-                throw new Error('Invalid stock response format');
+              if (!response.body?.body) {
+                throw new Error('Invalid response: body is missing');
               }
+              const stock: StockModel = JSON.parse(response.body.body);
+              console.log('Parsed stock:', stock);
+              this.stockStateService.addStock(stock);
+            }),
+            map((response) => {
+              if (!response.body?.body) {
+                throw new Error('Invalid response: body is missing');
+              }
+              return JSON.parse(response.body.body) as StockModel;
             }),
             catchError((error) => {
               console.error('HTTP error in addTransaction:', error);
               throw error;
             }),
-            map((response) => JSON.parse(response.body?.body || '{}')),
           );
       }),
     );
