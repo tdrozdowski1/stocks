@@ -14,17 +14,19 @@
         </li>
       </ul>
       <div class="auth-section">
-        <ng-template #noAuth>
-          <button class="auth-button" (click)="login()">Login</button>
-        </ng-template>
         <ng-container *ngIf="authState$ | async as authState; else noAuth">
+          <div class="debug-auth">isAuthenticated: {{ authState.isAuthenticated }} | userName: {{ authState.userName }}</div>
           <div *ngIf="authState.isAuthenticated" class="auth-container">
-            <span class="hello-message" *ngIf="authState.userName"
-              >Hello, {{ authState.userName }}</span
-            >
+    <span class="hello-message" *ngIf="authState.userName">
+      Hello, {{ authState.userName }}
+    </span>
             <button class="auth-button" (click)="logout()">Logout</button>
           </div>
         </ng-container>
+
+        <ng-template #noAuth>
+          <button class="auth-button" (click)="login()">Login</button>
+        </ng-template>
       </div>
     </div>
   </div>

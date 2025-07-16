@@ -19,31 +19,26 @@ export class AuthenticationStateService {
   }
 
   private initializeAuthState(): void {
-    this.oidcSecurityService.isAuthenticated$.subscribe(({ isAuthenticated }) => {
-      this.isAuthenticatedSubject.next(isAuthenticated);
-      console.log('AuthenticationStateService: isAuthenticated:', isAuthenticated);
-    });
-
     this.oidcSecurityService.checkAuth().subscribe(
       ({ isAuthenticated, userData }) => {
         this.isAuthenticatedSubject.next(isAuthenticated);
+
         const userName =
           userData?.given_name ||
           userData?.email ||
           userData?.preferred_username ||
           userData?.['custom:name'] ||
           null;
+
         this.userDataSubject.next({ userName });
-        console.log(
-          'AuthenticationStateService: checkAuth - isAuthenticated:',
-          isAuthenticated,
-          'userData:',
-          userData,
-        );
+
+        console.log('checkAuth result:', isAuthenticated, userData);
       },
       (error) => {
-        console.error('AuthenticationStateService: checkAuth error:', error);
-      },
+        console.error('checkAuth error:', error);
+        this.isAuthenticatedSubject.next(false);
+        this.userDataSubject.next({ userName: null });
+      }
     );
   }
 
