@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {Observable, switchMap} from 'rxjs';
-import { map } from 'rxjs/operators';
+import {Observable, tap} from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { StockModel } from './models/stock.model';
 import { environment } from '../../../environments/environment';
-import {OidcSecurityService} from "angular-auth-oidc-client";
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 export interface ApiResponse {
   statusCode: number;
@@ -25,16 +25,15 @@ export class DbService {
 
   getStocks(): Observable<StockModel[]> {
     return this.oidcSecurityService.getIdToken().pipe(
+      tap((idToken: string | null) => console.log('ID Token:', idToken)),
       switchMap((idToken: string | null) => {
         if (!idToken) {
           throw new Error('ID Token is missing. User may not be logged in.');
         }
-
         const headers = new HttpHeaders({
           Authorization: `Bearer ${idToken}`,
           'Content-Type': 'application/json',
         });
-
         return this.http
           .get<ApiResponse>(`${environment.STOCKS_API}${this.stocksApi}`, { headers })
           .pipe(map((response) => JSON.parse(response.body) as StockModel[]));
