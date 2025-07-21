@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -8,15 +8,17 @@ import {
 } from '@angular/forms';
 import { Transaction } from '../../../services/domain/models/transaction.model';
 import { CompanyInfoService } from 'src/app/services/http/company-info.service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import {AuthenticationStateService} from "../../../auth/authentication-state.service";
 
 @Component({
   selector: 'app-add-transaction',
   templateUrl: './add-transaction.component.html',
   styleUrls: ['./add-transaction.component.css'],
 })
-export class AddTransactionComponent {
+export class AddTransactionComponent implements OnInit {
   transactionForm: UntypedFormGroup;
   @Output() transactionChange = new EventEmitter<Transaction>();
   suggestions: string[] = [];
@@ -26,6 +28,8 @@ export class AddTransactionComponent {
   constructor(
     private fb: UntypedFormBuilder,
     private companyInfoService: CompanyInfoService,
+    private authStateService: AuthenticationStateService,
+    private oidcSecurityService: OidcSecurityService
   ) {
     this.transactionForm = this.fb.group({
       symbol: ['', Validators.required],
@@ -37,6 +41,25 @@ export class AddTransactionComponent {
     });
 
     this.setupSymbolAutocomplete();
+  }
+
+  // In ngOnInit or a similar lifecycle hook, restore form data
+  ngOnInit() {
+    const savedForm = sessionStorage.getItem('transactionForm');
+    const savedSymbol = sessionStorage.getItem('symbolControl');
+    const savedDisplayValue = sessionStorage.getItem('displayValue');
+    if (savedForm) {
+      this.transactionForm.patchValue(JSON.parse(savedForm));
+      sessionStorage.removeItem('transactionForm');
+    }
+    if (savedSymbol) {
+      this.symbolControl.setValue(savedSymbol);
+      sessionStorage.removeItem('symbolControl');
+    }
+    if (savedDisplayValue) {
+      this.displayValue = savedDisplayValue;
+      sessionStorage.removeItem('displayValue');
+    }
   }
 
   symbolSelectedValidator(): ValidatorFn {
@@ -103,13 +126,23 @@ export class AddTransactionComponent {
   }
 
   onSubmit() {
-    if (this.transactionForm.valid && this.symbolControl.valid) {
-      this.transactionChange.emit(this.transactionForm.value);
-      this.transactionForm.reset();
-      this.displayValue = '';
-      this.symbolControl.setValue('');
-      this.suggestions = [];
-      this.symbolControl.setErrors(null);
-    }
+    this.authStateService.isAuthenticated$.subscribe((isAuthenticated) => {
+      if (!isAuthenticated) {
+        // Save form data to sessionStorage
+        sessionStorage.setItem('transactionForm', JSON.stringify(this.transactionForm.value));
+        sessionStorage.setItem('symbolControl', this.symbolControl.value);
+        sessionStorage.setItem('displayValue', this.displayValue);
+        // Redirect to Cognito login
+        this.oidcSecurityService.authorize();
+      } else if (this.transactionForm.valid && this.symbolControl.valid) {
+        // Proceed with transaction submission
+        this.transactionChange.emit(this.transactionForm.value);
+        this.transactionForm.reset();
+        this.displayValue = '';
+        this.symbolControl.setValue('');
+        this.suggestions = [];
+        this.symbolControl.setErrors(null);
+      }
+    });
   }
 }
