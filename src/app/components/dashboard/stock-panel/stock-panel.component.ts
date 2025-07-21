@@ -29,7 +29,7 @@ export class StockPanel {
       switchMap((isAuthenticated) =>
         isAuthenticated
           ? this.stockStateService.stocks$.pipe(
-            tap((stocks) => console.log('StockStateService emitted:', stocks)), // <- Add this
+            tap((stocks) => console.log('StockStateService emitted:', stocks)),
             map((stocks) =>
               stocks.map((stock) => ({
                 ...stock,
