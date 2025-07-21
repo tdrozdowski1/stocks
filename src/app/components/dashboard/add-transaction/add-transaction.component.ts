@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -11,7 +11,7 @@ import { CompanyInfoService } from 'src/app/services/http/company-info.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import {AuthenticationStateService} from "../../../auth/authentication-state.service";
+import { AuthenticationStateService } from '../../../auth/authentication-state.service';
 
 @Component({
   selector: 'app-add-transaction',
@@ -29,7 +29,7 @@ export class AddTransactionComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private companyInfoService: CompanyInfoService,
     private authStateService: AuthenticationStateService,
-    private oidcSecurityService: OidcSecurityService
+    private oidcSecurityService: OidcSecurityService,
   ) {
     this.transactionForm = this.fb.group({
       symbol: ['', Validators.required],

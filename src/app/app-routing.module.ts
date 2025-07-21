@@ -5,7 +5,7 @@ import { StockSummaryComponent } from './components/stock-summary/stock-summary.
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PortfolioPanelComponent } from './components/portfolio-panel/portfolio-panel.component';
 import { TaxOverviewComponent } from './components/tax-overview/tax-overview.component';
-import {AuthGuard} from "./auth/auth.guard";
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },

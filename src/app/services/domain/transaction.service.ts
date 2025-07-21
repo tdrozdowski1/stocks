@@ -33,18 +33,16 @@ export class TransactionService {
           'Content-Type': 'application/json',
         };
 
-        return this.http
-          .post<StockModel>(this.apiUrl, transaction, { headers })
-          .pipe(
-            tap((stock: StockModel) => {
-              console.log('Lambda response:', stock);
-              this.stockStateService.addStock(stock);
-            }),
-            catchError((error: HttpErrorResponse | Error) => {
-              console.error('Error in addTransaction:', error);
-              throw new Error(`Transaction failed: ${error.message}`);
-            }),
-          );
+        return this.http.post<StockModel>(this.apiUrl, transaction, { headers }).pipe(
+          tap((stock: StockModel) => {
+            console.log('Lambda response:', stock);
+            this.stockStateService.addStock(stock);
+          }),
+          catchError((error: HttpErrorResponse | Error) => {
+            console.error('Error in addTransaction:', error);
+            throw new Error(`Transaction failed: ${error.message}`);
+          }),
+        );
       }),
     );
   }

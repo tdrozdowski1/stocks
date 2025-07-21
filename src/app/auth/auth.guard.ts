@@ -1,8 +1,14 @@
-import {ActivatedRouteSnapshot, CanActivate, CanActivateFn, Router, RouterStateSnapshot} from '@angular/router';
-import {Injectable} from "@angular/core";
-import {AuthenticationStateService} from "./authentication-state.service";
-import {OidcSecurityService} from "angular-auth-oidc-client";
-import {map, Observable, tap} from "rxjs";
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  CanActivateFn,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { AuthenticationStateService } from './authentication-state.service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { map, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,12 +17,12 @@ export class AuthGuard implements CanActivate {
   constructor(
     private authStateService: AuthenticationStateService,
     private oidcSecurityService: OidcSecurityService,
-    private router: Router
+    private router: Router,
   ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): Observable<boolean> | boolean {
     return this.authStateService.isAuthenticated$.pipe(
       tap((isAuthenticated) => {
@@ -27,7 +33,7 @@ export class AuthGuard implements CanActivate {
           this.oidcSecurityService.authorize();
         }
       }),
-      map((isAuthenticated) => isAuthenticated)
+      map((isAuthenticated) => isAuthenticated),
     );
   }
 }

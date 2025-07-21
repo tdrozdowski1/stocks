@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,10 @@ export class AuthenticationStateService {
   isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
   userData$: Observable<{ userName: string | null }> = this.userDataSubject.asObservable();
 
-  constructor(private oidcSecurityService: OidcSecurityService, private router: Router) {
+  constructor(
+    private oidcSecurityService: OidcSecurityService,
+    private router: Router,
+  ) {
     this.initializeAuthState();
   }
 
@@ -48,7 +51,7 @@ export class AuthenticationStateService {
         console.error('checkAuth error:', error);
         this.isAuthenticatedSubject.next(false);
         this.userDataSubject.next({ userName: null });
-      }
+      },
     );
   }
 
