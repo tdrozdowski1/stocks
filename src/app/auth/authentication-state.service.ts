@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { BehaviorSubject, Observable } from 'rxjs';
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class AuthenticationStateService {
   isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
   userData$: Observable<{ userName: string | null }> = this.userDataSubject.asObservable();
 
-  constructor(private oidcSecurityService: OidcSecurityService) {
+  constructor(private oidcSecurityService: OidcSecurityService, private router: Router) {
     this.initializeAuthState();
   }
 
@@ -33,6 +34,15 @@ export class AuthenticationStateService {
         this.userDataSubject.next({ userName });
 
         console.log('checkAuth result:', isAuthenticated, userData);
+
+        // Redirect to the stored return URL if it exists
+        if (isAuthenticated) {
+          const returnUrl = sessionStorage.getItem('returnUrl');
+          if (returnUrl) {
+            sessionStorage.removeItem('returnUrl');
+            this.router.navigateByUrl(returnUrl);
+          }
+        }
       },
       (error) => {
         console.error('checkAuth error:', error);

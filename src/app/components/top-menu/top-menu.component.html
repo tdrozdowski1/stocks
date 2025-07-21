@@ -7,22 +7,27 @@
           <a class="nav-link" routerLink="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/portfolio">Portfolio</a>
+          <a class="nav-link" routerLink="/portfolio">
+            Portfolio
+            <span *ngIf="!(authState$ | async)?.isAuthenticated" class="lock-icon">🔒</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/tax">Tax Overview</a>
+          <a class="nav-link" routerLink="/tax">
+            Tax Overview
+            <span *ngIf="!(authState$ | async)?.isAuthenticated" class="lock-icon">🔒</span>
+          </a>
         </li>
       </ul>
       <div class="auth-section">
         <ng-container *ngIf="authState$ | async as authState">
           <div *ngIf="authState.isAuthenticated; else noAuth" class="auth-container">
-    <span class="hello-message" *ngIf="authState.userName">
-      Hello, {{ authState.userName }}
-    </span>
+            <span class="hello-message" *ngIf="authState.userName">
+              Hello, {{ authState.userName }}
+            </span>
             <button class="auth-button" (click)="logout()">Logout</button>
           </div>
         </ng-container>
-
         <ng-template #noAuth>
           <button class="auth-button" (click)="login()">Login</button>
         </ng-template>
