@@ -24,14 +24,20 @@ export class DbService {
   ) {}
 
   getStocks(): Observable<StockModel[]> {
-    return this.oidcSecurityService.getIdToken().pipe(
-      tap((idToken: string | null) => console.log('ID Token:', idToken)),
-      switchMap((idToken: string | null) => {
-        if (!idToken) {
-          throw new Error('ID Token is missing. User may not be logged in.');
+    return this.oidcSecurityService.getAccessToken().pipe(
+      tap((accessToken: string | null) => {
+        console.log('Access Token:', accessToken);
+        if (accessToken) {
+          const payload = JSON.parse(atob(accessToken.split('.')[1]));
+          console.log('Access Token Payload:', payload);
+        }
+      }),
+      switchMap((accessToken: string | null) => {
+        if (!accessToken) {
+          throw new Error('Access Token is missing. User may not be logged in.');
         }
         const headers = new HttpHeaders({
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         });
         return this.http
@@ -54,13 +60,13 @@ export class DbService {
   }
 
   removeStock(symbol: string): Observable<any> {
-    return this.oidcSecurityService.getIdToken().pipe(
-      switchMap((idToken: string | null) => {
-        if (!idToken) {
-          throw new Error('ID Token is missing. User may not be logged in.');
+    return this.oidcSecurityService.getAccessToken().pipe(
+      switchMap((accessToken: string | null) => {
+        if (!accessToken) {
+          throw new Error('Access Token is missing. User may not be logged in.');
         }
         const headers = new HttpHeaders({
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         });
         return this.http
