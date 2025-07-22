@@ -34,23 +34,25 @@ export class DbService {
       }),
       switchMap((idToken: string | null) => {
         if (!idToken) {
-          throw new Error('Access Token is missing. User may not be logged in.');
+          throw new Error('ID Token is missing. User may not be logged in.');
         }
         const headers = new HttpHeaders({
           Authorization: `Bearer ${idToken}`,
           'Content-Type': 'application/json',
         });
-        console.log('Request Headers:', headers);
+        console.log('Request Headers:', headers.get('Authorization'));
         return this.http
           .get<ApiResponse>(`${environment.STOCKS_API}${this.stocksApi}`, { headers })
           .pipe(
             map((response) => {
               console.log('API Response:', response);
               if (response.statusCode !== 200) {
-                const errorBody = JSON.parse(response.body);
-                throw new Error(`API error: ${errorBody.message || response.body}`);
+                const errorBody = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
+                throw new Error(`API error: ${errorBody.message || JSON.stringify(errorBody)}`);
               }
-              return JSON.parse(response.body) as StockModel[];
+              // Check if response.body is a string; if not, assume it's already parsed
+              const stocks = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
+              return stocks as StockModel[];
             }),
             catchError((error) => {
               console.error('Error fetching stocks:', error);
