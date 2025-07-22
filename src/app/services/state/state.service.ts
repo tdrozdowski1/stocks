@@ -22,6 +22,7 @@ export class StockStateService {
   }
 
   updateStocks(stocks: StockModel[]): void {
+    console.log('Updating stocks:', stocks);
     this.stocksSubject.next(stocks);
   }
 

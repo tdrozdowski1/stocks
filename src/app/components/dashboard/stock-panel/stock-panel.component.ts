@@ -26,19 +26,22 @@ export class StockPanel {
       console.log('isAuthenticated$:', isAuthenticated);
     });
     this.stocks$ = this.authStateService.isAuthenticated$.pipe(
-      switchMap((isAuthenticated) =>
-        isAuthenticated
+      switchMap((isAuthenticated) => {
+        console.log('IsAuthenticated:', isAuthenticated);
+        return isAuthenticated
           ? this.stockStateService.stocks$.pipe(
-              tap((stocks) => console.log('StockStateService emitted:', stocks)),
-              map((stocks) =>
-                stocks.map((stock) => ({
-                  ...stock,
-                  latestQuantity: this.getLatestOwnershipPeriodQuantity(stock.ownershipPeriods),
-                })),
-              ),
-            )
-          : of([]),
-      ),
+            tap((stocks) => console.log('StockStateService emitted:', stocks)),
+            map((stocks) => {
+              const mappedStocks = stocks.map((stock) => ({
+                ...stock,
+                latestQuantity: this.getLatestOwnershipPeriodQuantity(stock.ownershipPeriods),
+              }));
+              console.log('Mapped stocks:', mappedStocks);
+              return mappedStocks;
+            })
+          )
+          : of([]);
+      })
     );
   }
 
