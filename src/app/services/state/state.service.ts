@@ -8,11 +8,9 @@ export class StockStateService {
   private stocksSubject = new BehaviorSubject<StockModel[]>([]);
   stocks$: Observable<StockModel[]> = this.stocksSubject.asObservable();
 
-  constructor(private dbService: DbService) {
-    this.initStocks();
-  }
+  constructor(private dbService: DbService) {}
 
-  private initStocks(): void {
+  initStocks(): void {
     this.dbService.getStocks().subscribe({
       next: (stocks) => this.updateStocks(stocks),
       error: (error) => console.error('Error initializing stocks:', error),
