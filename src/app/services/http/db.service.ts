@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Observable, throwError } from 'rxjs';
 import { map, switchMap, tap, catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
-import { StockModel } from '../models/stock.model';
+import {StockModel} from "./models/stock.model";
+import {environment} from "../../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root',
