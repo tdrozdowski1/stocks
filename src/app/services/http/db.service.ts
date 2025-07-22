@@ -1,16 +1,10 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, tap, throwError } from 'rxjs';
-import { map, switchMap, catchError } from 'rxjs/operators';
-import { StockModel } from './models/stock.model';
-import { environment } from '../../../environments/environment';
+import { Injectable } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-
-export interface ApiResponse {
-  statusCode: number;
-  headers: { [key: string]: string };
-  body: string;
-}
+import { Observable, throwError } from 'rxjs';
+import { map, switchMap, tap, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { StockModel } from '../models/stock.model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,43 +36,18 @@ export class DbService {
         });
         console.log('Request Headers:', headers.get('Authorization'));
         return this.http
-          .get<ApiResponse>(`${environment.STOCKS_API}${this.stocksApi}`, { headers })
+          .get<StockModel[]>(`${environment.STOCKS_API}${this.stocksApi}`, { headers })
           .pipe(
-            map((response) => {
-              console.log('API Response:', response);
-              if (response.statusCode !== 200) {
-                const errorBody = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
-                throw new Error(`API error: ${errorBody.message || JSON.stringify(errorBody)}`);
+            tap((stocks) => console.log('Raw API Response:', JSON.stringify(stocks, null, 2))),
+            map((stocks) => {
+              if (!Array.isArray(stocks)) {
+                throw new Error('API response is not an array of stocks');
               }
-              // Check if response.body is a string; if not, assume it's already parsed
-              const stocks = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
               return stocks as StockModel[];
             }),
             catchError((error) => {
               console.error('Error fetching stocks:', error);
-              return throwError(() => new Error(error.message || 'Failed to fetch stocks'));
-            })
-          );
-      })
-    );
-  }
-
-  removeStock(symbol: string): Observable<any> {
-    return this.oidcSecurityService.getIdToken().pipe(
-      switchMap((idToken: string | null) => {
-        if (!idToken) {
-          throw new Error('ID Token is missing. User may not be logged in.');
-        }
-        const headers = new HttpHeaders({
-          Authorization: `Bearer ${idToken}`,
-          'Content-Type': 'application/json',
-        });
-        return this.http
-          .delete<any>(`${environment.STOCKS_API}${this.stocksApi}/${symbol}`, { headers })
-          .pipe(
-            catchError((error) => {
-              console.error('Error removing stock:', error);
-              return throwError(() => new Error(error.message || 'Failed to remove stock'));
+              return throwError(() => new Error(error.message || error || 'Failed to fetch stocks'));
             })
           );
       })
