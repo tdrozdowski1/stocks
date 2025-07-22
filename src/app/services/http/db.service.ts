@@ -32,18 +32,20 @@ export class DbService {
           console.log('ID Token Payload:', payload);
         }
       }),
-      switchMap((accessToken: string | null) => {
-        if (!accessToken) {
+      switchMap((idToken: string | null) => {
+        if (!idToken) {
           throw new Error('Access Token is missing. User may not be logged in.');
         }
         const headers = new HttpHeaders({
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${idToken}`,
           'Content-Type': 'application/json',
         });
+        console.log('Request Headers:', headers);
         return this.http
           .get<ApiResponse>(`${environment.STOCKS_API}${this.stocksApi}`, { headers })
           .pipe(
             map((response) => {
+              console.log('API Response:', response);
               if (response.statusCode !== 200) {
                 const errorBody = JSON.parse(response.body);
                 throw new Error(`API error: ${errorBody.message || response.body}`);
